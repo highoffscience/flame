@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<root>
+  <image-specs>
+    <param id="012"></param>
+    <param width="1920"></param>
+    <param height="1080"></param>
+  </image-specs>
+  <fitter auto="false">
+    <param xmin="-1.0"></param>
+    <param xmax="+1.0"></param>
+    <param ymin="-1.0"></param>
+    <param ymax="+1.0"></param>
+  </fitter>
+  <anti-alias>
+    <super-sample>
+      <param scale="1"></param>
+    </super-sample>
+  </anti-alias>
+  <renderer>
+    <flame>
+      <param niters="10000000"></param>
+      <pre-transform>
+        <strange-attractor>
+          <iterated-function-system>
+            <apollonian-gasket>
+            </apollonian-gasket>
+          </iterated-function-system>
+        </strange-attractor>
+      </pre-transform>
+      <post-transform>
+        <strange-attractor>
+          <iterated-affine-system>
+            <polygon-gasket>
+              <param npoints="8"></param>
+              <param ratio="0.5"></param>
+            </polygon-gasket>
+          </iterated-affine-system>
+        </strange-attractor>
+      </post-transform>
+      <variations>
+        <sinusoidal>
+          <param weight="0.8"></param>
+        </sinusoidal>
+        <spiral>
+          <param weight="0.2"></param>
+        </spiral>
+      </variations>
+      <color-scheme>
+        <spectrum>
+          <begin>
+            <pixel>
+              <param red="1.0"></param>
+              <param green="1.0"></param>
+              <param blue="1.0"></param>
+            </pixel>
+          </begin>
+          <end>
+            <pixel>
+              <param red="1.0"></param>
+              <param green="1.0"></param>
+              <param blue="0.0"></param>
+            </pixel>
+          </end>
+        </spectrum>
+      </color-scheme>
+    </flame>
+  </renderer>
+</root>

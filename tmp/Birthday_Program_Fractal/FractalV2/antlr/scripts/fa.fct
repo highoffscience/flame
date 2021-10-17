@@ -1,0 +1,6 @@
+// @author Forrest Jablonski
+
+Width  <- 1920
+Height <- 1080
+NIters <- 1000000 // 1 million
+Gamma  <- 4.0 // 2.6

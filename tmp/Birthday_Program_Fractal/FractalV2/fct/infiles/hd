@@ -1,0 +1,21 @@
+--id 020
+--width 1920
+--height 1080
+--niters 1000000000
+--rend Flame
+--vars Linear 0.2 Sinusoidal 0.7 Polar 0.1
+--cschm Spectrum
+--begin-red 0.0
+--begin-green 1.0
+--begin-blue 0.0
+--end-red 0.0
+--end-green 0.0
+--end-blue 1.0
+--pre-stat Iterated-Function-System
+--post-stat Null
+--pre-ifs Apollonian-Gasket
+--fit 1
+--min-x -1.5
+--min-y -1.5
+--max-x  1.5
+--max-y  1.5

@@ -1,0 +1,54 @@
+// @author Forrest Jablonski
+
+// Var [1..nTransforms]
+// ...
+// End
+
+// Linear
+// Var ...
+// Return [X, Y]
+// End
+
+// Sinusoidal
+// Var ...
+// Return [Sin(X), Sin(Y)]
+// End
+
+// Spherical
+// Var ...
+// r2 <- (X*X) + (Y*Y)
+// Return [X/r2, Y/r2]
+// End
+
+// Swirl
+// Var ...
+// r2 <- (X*X) + (Y*Y)
+// s <- Sin(r2)
+// c <- Cos(r2)
+// Return [X*s - Y*c, X*c + Y*s]
+// End
+   
+// Horseshoe
+// Var ...
+// r <- Sqrt((X*X) + (Y*Y))
+// nx <- ((X-Y) * (X+Y)) / r
+// ny <- (2.0*X*Y) / r
+// Return [nx, ny]
+// End
+
+Var 1.0 1.0 1.0
+Return [X, Y]
+End
+
+//Var 0.2 0.2 0.2
+//Return [X, Y]
+//End
+
+//Var 0.7 0.7 0.7
+//Return [Sin(X), Sin(Y)]
+//End
+
+//Var 0.1 0.1 0.1
+//r2 <- (X*X) + (Y*Y)
+//Return [X/r2, Y/r2]
+//End

@@ -1,0 +1,18 @@
+--id 010
+--width 1920
+--height 1080
+--niters 10000000
+--rend Flame
+--vars Linear 1.0
+--cschm Spectrum
+--begin-red 1.0
+--begin-green 0.0
+--begin-blue 0.0
+--end-red 0.0
+--end-green 0.0
+--end-blue 1.0
+--pre-stat Iterated-Affine-System
+--post-stat Null
+--pre-ias Polygon-Gasket
+--pre-npoints 3
+--pre-ratio 0.5
