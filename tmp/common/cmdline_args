@@ -1,0 +1,12 @@
+{"author": "Forrest Jablonski",
+
+   "args": [{
+      "name": "input",
+      "abbr": "i",
+      "desc": "Input file"
+   }, {
+      "name": "ouput",
+      "abbr": "o",
+      "desc": "Output file"
+   }
+]}
