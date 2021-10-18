@@ -27,7 +27,7 @@
 #define HOSO_NO_MOVE_ASSIGN(    ClassName ) ClassName & operator = (ClassName &&)      = delete;
 
 #if defined(_DEBUG)
-#define YM_DBG
+#define HOSO_DBG
 #endif // _DEBUG
 
 namespace hoso

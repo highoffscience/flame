@@ -16,6 +16,14 @@ hoso::Logger::Logger(str const Name)
 /**
  *
  */
+hoso::Logger::~Logger(void)
+{
+   close();
+}
+
+/**
+ *
+ */
 bool hoso::Logger::open(str const Filename)
 {
    if (!_outfile_ptr)
@@ -37,6 +45,7 @@ bool hoso::Logger::open(str const Filename)
  */
 bool hoso::Logger::close(void)
 {
+   if ()
    auto const ErrorCode = std::fclose(_outfile_ptr);
    _outfile_ptr = nullptr;
 
