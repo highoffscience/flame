@@ -43,11 +43,12 @@ bool hoso::Logger::open(str const Filename)
 /**
  *
  */
-bool hoso::Logger::close(void)
+void hoso::Logger::close(void)
 {
-   if ()
-   auto const ErrorCode = std::fclose(_outfile_ptr);
-   _outfile_ptr = nullptr;
-
-   return ErrorCode == 0;
+   if (_outfile_ptr)
+   {
+      auto const ErrorCode = std::fclose(_outfile_ptr);
+      static_cast<void>(ErrorCode); // docs say stream is cleaned regardless of error
+      _outfile_ptr = nullptr;
+   }
 }

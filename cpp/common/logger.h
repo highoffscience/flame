@@ -13,7 +13,7 @@ namespace hoso
 {
 
 /**
- *
+ * Limited interface since derived classes might want to be thread safe.
  */
 class Logger : public CNameable_NV
 {
@@ -27,11 +27,11 @@ public:
 protected:
    inline auto getOutfilePtr(void) { return _outfile_ptr; }
 
-   bool open(str const Filename);
-   bool close(void);
+   bool open (str const Filename);
+   void close(void);
 
 private:
-   FILE * _outfile_ptr;
+   std::FILE * _outfile_ptr;
 };
 
 } // hoso

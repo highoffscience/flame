@@ -12,9 +12,11 @@ namespace hoso
 /*
  * Available variants
  * NV = Non-Virtual
+ * 
+ * Names must be string literals
  */
 class Nameable_NV;
-class CNameable_NV;
+class CNameable_NV; // C = const
 
 /**
  * 
