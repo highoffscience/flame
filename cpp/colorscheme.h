@@ -4,14 +4,13 @@
 
 #pragma once
 
-#include "Standard.h"
+#include "hoso.h"
+#include "pixel.h"
 
-#include "Pixel.h"
-
-namespace fct
+namespace hoso::flame
 {
    namespace cs
    {
       Pixel transform(const float clr);
    } // cs
-} // fct
+} // hoso::flame

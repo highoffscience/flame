@@ -4,16 +4,20 @@
 
 #pragma once
 
-#include "Standard.h"
+#include "hoso.h"
+#include "point.h"
 
-#include "Point.h"
-
-namespace fct
+namespace hoso::flame
 {
-   namespace fit
+   /**
+    * 
+    */
+   class Fitter
    {
+
+   };
       void init(const Point& minFitPnt, const Point& maxFitPnt);
    
       Point transform(const Point& pnt);
    } // fit
-} // fct
+} // hoso::flame
