@@ -7,7 +7,7 @@
 /**
  * Clr is in [0..1] and maps to a pixel
  */
-auto hoso::flame::ColorScheme::apply(float32 const Clr) const -> Pixel
+auto hoso::flame::ColorScheme::apply(Pixel::dim_t const Clr) const -> Pixel
 {
    //                     r     g     b     a
    constexpr Pixel Begin(0.0f, 1.0f, 0.0f, 0.0f);

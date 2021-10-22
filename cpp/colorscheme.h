@@ -18,7 +18,7 @@ class ColorScheme
 public:
    explicit ColorScheme(void);
 
-   Pixel apply(float32 const Clr) const;
+   Pixel apply(Pixel::dim_t const Clr) const;
 };
 
 } // hoso::flame

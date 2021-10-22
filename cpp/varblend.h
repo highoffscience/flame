@@ -13,15 +13,12 @@ namespace hoso::flame
 /**
  * 
  */
-struct VarBlend // Variation Blend
+class VarBlend // Variation Blend
 {
-   explicit VarBlend(void);
+public:
+   explicit VarBlend(void) = default;
 
-   Point apply
+   Point apply(uint32 const Transform_idx) const;
 };
-   namespace vb
-   {
-      void transform(const uint index, Point& pnt);
-   } // var
 
 } // hoso::flame

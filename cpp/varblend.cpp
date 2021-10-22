@@ -1,14 +1,8 @@
 /**
  * @author Forrest Jablonski
- *
- * AUTO-GENERATED
  */
 
-#include <cmath>
-
-#include "VariationBlend.h"
-
-#include "Point.h"
+#include "varblend.h"
 
 /**
  *
@@ -16,6 +10,14 @@
 inline fct::Point var_0(const fct::Point& pnt)
 {
    return {pnt.x, pnt.y};
+}
+
+/**
+ *
+ */
+auto hoso::flame::Point::apply(uint32 const Transform_idx) const -> Point
+{
+
 }
 
 /**
