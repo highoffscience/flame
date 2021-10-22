@@ -20,17 +20,17 @@
 #pragma warning(error:    4227) // reference of const should be pointer to const
 #endif // _WIN32
 
-#define YM_NO_DEFAULT(        ClassName ) ClassName              (void)              = delete;
-#define YM_NO_COPY(           ClassName ) ClassName              (ClassName const &) = delete;
-#define YM_NO_ASSIGN(         ClassName ) ClassName & operator = (ClassName const &) = delete;
-#define YM_NO_MOVE_CONSTRUCT( ClassName ) ClassName              (ClassName &&)      = delete;
-#define YM_NO_MOVE_ASSIGN(    ClassName ) ClassName & operator = (ClassName &&)      = delete;
+#define HOSO_NO_DEFAULT(        ClassName ) ClassName              (void)              = delete;
+#define HOSO_NO_COPY(           ClassName ) ClassName              (ClassName const &) = delete;
+#define HOSO_NO_ASSIGN(         ClassName ) ClassName & operator = (ClassName const &) = delete;
+#define HOSO_NO_MOVE_CONSTRUCT( ClassName ) ClassName              (ClassName &&)      = delete;
+#define HOSO_NO_MOVE_ASSIGN(    ClassName ) ClassName & operator = (ClassName &&)      = delete;
 
 #if defined(_DEBUG)
-#define YM_DBG
+#define HOSO_DBG
 #endif // _DEBUG
 
-namespace flame
+namespace hoso
 {
 
 typedef char const *       str;
@@ -63,4 +63,4 @@ static_assert(sizeof(uint64) == 8, "uint64 not 8 bytes");
 static_assert(sizeof(float32) == 4, "float32 not 4 bytes");
 static_assert(sizeof(float64) == 8, "float64 not 8 bytes");
 
-} // flame
+} // hoso

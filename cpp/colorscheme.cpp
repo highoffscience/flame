@@ -1,23 +1,20 @@
 /**
  * @author Forrest Jablonski
- *
- * AUTO-GENERATED
  */
 
 #include "colorscheme.h"
 
 /**
- * color is in [0..1] and maps to a pixel
+ * Clr is in [0..1] and maps to a pixel
  */
-auto fct::cs::transform(const float color) -> Pixel
+auto hoso::flame::ColorScheme::apply(float32 const Clr) const -> Pixel
 {
-   //                     r    g    b    a
-   constexpr Pixel Begin{0.0, 1.0, 0.0, 0.0};
-   constexpr Pixel End  {1.0, 0.0, 0.0, 0.0};
-   constexpr Pixel p;
+   //                     r     g     b     a
+   constexpr Pixel Begin(0.0f, 1.0f, 0.0f, 0.0f);
+   constexpr Pixel End  (1.0f, 0.0f, 0.0f, 0.0f);
    
-   constexpr Pixel Alpha = End - Begin;
-   constexpr Pixel Beta = Begin;
+   constexpr Pixel Alpha(End.mns(Begin));
+// constexpr Pixel Beta (Begin);
    
-   return alpha * color + beta;
+   return Alpha.tms(Clr).pls(Begin);
 }

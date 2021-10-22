@@ -9,8 +9,16 @@
 
 namespace hoso::flame
 {
-   namespace cs
-   {
-      Pixel transform(const float clr);
-   } // cs
+
+/**
+ * 
+ */
+class ColorScheme
+{
+public:
+   explicit ColorScheme(void);
+
+   Pixel apply(float32 const Clr) const;
+};
+
 } // hoso::flame

@@ -9,15 +9,21 @@
 
 namespace hoso::flame
 {
-   /**
-    * 
-    */
-   class Fitter
-   {
 
-   };
-      void init(const Point& minFitPnt, const Point& maxFitPnt);
-   
-      Point transform(const Point& pnt);
-   } // fit
+/**
+ * 
+ */
+struct Fitter
+{
+   explicit Fitter(void);
+   explicit Fitter(Point const & Min,
+                   Point const & Max);
+
+   Point apply(Point const & Pnt) const;
+
+private:
+   Point const Min;
+   Point const Max;
+};
+
 } // hoso::flame

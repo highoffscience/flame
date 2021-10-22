@@ -4,7 +4,7 @@
  * AUTO-GENERATED                                        
  */                                                      
                                                          
-#include "Fitter.h"                                    
+#include "fitter.h"                                    
                                                          
 static fct::Point s_scale;                               
 static fct::Point s_trans;                               
