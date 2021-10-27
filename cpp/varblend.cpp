@@ -29,6 +29,14 @@ auto hoso::flame::VarBlend::apply(uint32 const XForm_idx) const -> Point
 }
 
 /**
+ *
+ */
+auto hoso::flame::Point::apply(uint32 const Transform_idx) const -> Point
+{
+
+}
+
+/**
  * Transforms 'pnt'
  * 'index' was the most recently applied transformation
  */
