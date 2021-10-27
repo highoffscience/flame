@@ -16,23 +16,23 @@ struct Pixel
 {
    typedef float32 dim_t;
 
-   explicit constexpr inline Pixel(void);
-   explicit constexpr inline Pixel(dim_t const R_,
-                                   dim_t const G_,
-                                   dim_t const B_,
-                                   dim_t const A_);
+   explicit constexpr Pixel(void);
+   explicit constexpr Pixel(dim_t const R_,
+                            dim_t const G_,
+                            dim_t const B_,
+                            dim_t const A_);
 
-   constexpr inline auto isZero(void) const;
+   constexpr auto isZero(void) const;
 
-   constexpr inline auto pls(Pixel const & Rhs) const;
-   constexpr inline auto mns(Pixel const & Rhs) const;
-   constexpr inline auto tms(Pixel const & Rhs) const;
-   constexpr inline auto dvd(Pixel const & Rhs) const;
+   constexpr auto pls(Pixel const & Rhs) const;
+   constexpr auto mns(Pixel const & Rhs) const;
+   constexpr auto tms(Pixel const & Rhs) const;
+   constexpr auto dvd(Pixel const & Rhs) const;
 
-   constexpr inline auto pls(dim_t const Rhs) const;
-   constexpr inline auto mns(dim_t const Rhs) const;
-   constexpr inline auto tms(dim_t const Rhs) const;
-   constexpr inline auto dvd(dim_t const Rhs) const;
+   constexpr auto pls(dim_t const Rhs) const;
+   constexpr auto mns(dim_t const Rhs) const;
+   constexpr auto tms(dim_t const Rhs) const;
+   constexpr auto dvd(dim_t const Rhs) const;
 
    dim_t r; // red
    dim_t g; // green
@@ -43,7 +43,7 @@ struct Pixel
 /**
  * 
  */
-constexpr inline Pixel::Pixel(void)
+constexpr Pixel::Pixel(void)
    : Pixel(0.0, 0.0, 0.0, 0.0)
 {
 }
@@ -51,10 +51,10 @@ constexpr inline Pixel::Pixel(void)
 /**
  * 
  */
-constexpr inline Pixel::Pixel(dim_t const R_,
-                              dim_t const G_,
-                              dim_t const B_,
-                              dim_t const A_)
+constexpr Pixel::Pixel(dim_t const R_,
+                       dim_t const G_,
+                       dim_t const B_,
+                       dim_t const A_)
    : r {R_},
      g {G_},
      b {B_},
@@ -65,7 +65,7 @@ constexpr inline Pixel::Pixel(dim_t const R_,
 /**
  * 
  */
-constexpr inline auto Pixel::isZero(void) const
+constexpr auto Pixel::isZero(void) const
 {
    return r == static_cast<dim_t>(0.0) &&
           g == static_cast<dim_t>(0.0) &&
@@ -76,7 +76,7 @@ constexpr inline auto Pixel::isZero(void) const
 /**
  * 
  */
-constexpr inline auto Pixel::pls(Pixel const & Rhs) const
+constexpr auto Pixel::pls(Pixel const & Rhs) const
 {
    return Pixel(r + Rhs.r,
                 g + Rhs.g,
@@ -87,7 +87,7 @@ constexpr inline auto Pixel::pls(Pixel const & Rhs) const
 /**
  * 
  */
-constexpr inline auto Pixel::mns(Pixel const & Rhs) const
+constexpr auto Pixel::mns(Pixel const & Rhs) const
 {
    return Pixel(r - Rhs.r,
                 g - Rhs.g,
@@ -98,7 +98,7 @@ constexpr inline auto Pixel::mns(Pixel const & Rhs) const
 /**
  * 
  */
-constexpr inline auto Pixel::tms(Pixel const & Rhs) const
+constexpr auto Pixel::tms(Pixel const & Rhs) const
 {
    return Pixel(r * Rhs.r,
                 g * Rhs.g,
@@ -109,7 +109,7 @@ constexpr inline auto Pixel::tms(Pixel const & Rhs) const
 /**
  * 
  */
-constexpr inline auto Pixel::dvd(Pixel const & Rhs) const
+constexpr auto Pixel::dvd(Pixel const & Rhs) const
 {
    return Pixel(r / Rhs.r,
                 g / Rhs.g,
@@ -120,7 +120,7 @@ constexpr inline auto Pixel::dvd(Pixel const & Rhs) const
 /**
  * 
  */
-constexpr inline auto Pixel::pls(dim_t const Rhs) const
+constexpr auto Pixel::pls(dim_t const Rhs) const
 {
    return Pixel(r + Rhs,
                 g + Rhs,
@@ -131,7 +131,7 @@ constexpr inline auto Pixel::pls(dim_t const Rhs) const
 /**
  * 
  */
-constexpr inline auto Pixel::mns(dim_t const Rhs) const
+constexpr auto Pixel::mns(dim_t const Rhs) const
 {
    return Pixel(r - Rhs,
                 g - Rhs,
@@ -142,7 +142,7 @@ constexpr inline auto Pixel::mns(dim_t const Rhs) const
 /**
  * 
  */
-constexpr inline auto Pixel::tms(dim_t const Rhs) const
+constexpr auto Pixel::tms(dim_t const Rhs) const
 {
    return Pixel(r * Rhs,
                 g * Rhs,
@@ -153,7 +153,7 @@ constexpr inline auto Pixel::tms(dim_t const Rhs) const
 /**
  * 
  */
-constexpr inline auto Pixel::dvd(dim_t const Rhs) const
+constexpr auto Pixel::dvd(dim_t const Rhs) const
 {
    return Pixel(r / Rhs,
                 g / Rhs,

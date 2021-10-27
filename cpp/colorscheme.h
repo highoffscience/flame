@@ -16,7 +16,7 @@ namespace hoso::flame
 class ColorScheme
 {
 public:
-   explicit ColorScheme(void);
+   explicit ColorScheme(void) = default;
 
    Pixel apply(float32 const Clr) const;
 };

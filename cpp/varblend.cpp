@@ -1,21 +1,31 @@
 /**
  * @author Forrest Jablonski
- *
- * AUTO-GENERATED
  */
 
-#include <cmath>
-
-#include "VariationBlend.h"
-
-#include "Point.h"
+#include "varblend.h"
 
 /**
  *
  */
-inline fct::Point var_0(const fct::Point& pnt)
+hoso::flame::VarBlend::VarBlend(void)
+   : _vars {0}
 {
-   return {pnt.x, pnt.y};
+}
+
+/**
+ *
+ */
+//inline fct::Point var_0(const fct::Point& pnt)
+//{
+//   return {pnt.x, pnt.y};
+//}
+
+/**
+ *
+ */
+auto hoso::flame::VarBlend::apply(uint32 const XForm_idx) const -> Point
+{
+   return Point();
 }
 
 /**
@@ -30,5 +40,7 @@ void fct::vb::transform(const uint index, fct::Point& pnt)
       {1.0}
    };
    
+
+
    pnt = (var_0(pnt) * weights[index][0]);
 }
