@@ -7,48 +7,51 @@
 /**
  *
  */
-hoso::flame::VarBlend::VarBlend(void)
-   : _vars {0}
+constexpr auto hoso::flame::VarBlend::var0(Point const & P) const -> Point
 {
+   #include "var0.script"
 }
 
 /**
  *
  */
-//inline fct::Point var_0(const fct::Point& pnt)
-//{
-//   return {pnt.x, pnt.y};
-//}
-
-/**
- *
- */
-auto hoso::flame::VarBlend::apply(uint32 const XForm_idx) const -> Point
+constexpr auto hoso::flame::VarBlend::var1(Point const & P) const -> Point
 {
-   return Point();
+   #include "var1.script"
 }
 
 /**
  *
  */
-auto hoso::flame::Point::apply(uint32 const Transform_idx) const -> Point
+constexpr auto hoso::flame::VarBlend::var2(Point const & P) const -> Point
 {
-
+   #include "var2.script"
 }
 
 /**
- * Transforms 'pnt'
- * 'index' was the most recently applied transformation
+ *
  */
-void fct::vb::transform(const uint index, fct::Point& pnt)
+constexpr auto hoso::flame::VarBlend::var3(Point const & P) const -> Point
 {
-   constexpr double weights[3][1] = {
-      {1.0},
-      {1.0},
-      {1.0}
+   #include "var3.script"
+}
+
+/**
+ *
+ */
+auto hoso::flame::VarBlend::apply(uint32 const   XForm_idx,
+                                  Point  const & P) const -> Point
+{
+   constexpr uint32 NXForms = 3;
+   constexpr uint32 NVars   = 4;
+   constexpr Point::dim_t Weights[NXForms][NVars] = {
+      {1.0f, 0.0f, 0.0f, 0.0f},
+      {0.0f, 1.0f, 0.0f, 0.0f},
+      {0.0f, 0.0f, 1.0f, 0.0f},
    };
-   
 
-
-   pnt = (var_0(pnt) * weights[index][0]);
+   return (var0(P) * Weights[XForm_idx][0]) +
+          (var1(P) * Weights[XForm_idx][1]) +
+          (var2(P) * Weights[XForm_idx][2]) +
+          (var3(P) * Weights[XForm_idx][3]);
 }

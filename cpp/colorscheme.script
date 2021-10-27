@@ -8,7 +8,6 @@
 constexpr Pixel Begin(0.0f, 1.0f, 0.0f, 0.0f);
 constexpr Pixel End  (1.0f, 0.0f, 0.0f, 0.0f);
 
-constexpr Pixel Alpha(End.mns(Begin));
-// constexpr Pixel Beta (Begin);
+constexpr Pixel Alpha(End - Begin);
 
-return Alpha.tms(Clr).pls(Begin);
+return (Alpha * Clr) + Begin;

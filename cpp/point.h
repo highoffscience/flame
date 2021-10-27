@@ -23,15 +23,15 @@ struct Point
 
    constexpr auto isZero(void) const;
 
-   constexpr auto pls(Point const & Rhs) const;
-   constexpr auto mns(Point const & Rhs) const;
-   constexpr auto tms(Point const & Rhs) const;
-   constexpr auto dvd(Point const & Rhs) const;
+   constexpr auto operator + (Point const & Rhs) const;
+   constexpr auto operator - (Point const & Rhs) const;
+   constexpr auto operator * (Point const & Rhs) const;
+   constexpr auto operator / (Point const & Rhs) const;
 
-   constexpr auto pls(dim_t const Rhs) const;
-   constexpr auto mns(dim_t const Rhs) const;
-   constexpr auto tms(dim_t const Rhs) const;
-   constexpr auto dvd(dim_t const Rhs) const;
+   constexpr auto operator + (dim_t const Rhs) const;
+   constexpr auto operator - (dim_t const Rhs) const;
+   constexpr auto operator * (dim_t const Rhs) const;
+   constexpr auto operator / (dim_t const Rhs) const;
 
    dim_t x; // x-coordinate (real)
    dim_t y; // y-coordinate (imaginary)
@@ -67,7 +67,7 @@ constexpr auto Point::isZero(void) const
 /**
  * 
  */
-constexpr auto Point::pls(Point const & Rhs) const
+constexpr auto Point::operator + (Point const & Rhs) const
 {
    return Point(x + Rhs.x,
                 y + Rhs.y);
@@ -76,7 +76,7 @@ constexpr auto Point::pls(Point const & Rhs) const
 /**
  * 
  */
-constexpr auto Point::mns(Point const & Rhs) const
+constexpr auto Point::operator - (Point const & Rhs) const
 {
    return Point(x - Rhs.x,
                 y - Rhs.y);
@@ -85,7 +85,7 @@ constexpr auto Point::mns(Point const & Rhs) const
 /**
  * 
  */
-constexpr auto Point::tms(Point const & Rhs) const
+constexpr auto Point::operator * (Point const & Rhs) const
 {
    return Point(x * Rhs.x,
                 y * Rhs.y);
@@ -94,7 +94,7 @@ constexpr auto Point::tms(Point const & Rhs) const
 /**
  * 
  */
-constexpr auto Point::dvd(Point const & Rhs) const
+constexpr auto Point::operator / (Point const & Rhs) const
 {
    return Point(x / Rhs.x,
                 y / Rhs.y);
@@ -103,7 +103,7 @@ constexpr auto Point::dvd(Point const & Rhs) const
 /**
  * 
  */
-constexpr auto Point::pls(dim_t const Rhs) const
+constexpr auto Point::operator + (dim_t const Rhs) const
 {
    return Point(x + Rhs,
                 y + Rhs);
@@ -112,7 +112,7 @@ constexpr auto Point::pls(dim_t const Rhs) const
 /**
  * 
  */
-constexpr auto Point::mns(dim_t const Rhs) const
+constexpr auto Point::operator - (dim_t const Rhs) const
 {
    return Point(x - Rhs,
                 y - Rhs);
@@ -121,7 +121,7 @@ constexpr auto Point::mns(dim_t const Rhs) const
 /**
  * 
  */
-constexpr auto Point::tms(dim_t const Rhs) const
+constexpr auto Point::operator * (dim_t const Rhs) const
 {
    return Point(x * Rhs,
                 y * Rhs);
@@ -130,7 +130,7 @@ constexpr auto Point::tms(dim_t const Rhs) const
 /**
  * 
  */
-constexpr auto Point::dvd(dim_t const Rhs) const
+constexpr auto Point::operator / (dim_t const Rhs) const
 {
    return Point(x / Rhs,
                 y / Rhs);

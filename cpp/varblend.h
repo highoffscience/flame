@@ -16,23 +16,16 @@ namespace hoso::flame
 class VarBlend // Variation Blend
 {
 public:
-   explicit VarBlend(void);
+   explicit VarBlend(void) = default;
 
-   Point apply(uint32 const XForm_idx) const;
+   Point apply(uint32 const   XForm_idx,
+               Point  const & P) const;
 
 private:
-   /**
-    * 
-    */
-   struct Var
-   {
-      typedef Point(*fun_t)(Point const & P);
-
-      fun_t  const Fun; // in the sun
-      uint32 const Weight;
-   };
-
-   Var const * const _Vars_Ptr;
+   constexpr Point var0(Point const & P) const;
+   constexpr Point var1(Point const & P) const;
+   constexpr Point var2(Point const & P) const;
+   constexpr Point var3(Point const & P) const;
 };
 
 } // hoso::flame

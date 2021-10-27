@@ -25,14 +25,14 @@ hoso::flame::Random::Random(void)
  */
 auto hoso::flame::Random::gen(void) -> uint32
 {
-   uint64 const S1Shift = _s1 << 17ull;
+   uint64 const PrevS1 = _s1;
 
    _s2 ^= _s0;
    _s3 ^= _s1;
    _s1 ^= _s2;
    _s0 ^= _s3;
 
-   _s2 ^= S1Shift;
+   _s2 ^= (PrevS1 << 17ull);
 
    _s3 ^= (_s3 << 45ull) | (_s3 >> (64ull - 45ull));
 
@@ -51,7 +51,7 @@ void hoso::flame::Random::jump(uint32 const NJumps)
 
    auto const NJumpsBounded = NJumps % 128u;
 
-   for (uint32 i = 0; i < NJumps; ++i)
+   for (uint32 i = 0; i < NJumpsBounded; ++i)
    {
       uint64 s0 = 0;
       uint64 s1 = 1;
