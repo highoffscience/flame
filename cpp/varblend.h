@@ -18,7 +18,7 @@ class VarBlend // Variation Blend
 public:
    explicit VarBlend(void) = default;
 
-   Point apply(uint32 const   XForm_idx,
+   Point apply(uint32 const   Xform_idx,
                Point  const & P) const;
 
 private:

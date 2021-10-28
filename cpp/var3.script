@@ -4,4 +4,4 @@
 
 // Point -> Point
 
-return P;
+return Point();

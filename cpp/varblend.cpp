@@ -39,19 +39,19 @@ constexpr auto hoso::flame::VarBlend::var3(Point const & P) const -> Point
 /**
  *
  */
-auto hoso::flame::VarBlend::apply(uint32 const   XForm_idx,
+auto hoso::flame::VarBlend::apply(uint32 const   Xform_idx,
                                   Point  const & P) const -> Point
 {
-   constexpr uint32 NXForms = 3;
+   constexpr uint32 NXforms = 3;
    constexpr uint32 NVars   = 4;
-   constexpr Point::dim_t Weights[NXForms][NVars] = {
+   constexpr Point::dim_t Weights[NXforms][NVars] = {
       {1.0f, 0.0f, 0.0f, 0.0f},
       {0.0f, 1.0f, 0.0f, 0.0f},
       {0.0f, 0.0f, 1.0f, 0.0f},
    };
 
-   return (var0(P) * Weights[XForm_idx][0]) +
-          (var1(P) * Weights[XForm_idx][1]) +
-          (var2(P) * Weights[XForm_idx][2]) +
-          (var3(P) * Weights[XForm_idx][3]);
+   return (var0(P) * Weights[Xform_idx][0]) +
+          (var1(P) * Weights[Xform_idx][1]) +
+          (var2(P) * Weights[Xform_idx][2]) +
+          (var3(P) * Weights[Xform_idx][3]);
 }

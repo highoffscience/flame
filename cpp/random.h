@@ -17,7 +17,7 @@ class Random
 public:
    explicit Random(void);
 
-   uint32 gen(void);
+   float32 gen(void);
 
    void jump(uint32 const NJumps);
 
