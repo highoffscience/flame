@@ -2,36 +2,22 @@
  * @author Forrest Jablonski
  */
 
-#include "random.h"
 #include "strangeattractor.h"
-
-struct IASMatrix
-{
-   const double a, b, c, d, e, f;
-   const double clr;
-   const double prob;
-};
-
-struct IFSMatrix
-{
-   const double clr;
-   const double prob;
-};
-
 
 /**
  *
  */
-uint fct::sa::preTransform(Point& pnt, double& clr)
+auto hoso::flame::StrangeAttractor::preTransform(Point        & pnt_ref,
+                                                 Pixel::dim_t & clr_ref) const -> uint32
 {
-   constexpr IFSMatrix mat_0 = {0.0, 1.0/3.0};
-   constexpr IFSMatrix mat_1 = {0.5, 1.0/3.0};
-   constexpr IFSMatrix mat_2 = {1.0, 1.0/3.0};
+   constexpr IFSMatrix Mat0{0.0, 1.0/3.0};
+   constexpr IFSMatrix Mat1{0.5, 1.0/3.0};
+   constexpr IFSMatrix Mat2{1.0, 1.0/3.0};
 
-   constexpr Point p_1 = Point(1.0, 0.0);
-   constexpr Point p_2 = Point(2.0, 0.0);
-   constexpr Point p_3 = Point(3.0, 0.0);
-   constexpr Point p_s = Point(std::sqrt(3.0), 0.0);
+   constexpr Point P1(1.0, 0.0);
+   constexpr Point P2(2.0, 0.0);
+   constexpr Point P3(3.0, 0.0);
+   constexpr Point Ps(std::sqrt(3.0), 0.0);
 
    constexpr Point p_1_pls_s  = p_1.cPls(p_s);
    constexpr Point p_2nd_term = p_1_pls_s.cDvd(p_2.cPls(p_s));
@@ -70,6 +56,7 @@ uint fct::sa::preTransform(Point& pnt, double& clr)
 /**
  *
  */
-void fct::sa::postTransform(Point& pnt, double& clr)
+void hoso::flame::StrangeAttractor::postTransform(Point        & pnt_ref,
+                                                  Pixel::dim_t & clr_ref) const
 {
 }

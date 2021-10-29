@@ -9,7 +9,7 @@
  * $ dd if=/dev/urandom of=./random.bytes bs=4 count=4
  * $ hexdump random.bytes
  */
-hoso::flame::Random::Random(void)
+hoso::Random::Random(void)
    : _s0 {0x1723'73c3'5cc2'77fbull},
      _s1 {0x8f51'e36d'13fa'4f21ull},
      _s2 {0x0c60'dc05'b8f9'266aull},
@@ -19,14 +19,15 @@ hoso::flame::Random::Random(void)
 
 /**
  * <https://prng.di.unimi.it/>
- * 
+ *
  * xoshiro256+
  * Skips the first value
- * 
- * generates uniform real values in the range [0..1]
+ *
+ * generates uniform real values in the range [0..1)
  * resolution is 2^23 (~8 million)
  */
-auto hoso::flame::Random::gen(void) -> float32
+template <>
+auto hoso::Random::gen(void) -> float32
 {
    union
    {
@@ -45,16 +46,50 @@ auto hoso::flame::Random::gen(void) -> float32
    _s3 ^= (_s3 << 45ull) | (_s3 >> (64ull - 45ull)); // rotate left
 
    uf.u32  = (_s0 + _s3) >> (64ull - 23ull); // move highest bits into mantissa
-   uf.u32 |= 0x7fu << 23u; // bias exponent
+   uf.u32 |= 127u << 23u; // bias exponent
    uf.f32 -= 1.0f;
 
    return uf.f32;
 }
 
 /**
+ * <https://prng.di.unimi.it/>
+ *
+ * xoshiro256+
+ * Skips the first value
+ *
+ * generates uniform real values in the range [0..1)
+ * resolution is 2^52 (~4 quadrillion)
+ */
+template <>
+auto hoso::Random::gen(void) -> float64
+{
+   union
+   {
+      uint64  u64;
+      float64 f64;
+   } uf{.u64 = _s1};
+
+   _s2 ^= _s0;
+   _s3 ^= _s1;
+   _s1 ^= _s2;
+   _s0 ^= _s3;
+
+   _s2 ^= (uf.u64 << 17ull);
+
+   _s3 ^= (_s3 << 45ull) | (_s3 >> (64ull - 45ull)); // rotate left
+
+   uf.u64  = (_s0 + _s3) >> (64ull - 52ull); // move highest bits into mantissa
+   uf.u64 |= 1023ull << 52ull; // bias exponent
+   uf.f64 -= 1.0;
+
+   return uf.f64;
+}
+
+/**
  * A jump is equivalent to 2^128 calls to gen()
  */
-void hoso::flame::Random::jump(uint32 const NJumps)
+void hoso::Random::jump(uint32 const NJumps)
 {
    constexpr uint64 JumpTable[] = {
       0x180ec6d33cfd0abaull,
@@ -97,24 +132,25 @@ void hoso::flame::Random::jump(uint32 const NJumps)
 }
 
 /**
- * 
+ *
  */
-#if defined(HOSO_FLAME_DRIVE_RANDOM)
+#if defined(DRIVE_HOSO_RANDOM)
 #include <cstdio>
 int main(void)
 {
-   using hoso::flame::Random;
+   using hoso::Random;
    using hoso::uint32;
    using hoso::float32;
    using hoso::float64;
-   float32 min = 1.0f;
-   float32 max = 0.0f;
+   typedef float32 dim_t;
+   auto min = dim_t(1);
+   auto max = dim_t(0);
    float64 ave = 0.0;
    uint32 const N = 1'000'000'000u;
    Random rand;
    for (uint32 i = 0; i < N; ++i)
    {
-      float32 const R = rand.gen();
+      float32 const R = rand.gen<dim_t>();
       if (R < min)
       {
          min = R;
@@ -126,7 +162,7 @@ int main(void)
       ave += R;
    }
    ave /= N;
-   std::printf("%f -- %f -- %lf\n", min, max, ave);
+   std::printf("%.15lf -- %.15lf -- %.15lf\n", min, max, ave);
    return 0;
 }
-#endif // HOSO_FLAME_DRIVE_RANDOM
+#endif // DRIVE_HOSO_RANDOM
