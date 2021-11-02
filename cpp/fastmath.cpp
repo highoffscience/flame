@@ -4,24 +4,48 @@
 
 #include "fastmath.h"
 
-#include <cmath>
+#include <cstdio>
 
 /**
- * TODO wrap X_rad, add check for negation
+ * Bhaskara I's approximation
+ * Discovered in the 7th century!
  */
 auto hoso::FastMath::sin(float32 x_rad) -> float32
 {
-   x_rad = std::fmod(x_rad, FastMath::Pi);
-   if (x_rad < 0.0f)
-   {
-      auto const T = 4.0f * -x_rad * (Pi + x_rad);
-      return -(4.0f * T) / ((5.0f * Pi * Pi) - T);
-   }
-   else
-   {
-      auto const T = 4.0f * x_rad * (Pi - x_rad);
-      return (4.0f * T) / ((5.0f * Pi * Pi) - T);
-   }
+   // wrap into interval [-Tau..Tau]
+   x_rad = fmod(x_rad, Tau);
+
+   // map into interval [-Pi..Pi]
+        if (x_rad < -Pi) { x_rad += Tau; }
+   else if (x_rad > +Pi) { x_rad -= Tau; }
+
+   // method only works in interval [0..Pi]
+   auto b = fabs(x_rad);
+   b = 4.0f * b * (Pi - b);
+   b = (4.0f * b) / ((5.0f * Pi * Pi) - b);
+
+   return (x_rad < 0.0f) ? -b : b;
+}
+
+/**
+ * TODO doesn't work
+ */
+auto hoso::FastMath::cos(float32 x_rad) -> float32
+{
+   // wrap into interval [-Tau..Tau]
+   x_rad = fmod(x_rad, Tau);
+
+   // map into interval [-Pi..Pi]
+        if (x_rad < -Pi) { x_rad += Tau; }
+   else if (x_rad > +Pi) { x_rad -= Tau; }
+
+   // method only works in interval [-Pi/2..Pi/2]
+   constexpr auto Pi2     = Pi * Pi;
+   constexpr auto Pi_by_2 = 0.5f * Pi;
+   auto b = fabs(x_rad) - Pi_by_2;
+   b = (Pi2 - (4.0f * b * b)) / (Pi2 + (b * b));
+
+   return (x_rad < 0.0f) ? -b : b;
 }
 
 /**
@@ -34,12 +58,22 @@ int main(void)
 {
    using hoso::FastMath;
    using hoso::float32;
-   // this is the only interval the approx is good for
-   float32 const Range = 2.0f*FastMath::Pi;
-   for (auto x = -Range; x <= Range; x += 0.1f)
+   auto const Begin = -1.0f * FastMath::Pi;
+   auto const End   = 0;
+   auto const Delta = 1.0f;
+   auto max = 0.0f;
+   for (auto x = Begin; x < End + Delta; x += Delta)
    {
-      std::printf("%.7f -- %.7f\n", std::sin(x), FastMath::sin(x));
+      auto const Me = FastMath::cos(x);
+      auto const Them = std::cos(x);
+      auto const Diff = FastMath::fabs(Me - Them);
+      if (Diff > max)
+      {
+         max = Diff;
+      }
+      std::printf("%+.7f <> %+.7f <> %.7f\n", Them, Me, Diff);
    }
+   std::printf("max diff = %+.7f\n", max);
    return 0;
 }
 #endif // DRIVE_HOSO_FASTMATH

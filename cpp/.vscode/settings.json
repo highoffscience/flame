@@ -43,6 +43,7 @@
       "stop_token": "cpp",
       "thread": "cpp",
       "typeinfo": "cpp",
-      "cwchar": "cpp"
+      "cwchar": "cpp",
+      "*.script": "cpp"
    }
 }
