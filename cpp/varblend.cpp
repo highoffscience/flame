@@ -45,9 +45,8 @@ auto hoso::flame::VarBlend::apply(uint32 const   Transform_idx,
    constexpr uint32 NXforms = 3;
    constexpr uint32 NVars   = 4;
    constexpr Point::dim_t Weights[NXforms][NVars] = {
-      {1.0, 0.0, 0.0, 0.0},
-      {0.0, 1.0, 0.0, 0.0},
-      {0.0, 0.0, 1.0, 0.0},
+      {1.0f, 0.0f, 0.0f, 0.0f},
+      {1.0f, 0.0f, 0.0f, 0.0f},
    };
 
    return (var0(P) * Weights[Transform_idx][0]) +

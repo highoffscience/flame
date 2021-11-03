@@ -32,20 +32,22 @@ auto hoso::FastMath::sin(float32 x_rad) -> float32
  */
 auto hoso::FastMath::cos(float32 x_rad) -> float32
 {
-   // wrap into interval [-Tau..Tau]
-   x_rad = fmod(x_rad, Tau);
+   return 0.0f;
 
-   // map into interval [-Pi..Pi]
-        if (x_rad < -Pi) { x_rad += Tau; }
-   else if (x_rad > +Pi) { x_rad -= Tau; }
-
-   // method only works in interval [-Pi/2..Pi/2]
-   constexpr auto Pi2     = Pi * Pi;
-   constexpr auto Pi_by_2 = 0.5f * Pi;
-   auto b = fabs(x_rad) - Pi_by_2;
-   b = (Pi2 - (4.0f * b * b)) / (Pi2 + (b * b));
-
-   return (x_rad < 0.0f) ? -b : b;
+   // // wrap into interval [-Tau..Tau]
+   // x_rad = fmod(x_rad, Tau);
+// 
+   // // map into interval [-Pi..Pi]
+   //      if (x_rad < -Pi) { x_rad += Tau; }
+   // else if (x_rad > +Pi) { x_rad -= Tau; }
+// 
+   // // method only works in interval [-Pi/2..Pi/2]
+   // constexpr auto Pi2     = Pi * Pi;
+   // constexpr auto Pi_by_2 = 0.5f * Pi;
+   // auto b = fabs(x_rad) - Pi_by_2;
+   // b = (Pi2 - (4.0f * b * b)) / (Pi2 + (b * b));
+// 
+   // return (x_rad < 0.0f) ? -b : b;
 }
 
 /**

@@ -7,49 +7,33 @@
 /**
  *
  */
-auto hoso::flame::StrangeAttractor::preTransform(Point        & pnt_ref,
-                                                 Pixel::dim_t & clr_ref) const -> uint32
+hoso::flame::StrangeAttractor::StrangeAttractor(void)
+   : _rand {}
 {
-   constexpr IFSMatrix Mat0{0.0, 1.0/3.0};
-   constexpr IFSMatrix Mat1{0.5, 1.0/3.0};
-   constexpr IFSMatrix Mat2{1.0, 1.0/3.0};
+}
 
-   constexpr Point P1(1.0, 0.0);
-   constexpr Point P2(2.0, 0.0);
-   constexpr Point P3(3.0, 0.0);
-   constexpr Point Ps(std::sqrt(3.0), 0.0);
+/**
+ *
+ */
+auto hoso::flame::StrangeAttractor::preTransform(Point        & pnt_ref,
+                                                 Pixel::dim_t & clr_ref) -> uint32
+{
+   constexpr IASMatrix Mat0{ 0.5f, -0.5f, 0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 0.5f};
+   constexpr IASMatrix Mat1{-0.5f, -0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 0.5f};
 
-   constexpr Point p_1_pls_s  = p_1.cPls(p_s);
-   constexpr Point p_2nd_term = p_1_pls_s.cDvd(p_2.cPls(p_s));
-
-   constexpr Point p_0p5  = Point( 0.5, 0.0);
-   constexpr Point p_n1   = Point(-1.0, 0.0);
-   constexpr Point p_si   = p_3.rev();
-   constexpr Point p_2num = p_0p5.cTms(p_n1.cPls(p_si));
-   constexpr Point p_3num = p_0p5.cTms(p_n1.cMns(p_si));
-
-   // TODO guarantee that probabilities add up to unity
-   // TODO guarantee that probabilities decrease with subsequent matrices
-
-   const double r = fctRand.genUniformReal();
-
-   if (r < mat_0.prob)
+   if (_rand.gen<float32>() < Mat0.Prob)
    {
-      pnt = (p_3.cDvd(p_1_pls_s.cMns(pnt))).cMns(p_2nd_term);
-      clr = 0.5 * (clr + mat_0.clr);
-      return 0U;
-   }
-   else if (r < mat_0.prob + mat_1.prob)
-   {
-      pnt = p_2num.cDvd((p_3.cDvd(p_1_pls_s.cMns(pnt))).cMns(p_2nd_term));
-      clr = 0.5 * (clr + mat_1.clr);
-      return 1U;
+      pnt_ref.x = Mat0.A * pnt_ref.x + Mat0.B * pnt_ref.y + Mat0.E;
+      pnt_ref.y = Mat0.C * pnt_ref.x + Mat0.D * pnt_ref.y + Mat0.F;
+      clr_ref   = 0.5f * (clr_ref + Mat0.Clr);
+      return 0;
    }
    else
    {
-      pnt = p_3num.cDvd((p_3.cDvd(p_1_pls_s.cMns(pnt))).cMns(p_2nd_term));
-      clr = 0.5 * (clr + mat_2.clr);
-      return 2U;
+      pnt_ref.x = Mat1.A * pnt_ref.x + Mat1.B * pnt_ref.y + Mat1.E;
+      pnt_ref.y = Mat1.C * pnt_ref.x + Mat1.D * pnt_ref.y + Mat1.F;
+      clr_ref   = 0.5f * (clr_ref + Mat1.Clr);
+      return 1;
    }
 }
 
@@ -57,6 +41,6 @@ auto hoso::flame::StrangeAttractor::preTransform(Point        & pnt_ref,
  *
  */
 void hoso::flame::StrangeAttractor::postTransform(Point        & pnt_ref,
-                                                  Pixel::dim_t & clr_ref) const
+                                                  Pixel::dim_t & clr_ref)
 {
 }

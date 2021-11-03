@@ -1,101 +1,95 @@
 /**
  * @author Forrest Jablonski
- *
- * AUTO-GENERATED
  */
+
+#include "colorscheme.h"
+#include "pixel.h"
+#include "point.h"
+#include "random.h"
+#include "render.h"
+#include "strangeattractor.h"
+#include "varblend.h"
 
 #include <cmath>
 #include <iostream>
 #include <limits>
 
-#include "Renderer.h"
-
-#include "ColorScheme.h"
-#include "Fitter.h"
-#include "Pixel.h"
-#include "Point.h"
-#include "Random.h"
-#include "StrangeAttractor.h"
-#include "VariationBlend.h"
-
 /**
  *
  */
-void fct::rd::render(Pixel* const* const histo)
+void hoso::flame::Render::populate(Pixel * const * const histo_Ptr_Ptr) const
 {
-   constexpr uint width  = uint(1920);
-   constexpr uint height = uint(1080);
+   constexpr uint32 Width  = 960;
+   constexpr uint32 Height = 540;
 
    Random rand;
 
-   Point pnt = Point((2.0 * rand.genUniformReal()) - 1.0,  // x
-                     (2.0 * rand.genUniformReal()) - 1.0); // y
-   double clr = rand.genUniformReal();
+   Point pnt((2.0f * rand.gen<float32>()) - 1.0f,  // x
+             (2.0f * rand.gen<float32>()) - 1.0f); // y
+   float32 clr = rand.gen<float32>();
+
+   StrangeAttractor sa;
+   VarBlend vb;
 
    for (uint i = 0U; i < 100U; ++i)
    {
-      const uint index = sa::preTransform(pnt, clr);
-      vb::transform(index, pnt);
-      sa::postTransform(pnt, clr);
+      auto const Transform_idx = sa.preTransform(pnt, clr);
+      pnt = vb.apply(Transform_idx, pnt);
+      sa.postTransform(pnt, clr);
    }
 
-   { // create fitter
-      Point minFitPnt = Point(std::numeric_limits<double>::max(),
-                              std::numeric_limits<double>::max());
-      Point maxFitPnt = Point(std::numeric_limits<double>::lowest(),
-                              std::numeric_limits<double>::lowest());
+   // { // create fitter
+   //    Point minFitPnt = Point(std::numeric_limits<double>::max(),
+   //                            std::numeric_limits<double>::max());
+   //    Point maxFitPnt = Point(std::numeric_limits<double>::lowest(),
+   //                            std::numeric_limits<double>::lowest());
+// 
+   //    for (uint i = 0U; i < 10000U; ++i)
+   //    {
+   //       const uint index = sa::preTransform(pnt, clr);
+   //       vb::transform(index, pnt);
+   //       sa::postTransform(pnt, clr);
+// 
+   //       if      (pnt.x < minFitPnt.x) { minFitPnt.x = pnt.x; }
+   //       else if (pnt.x > maxFitPnt.x) { maxFitPnt.x = pnt.x; }
+// 
+   //       if      (pnt.y < minFitPnt.y) { minFitPnt.y = pnt.y; }
+   //       else if (pnt.y > maxFitPnt.y) { maxFitPnt.y = pnt.y; }
+   //    }
+// 
+   //    fit::init(minFitPnt, maxFitPnt);
+   // } // end create fitter
 
-      for (uint i = 0U; i < 10000U; ++i)
-      {
-         const uint index = sa::preTransform(pnt, clr);
-         vb::transform(index, pnt);
-         sa::postTransform(pnt, clr);
+   ColorScheme cs;
 
-         if      (pnt.x < minFitPnt.x) { minFitPnt.x = pnt.x; }
-         else if (pnt.x > maxFitPnt.x) { maxFitPnt.x = pnt.x; }
-
-         if      (pnt.y < minFitPnt.y) { minFitPnt.y = pnt.y; }
-         else if (pnt.y > maxFitPnt.y) { maxFitPnt.y = pnt.y; }
-      }
-
-      fit::init(minFitPnt, maxFitPnt);
-   } // end create fitter
-
-   constexpr ulong niters = ulong(1000000);
-   constexpr ulong step = niters / 100UL;
-   for (ulong i = 0; i < niters; ++i)
+   constexpr uint64 NIters = 1'000'000ull;
+   for (uint64 i = 0; i < NIters; ++i)
    {
-      if (i % step == 0)
+      auto const Transform_idx = sa.preTransform(pnt, clr);
+      pnt = vb.apply(Transform_idx, pnt);
+      sa.postTransform(pnt, clr);
+
+      // const Point fittedPnt = fit::transform(pnt);
+
+      auto const X =          static_cast<int32>(10.0f * pnt.x + Width/2);
+      auto const Y = Height - static_cast<int32>(10.0f * pnt.y + Height/2);
+
+      if (X >= 0 && X < Width &&
+          Y >= 0 && Y < Height)
       {
-         std::cout << "\r" << (i / step) << "% Rendered" << std::flush;
-      }
-
-      const uint index = sa::preTransform(pnt, clr);
-      vb::transform(index, pnt);
-      sa::postTransform(pnt, clr);
-
-      const Point fittedPnt = fit::transform(pnt);
-
-      const int x =               (int)fittedPnt.x;
-      const int y = (int)height - (int)fittedPnt.y;
-
-      if (x >= 0 && x < (int)width &&
-          y >= 0 && y < (int)height)
-      {
-         histo[y][x]   += cs::transform(clr);
-         histo[y][x].a += 1.0F;
+         histo_Ptr_Ptr[Y][X]   += cs.apply(clr);
+         histo_Ptr_Ptr[Y][X].a += 1.0f;
       }
    }
-   std::cout << "\r100% Rendered\n" << std::flush;
 
-   float alphaMax = 0.0F;
-   for (uint i = 0; i < height; ++i)
+   float alphaMax = 0.0f;
+   for (uint i = 0; i < Height; ++i)
    {
-      for (uint j = 0; j < width; ++j)
+      for (uint j = 0; j < Width; ++j)
       {
-         Pixel& pxl = histo[i][j];
+         Pixel& pxl = histo_Ptr_Ptr[i][j];
 
-         if (pxl.a > 0.0F)
+         if (pxl.a > 0.0f)
          {
             pxl *= std::log1p(pxl.a) / pxl.a;
 
@@ -107,17 +101,17 @@ void fct::rd::render(Pixel* const* const histo)
       }
    }
 
-   constexpr float invGamma = float(1.0 / (4.0)); // 2.2F is baseline
-   for (uint i = 0; i < height; ++i)
+   // constexpr float invGamma = float(1.0 / (4.0)); // 2.2F is baseline
+   for (uint i = 0; i < Height; ++i)
    {
-      for (uint j = 0; j < width; ++j)
+      for (uint j = 0; j < Width; ++j)
       {
-         Pixel& pxl = histo[i][j];
+         Pixel& pxl = histo_Ptr_Ptr[i][j];
 
          if (pxl.a > 0.0F)
          {
             pxl /= alphaMax;
-            pxl ^= invGamma;
+            //pxl ^= invGamma;
          }
       }
    }

@@ -4,14 +4,18 @@
 
 #pragma once
 
-#include "Standard.h"
+#include "hoso.h"
 
-namespace fct
+namespace hoso::flame
 {
-   class Pixel;
-
-   namespace rd
+   /**
+    * 
+    */
+   class Render
    {
-      void render(Pixel* const* const histo);
-   } // rd
-} // fct
+   public:
+      Render(void) = default;
+
+      void populate(class Pixel * const * const histo_Ptr_Ptr) const;
+   };
+} // hoso::flame
