@@ -71,8 +71,8 @@ void hoso::flame::Render::populate(Pixel * const * const histo_Ptr_Ptr) const
 
       // const Point fittedPnt = fit::transform(pnt);
 
-      auto const X =          static_cast<int32>(80.0 * pnt.x + Width/2);
-      auto const Y = Height - static_cast<int32>(80.0 * pnt.y + Height/2);
+      auto const X =          static_cast<int32>(500.0 * pnt.x + Width/2);
+      auto const Y = Height - static_cast<int32>(500.0 * pnt.y + Height/2);
 
       if (X >= 0 && X < Width &&
           Y >= 0 && Y < Height)
