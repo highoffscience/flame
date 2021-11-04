@@ -1,58 +1,57 @@
-/**                                                                   
- * @author Forrest Jablonski                                          
- *                                                                    
- * AUTO-GENERATED                                                     
- */                                                                   
-                                                                      
-#include <png++/png.hpp>                                              
-                                                                      
-#include "Standard.h"                                               
-                                                                      
-#include "Pixel.h"                                                  
-#include "Renderer.h"                                               
-                                                                      
-/**                                                                   
- *                                                                    
- */                                                                   
-int main(const int argc, const char* const* const argv)               
-{                                                                     
-   using fct::uint;                                                   
-                                                                      
-   constexpr uint width  = uint(1920);               
-   constexpr uint height = uint(1080);               
-                                                                      
-   fct::Pixel** histo = new fct::Pixel*[height];                      
-   for (uint i = 0U; i < height; ++i)                                 
-   {                                                                  
-      histo[i] = new fct::Pixel[width];                               
-   }                                                                  
-                                                                      
-   fct::rd::render(histo);                                            
-                                                                      
-   png::image<png::rgba_pixel> image(width, height);                  
-                                                                      
-   for (uint i = 0U; i < height; ++i)                                 
-   {                                                                  
-      for (uint j = 0U; j < width; ++j)                               
-      {                                                               
-         const fct::Pixel& pxl = histo[i][j];                         
-                                                                      
-         const fct::ubyte r = (fct::ubyte) ((pxl.r * 255.0F) + 0.5F); 
-         const fct::ubyte g = (fct::ubyte) ((pxl.g * 255.0F) + 0.5F); 
-         const fct::ubyte b = (fct::ubyte) ((pxl.b * 255.0F) + 0.5F); 
-         const fct::ubyte a = (fct::ubyte) ((pxl.a * 255.0F) + 0.5F); 
-                                                                      
-         image[i][j] = png::rgba_pixel(r, g, b, a);                   
-      }                                                               
-   }                                                                  
-                                                                      
+/**
+ * @author Forrest Jablonski
+ */
+
+#include "hoso.h"
+#include "pixel.h"
+#include "render.h"
+
+#include <png++/png.hpp>
+
+/**
+ *
+ */
+int main(const int argc, const char* const* const argv)
+{
+   using namespace hoso;
+   using namespace flame;
+
+   constexpr uint32 width  = 960;
+   constexpr uint32 height = 540;
+
+   Pixel** histo = new Pixel*[height];
+   for (uint i = 0U; i < height; ++i)
+   {
+      histo[i] = new Pixel[width];
+   }
+
+   Render rend;
+   rend.populate(histo);
+
+   png::image<png::rgba_pixel> image(width, height);
+
+   for (uint i = 0U; i < height; ++i)
+   {
+      for (uint j = 0U; j < width; ++j)
+      {
+         const Pixel& pxl = histo[i][j];
+
+         const uint8 r = (uint8) ((pxl.r * 255.0F) + 0.5F);
+         const uint8 g = (uint8) ((pxl.g * 255.0F) + 0.5F);
+         const uint8 b = (uint8) ((pxl.b * 255.0F) + 0.5F);
+         const uint8 a = (uint8) ((pxl.a * 255.0F) + 0.5F);
+
+         image[i][j] = png::rgba_pixel(r, g, b, a);
+      }
+   }
+
    image.write("./pics/fractal-1.0.png");
-                                                                      
-   for (uint i = 0U; i < height; ++i)                                 
-   {                                                                  
-      delete[] histo[i];                                              
-   }                                                                  
-   delete[] histo;                                                    
-                                                                      
-   return 0;                                                          
-}                                                                     
+
+   for (uint i = 0U; i < height; ++i)
+   {
+      delete[] histo[i];
+   }
+   delete[] histo;
+
+   return 0;
+}

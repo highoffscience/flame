@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <cmath>
+
 #include "hoso.h"
 
 namespace hoso::flame
@@ -14,7 +16,7 @@ namespace hoso::flame
  */
 struct Pixel
 {
-   typedef float32 dim_t;
+   typedef float64 dim_t;
 
    explicit constexpr Pixel(void);
    explicit constexpr Pixel(dim_t const R_,
@@ -34,6 +36,17 @@ struct Pixel
    constexpr auto operator * (dim_t const Rhs) const;
    constexpr auto operator / (dim_t const Rhs) const;
 
+   constexpr void operator += (Pixel const & Rhs);
+   constexpr void operator -= (Pixel const & Rhs);
+   constexpr void operator *= (Pixel const & Rhs);
+   constexpr void operator /= (Pixel const & Rhs);
+
+   constexpr void operator += (dim_t const Rhs);
+   constexpr void operator -= (dim_t const Rhs);
+   constexpr void operator *= (dim_t const Rhs);
+   constexpr void operator /= (dim_t const Rhs);
+   constexpr void operator ^= (dim_t const Rhs);
+
    dim_t r; // red
    dim_t g; // green
    dim_t b; // blue
@@ -41,7 +54,7 @@ struct Pixel
 };
 
 /**
- * 
+ *
  */
 constexpr Pixel::Pixel(void)
    : Pixel(0.0, 0.0, 0.0, 0.0)
@@ -49,7 +62,7 @@ constexpr Pixel::Pixel(void)
 }
 
 /**
- * 
+ *
  */
 constexpr Pixel::Pixel(dim_t const R_,
                        dim_t const G_,
@@ -63,7 +76,7 @@ constexpr Pixel::Pixel(dim_t const R_,
 }
 
 /**
- * 
+ *
  */
 constexpr auto Pixel::isZero(void) const
 {
@@ -74,7 +87,7 @@ constexpr auto Pixel::isZero(void) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Pixel::operator + (Pixel const & Rhs) const
 {
@@ -85,7 +98,7 @@ constexpr auto Pixel::operator + (Pixel const & Rhs) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Pixel::operator - (Pixel const & Rhs) const
 {
@@ -96,7 +109,7 @@ constexpr auto Pixel::operator - (Pixel const & Rhs) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Pixel::operator * (Pixel const & Rhs) const
 {
@@ -107,7 +120,7 @@ constexpr auto Pixel::operator * (Pixel const & Rhs) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Pixel::operator / (Pixel const & Rhs) const
 {
@@ -118,7 +131,7 @@ constexpr auto Pixel::operator / (Pixel const & Rhs) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Pixel::operator + (dim_t const Rhs) const
 {
@@ -129,7 +142,7 @@ constexpr auto Pixel::operator + (dim_t const Rhs) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Pixel::operator - (dim_t const Rhs) const
 {
@@ -140,7 +153,7 @@ constexpr auto Pixel::operator - (dim_t const Rhs) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Pixel::operator * (dim_t const Rhs) const
 {
@@ -151,7 +164,7 @@ constexpr auto Pixel::operator * (dim_t const Rhs) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Pixel::operator / (dim_t const Rhs) const
 {
@@ -159,6 +172,82 @@ constexpr auto Pixel::operator / (dim_t const Rhs) const
                 g / Rhs,
                 b / Rhs,
                 a / Rhs);
+}
+
+/**
+ *
+ */
+constexpr void Pixel::operator += (Pixel const & Rhs)
+{
+   *this = *this + Rhs;
+}
+
+/**
+ *
+ */
+constexpr void Pixel::operator -= (Pixel const & Rhs)
+{
+   *this = *this - Rhs;
+}
+
+/**
+ *
+ */
+constexpr void Pixel::operator *= (Pixel const & Rhs)
+{
+   *this = *this * Rhs;
+}
+
+/**
+ *
+ */
+constexpr void Pixel::operator /= (Pixel const & Rhs)
+{
+   *this = *this / Rhs;
+}
+
+/**
+ *
+ */
+constexpr void Pixel::operator += (dim_t const Rhs)
+{
+   *this = *this + Rhs;
+}
+
+/**
+ *
+ */
+constexpr void Pixel::operator -= (dim_t const Rhs)
+{
+   *this = *this - Rhs;
+}
+
+/**
+ *
+ */
+constexpr void Pixel::operator *= (dim_t const Rhs)
+{
+   *this = *this * Rhs;
+}
+
+/**
+ *
+ */
+constexpr void Pixel::operator /= (dim_t const Rhs)
+{
+   *this = *this / Rhs;
+}
+
+/**
+ *
+ */
+// #include <cmath>
+constexpr void Pixel::operator ^= (dim_t const Rhs)
+{
+   r = std::pow(r, Rhs);
+   g = std::pow(g, Rhs);
+   b = std::pow(b, Rhs);
+   //a = std::pow(r, Rhs);
 }
 
 } // hoso::flame

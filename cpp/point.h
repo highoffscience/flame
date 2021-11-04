@@ -15,7 +15,7 @@ namespace hoso::flame
  */
 struct Point
 {
-   typedef float32 dim_t;
+   typedef float64 dim_t;
 
    explicit constexpr Point(void);
    explicit constexpr Point(dim_t const X_,
@@ -32,6 +32,16 @@ struct Point
    constexpr auto operator - (dim_t const Rhs) const;
    constexpr auto operator * (dim_t const Rhs) const;
    constexpr auto operator / (dim_t const Rhs) const;
+
+   constexpr void operator += (Point const & Rhs);
+   constexpr void operator -= (Point const & Rhs);
+   constexpr void operator *= (Point const & Rhs);
+   constexpr void operator /= (Point const & Rhs);
+
+   constexpr void operator += (dim_t const Rhs);
+   constexpr void operator -= (dim_t const Rhs);
+   constexpr void operator *= (dim_t const Rhs);
+   constexpr void operator /= (dim_t const Rhs);
 
    dim_t x; // x-coordinate (real)
    dim_t y; // y-coordinate (imaginary)
@@ -65,7 +75,7 @@ constexpr auto Point::isZero(void) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Point::operator + (Point const & Rhs) const
 {
@@ -74,7 +84,7 @@ constexpr auto Point::operator + (Point const & Rhs) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Point::operator - (Point const & Rhs) const
 {
@@ -83,7 +93,7 @@ constexpr auto Point::operator - (Point const & Rhs) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Point::operator * (Point const & Rhs) const
 {
@@ -92,7 +102,7 @@ constexpr auto Point::operator * (Point const & Rhs) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Point::operator / (Point const & Rhs) const
 {
@@ -101,7 +111,7 @@ constexpr auto Point::operator / (Point const & Rhs) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Point::operator + (dim_t const Rhs) const
 {
@@ -110,7 +120,7 @@ constexpr auto Point::operator + (dim_t const Rhs) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Point::operator - (dim_t const Rhs) const
 {
@@ -119,7 +129,7 @@ constexpr auto Point::operator - (dim_t const Rhs) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Point::operator * (dim_t const Rhs) const
 {
@@ -128,12 +138,76 @@ constexpr auto Point::operator * (dim_t const Rhs) const
 }
 
 /**
- * 
+ *
  */
 constexpr auto Point::operator / (dim_t const Rhs) const
 {
    return Point(x / Rhs,
                 y / Rhs);
+}
+
+/**
+ *
+ */
+constexpr void Point::operator += (Point const & Rhs)
+{
+   *this = *this + Rhs;
+}
+
+/**
+ *
+ */
+constexpr void Point::operator -= (Point const & Rhs)
+{
+   *this = *this - Rhs;
+}
+
+/**
+ *
+ */
+constexpr void Point::operator *= (Point const & Rhs)
+{
+   *this = *this * Rhs;
+}
+
+/**
+ *
+ */
+constexpr void Point::operator /= (Point const & Rhs)
+{
+   *this = *this / Rhs;
+}
+
+/**
+ *
+ */
+constexpr void Point::operator += (dim_t const Rhs)
+{
+   *this = *this + Rhs;
+}
+
+/**
+ *
+ */
+constexpr void Point::operator -= (dim_t const Rhs)
+{
+   *this = *this - Rhs;
+}
+
+/**
+ *
+ */
+constexpr void Point::operator *= (dim_t const Rhs)
+{
+   *this = *this * Rhs;
+}
+
+/**
+ *
+ */
+constexpr void Point::operator /= (dim_t const Rhs)
+{
+   *this = *this / Rhs;
 }
 
 } // hoso::flame
