@@ -6,7 +6,7 @@
 
 #include "hoso.h"
 
-namespace hoso
+namespace hoso::flame
 {
 
 /**
@@ -17,33 +17,65 @@ class FastMath
 public:
    explicit FastMath(void) = delete;
 
-   static constexpr float32 Pi  = 3.1415926536f;
-   static constexpr float32 Tau = 2.0f * Pi;
+   template <typename float_t>
+   static constexpr auto Pi  = float_t(3.14159265358979324);
 
-   static constexpr float32 fmod(float32 const X,
-                                 float32 const Y);
+   template <typename float_t>
+   static constexpr auto Tau = float_t(2.0 * Pi<float_t>);
 
-   static constexpr float32 fabs(float32 const X);
+   template <typename float_t>
+   static constexpr auto fmod(float_t const X,
+                              float_t const Y);
 
-   static float32 sin(float32 x_rad);
-   static float32 cos(float32 x_rad);
+   template <typename float_t>
+   static constexpr auto fabs(float_t const X);
+
+   template <typename float_t>
+   static constexpr auto sin(float_t x_rad);
+
+   template <typename float_t>
+   static constexpr auto cos(float_t x_rad);
 };
 
 /**
  *
  */
-constexpr float32 FastMath::fmod(float32 const X,
-                                 float32 const Y)
+template <typename float_t>
+constexpr auto FastMath::fmod(float_t const X,
+                              float_t const Y)
 {
-   return X - (static_cast<long>(X / Y) * Y);
+   return X - (int64(X / Y) * Y);
 }
 
 /**
  *
  */
-constexpr float32 FastMath::fabs(float32 const X)
+template <typename float_t>
+constexpr auto FastMath::fabs(float_t const X)
 {
-   return (X < 0.0f) ? -X : X;
+   return (X < float_t(0.0)) ? -X : X;
 }
 
-} // hoso
+/**
+ * Bhaskara I's approximation
+ * Discovered in the 7th century!
+ */
+template <typename float_t>
+constexpr auto FastMath::sin(float_t x_rad)
+{
+   // wrap into interval [-Tau..Tau]
+   x_rad = fmod(x_rad, Tau<float_t>);
+
+   // map into interval [-Pi..Pi]
+        if (x_rad < -Pi<float_t>) { x_rad += Tau<float_t>; }
+   else if (x_rad > +Pi<float_t>) { x_rad -= Tau<float_t>; }
+
+   // method only works in interval [0..Pi]
+   auto b = fabs(x_rad);
+   b = float_t(4.0) * b * (Pi<float_t> - b);
+   b = (float_t(4.0) * b) / ((float_t(5.0) * Pi<float_t> * Pi<float_t>) - b);
+
+   return (x_rad < float_t(0.0)) ? -b : b;
+}
+
+} // hoso::flame

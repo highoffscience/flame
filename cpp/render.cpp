@@ -24,9 +24,9 @@ void hoso::flame::Render::populate(Pixel * const * const histo_Ptr_Ptr) const
 
    Random rand;
 
-   Point pnt((2.0f * rand.gen<float64>()) - 1.0f,  // x
-             (2.0f * rand.gen<float64>()) - 1.0f); // y
-   float64 clr = rand.gen<float64>();
+   Point pnt((2.0 * rand.gen<Point::dim_t>()) - 1.0,  // x
+             (2.0 * rand.gen<Point::dim_t>()) - 1.0); // y
+   auto clr = rand.gen<Pixel::dim_t>();
 
    StrangeAttractor sa;
    VarBlend vb;
@@ -34,7 +34,7 @@ void hoso::flame::Render::populate(Pixel * const * const histo_Ptr_Ptr) const
    for (uint i = 0U; i < 100U; ++i)
    {
       auto const Transform_idx = sa.preTransform(pnt, clr);
-      //pnt = vb.apply(Transform_idx, pnt);
+      pnt = vb.apply(Transform_idx, pnt);
       sa.postTransform(pnt, clr);
    }
 
@@ -66,13 +66,13 @@ void hoso::flame::Render::populate(Pixel * const * const histo_Ptr_Ptr) const
    for (uint64 i = 0; i < NIters; ++i)
    {
       auto const Transform_idx = sa.preTransform(pnt, clr);
-      //pnt = vb.apply(Transform_idx, pnt);
+      pnt = vb.apply(Transform_idx, pnt);
       sa.postTransform(pnt, clr);
 
       // const Point fittedPnt = fit::transform(pnt);
 
-      auto const X =          static_cast<int32>(500.0 * pnt.x + Width/2);
-      auto const Y = Height - static_cast<int32>(500.0 * pnt.y + Height/2);
+      auto const X =          static_cast<int32>(75.0 * pnt.x + Width/2);
+      auto const Y = Height - static_cast<int32>(75.0 * pnt.y + Height/2);
 
       if (X >= 0 && X < Width &&
           Y >= 0 && Y < Height)
@@ -101,18 +101,18 @@ void hoso::flame::Render::populate(Pixel * const * const histo_Ptr_Ptr) const
       }
    }
 
-   constexpr float64 invGamma = 1.0 / (2.2); // 2.2F..4.0F is baseline
-   for (uint i = 0; i < Height; ++i)
-   {
-      for (uint j = 0; j < Width; ++j)
-      {
-         Pixel& pxl = histo_Ptr_Ptr[i][j];
-
-         if (pxl.a > 0.0)
-         {
-            pxl /= alphaMax;
-            pxl ^= invGamma;
-         }
-      }
-   }
+   // constexpr float64 invGamma = 1.0 / (2.2); // 2.2F..4.0F is baseline
+   // for (uint i = 0; i < Height; ++i)
+   // {
+   //    for (uint j = 0; j < Width; ++j)
+   //    {
+   //       Pixel& pxl = histo_Ptr_Ptr[i][j];
+//
+   //       if (pxl.a > 0.0)
+   //       {
+   //          pxl /= alphaMax;
+   //          pxl ^= invGamma;
+   //       }
+   //    }
+   // }
 }

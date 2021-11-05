@@ -6,49 +6,28 @@
 
 #include <cstdio>
 
-/**
- * Bhaskara I's approximation
- * Discovered in the 7th century!
- */
-auto hoso::FastMath::sin(float32 x_rad) -> float32
-{
-   // wrap into interval [-Tau..Tau]
-   x_rad = fmod(x_rad, Tau);
-
-   // map into interval [-Pi..Pi]
-        if (x_rad < -Pi) { x_rad += Tau; }
-   else if (x_rad > +Pi) { x_rad -= Tau; }
-
-   // method only works in interval [0..Pi]
-   auto b = fabs(x_rad);
-   b = 4.0f * b * (Pi - b);
-   b = (4.0f * b) / ((5.0f * Pi * Pi) - b);
-
-   return (x_rad < 0.0f) ? -b : b;
-}
-
-/**
- * TODO doesn't work
- */
-auto hoso::FastMath::cos(float32 x_rad) -> float32
-{
-   return 0.0f;
-
-   // // wrap into interval [-Tau..Tau]
-   // x_rad = fmod(x_rad, Tau);
-// 
-   // // map into interval [-Pi..Pi]
-   //      if (x_rad < -Pi) { x_rad += Tau; }
-   // else if (x_rad > +Pi) { x_rad -= Tau; }
-// 
-   // // method only works in interval [-Pi/2..Pi/2]
-   // constexpr auto Pi2     = Pi * Pi;
-   // constexpr auto Pi_by_2 = 0.5f * Pi;
-   // auto b = fabs(x_rad) - Pi_by_2;
-   // b = (Pi2 - (4.0f * b * b)) / (Pi2 + (b * b));
-// 
-   // return (x_rad < 0.0f) ? -b : b;
-}
+// /**
+//  * TODO doesn't work
+//  */
+// auto hoso::FastMath::cos(float32 x_rad) -> float32
+// {
+//    return 0.0f;
+//
+//    // // wrap into interval [-Tau..Tau]
+//    // x_rad = fmod(x_rad, Tau);
+// //
+//    // // map into interval [-Pi..Pi]
+//    //      if (x_rad < -Pi) { x_rad += Tau; }
+//    // else if (x_rad > +Pi) { x_rad -= Tau; }
+// //
+//    // // method only works in interval [-Pi/2..Pi/2]
+//    // constexpr auto Pi2     = Pi * Pi;
+//    // constexpr auto Pi_by_2 = 0.5f * Pi;
+//    // auto b = fabs(x_rad) - Pi_by_2;
+//    // b = (Pi2 - (4.0f * b * b)) / (Pi2 + (b * b));
+// //
+//    // return (x_rad < 0.0f) ? -b : b;
+// }
 
 /**
  *
@@ -58,7 +37,7 @@ auto hoso::FastMath::cos(float32 x_rad) -> float32
 #include <cmath>
 int main(void)
 {
-   using hoso::FastMath;
+   using hoso::flame::FastMath;
    using hoso::float32;
    auto const Begin = -1.0f * FastMath::Pi;
    auto const End   = 0;

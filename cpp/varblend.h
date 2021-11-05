@@ -22,10 +22,10 @@ public:
                Point  const & P) const;
 
 private:
-   constexpr Point var0(Point const & P) const;
-   constexpr Point var1(Point const & P) const;
-   constexpr Point var2(Point const & P) const;
-   constexpr Point var3(Point const & P) const;
+   inline Point var0(Point const & P) const;
+   inline Point var1(Point const & P) const;
+   inline Point var2(Point const & P) const;
+   inline Point var3(Point const & P) const;
 };
 
 } // hoso::flame
