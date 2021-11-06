@@ -26,6 +26,9 @@
 #define HOSO_NO_MOVE_CONSTRUCT( ClassName ) ClassName              (ClassName &&)      = delete;
 #define HOSO_NO_MOVE_ASSIGN(    ClassName ) ClassName & operator = (ClassName &&)      = delete;
 
+// ironically to make constructors explicitly implicit
+#define implicit
+
 #if defined(_DEBUG)
 #define HOSO_DBG
 #endif // _DEBUG
@@ -33,9 +36,11 @@
 namespace hoso
 {
 
-typedef char const *       str;
-
 typedef unsigned char      uchar;
+typedef uchar const *      str; // uchar is to make behaviour consistent across platforms
+                                // and as a convenience por passing to legacy c functions
+                                // that require a cast to uchar beforehand (see Notes in
+                                // <https://en.cppreference.com/w/cpp/string/byte/isalpha>)
 
 typedef signed char        int8;
 typedef signed short       int16;

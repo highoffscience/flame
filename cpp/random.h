@@ -17,8 +17,6 @@ class Random
 public:
    explicit Random(void);
 
-   typedef float32 dim_t;
-
    template <typename float_t> // going swimming apparently
    float_t gen(void);
 

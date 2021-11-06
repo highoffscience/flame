@@ -6,12 +6,15 @@
 
 #include "hoso.h"
 
+#include <cmath>
+
 namespace hoso::flame
 {
 
 /**
  * Representation of a point in 2D space
  * Either cartesian plane or imaginary plane
+ * Or polar coordinates
  */
 struct Point
 {
@@ -20,28 +23,21 @@ struct Point
    explicit constexpr Point(void);
    explicit constexpr Point(dim_t const X_,
                             dim_t const Y_);
+   implicit constexpr Point(dim_t const XY_);
 
    constexpr auto isZero(void) const;
 
-   constexpr auto operator + (Point const & Rhs) const;
-   constexpr auto operator - (Point const & Rhs) const;
-   constexpr auto operator * (Point const & Rhs) const;
-   constexpr auto operator / (Point const & Rhs) const;
-
-   constexpr auto operator + (dim_t const Rhs) const;
-   constexpr auto operator - (dim_t const Rhs) const;
-   constexpr auto operator * (dim_t const Rhs) const;
-   constexpr auto operator / (dim_t const Rhs) const;
+   constexpr auto operator +  (Point const & Rhs) const;
+   constexpr auto operator -  (Point const & Rhs) const;
+   constexpr auto operator *  (Point const & Rhs) const;
+   constexpr auto operator /  (Point const & Rhs) const;
+   constexpr auto operator ^  (Point const & Rhs) const;
 
    constexpr void operator += (Point const & Rhs);
    constexpr void operator -= (Point const & Rhs);
    constexpr void operator *= (Point const & Rhs);
    constexpr void operator /= (Point const & Rhs);
-
-   constexpr void operator += (dim_t const Rhs);
-   constexpr void operator -= (dim_t const Rhs);
-   constexpr void operator *= (dim_t const Rhs);
-   constexpr void operator /= (dim_t const Rhs);
+   constexpr void operator ^= (Point const & Rhs);
 
    dim_t x; // x-coordinate (real)
    dim_t y; // y-coordinate (imaginary)
@@ -51,7 +47,7 @@ struct Point
  *
  */
 constexpr Point::Point(void)
-   : Point(0.0, 0.0)
+   : Point(static_cast<dim_t>(0.0))
 {
 }
 
@@ -62,6 +58,14 @@ constexpr Point::Point(dim_t const X_,
                        dim_t const Y_)
    : x {X_},
      y {Y_}
+{
+}
+
+/**
+ *
+ */
+constexpr Point::Point(dim_t const XY_)
+   : Point(XY_, XY_)
 {
 }
 
@@ -113,37 +117,10 @@ constexpr auto Point::operator / (Point const & Rhs) const
 /**
  *
  */
-constexpr auto Point::operator + (dim_t const Rhs) const
+constexpr auto Point::operator ^ (Point const & Rhs) const
 {
-   return Point(x + Rhs,
-                y + Rhs);
-}
-
-/**
- *
- */
-constexpr auto Point::operator - (dim_t const Rhs) const
-{
-   return Point(x - Rhs,
-                y - Rhs);
-}
-
-/**
- *
- */
-constexpr auto Point::operator * (dim_t const Rhs) const
-{
-   return Point(x * Rhs,
-                y * Rhs);
-}
-
-/**
- *
- */
-constexpr auto Point::operator / (dim_t const Rhs) const
-{
-   return Point(x / Rhs,
-                y / Rhs);
+   return Point(std::pow(x, Rhs.x),
+                std::pow(y, Rhs.y));
 }
 
 /**
@@ -181,33 +158,9 @@ constexpr void Point::operator /= (Point const & Rhs)
 /**
  *
  */
-constexpr void Point::operator += (dim_t const Rhs)
+constexpr void Point::operator ^= (Point const & Rhs)
 {
-   *this = *this + Rhs;
-}
-
-/**
- *
- */
-constexpr void Point::operator -= (dim_t const Rhs)
-{
-   *this = *this - Rhs;
-}
-
-/**
- *
- */
-constexpr void Point::operator *= (dim_t const Rhs)
-{
-   *this = *this * Rhs;
-}
-
-/**
- *
- */
-constexpr void Point::operator /= (dim_t const Rhs)
-{
-   *this = *this / Rhs;
+   *this = *this ^ Rhs;
 }
 
 } // hoso::flame

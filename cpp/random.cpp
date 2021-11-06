@@ -27,7 +27,7 @@ hoso::Random::Random(void)
  * resolution is 2^23 (~8 million)
  */
 template <>
-auto hoso::Random::gen(void) -> float32
+auto hoso::Random::gen<hoso::float32>(void) -> float32
 {
    union
    {
@@ -62,7 +62,7 @@ auto hoso::Random::gen(void) -> float32
  * resolution is 2^52 (~4 quadrillion)
  */
 template <>
-auto hoso::Random::gen(void) -> float64
+auto hoso::Random::gen<hoso::float64>(void) -> float64
 {
    union
    {

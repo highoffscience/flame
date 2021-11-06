@@ -18,10 +18,10 @@ public:
    explicit FastMath(void) = delete;
 
    template <typename float_t>
-   static constexpr auto Pi  = float_t(3.14159265358979324);
+   static constexpr auto Pi  = static_cast<float_t>(3.14159265358979324);
 
    template <typename float_t>
-   static constexpr auto Tau = float_t(2.0 * Pi<float_t>);
+   static constexpr auto Tau = static_cast<float_t>(2.0 * Pi<float_t>); // upcast intentional
 
    template <typename float_t>
    static constexpr auto fmod(float_t const X,
@@ -53,7 +53,7 @@ constexpr auto FastMath::fmod(float_t const X,
 template <typename float_t>
 constexpr auto FastMath::fabs(float_t const X)
 {
-   return (X < float_t(0.0)) ? -X : X;
+   return (X < static_cast<float_t>(0.0)) ? -X : X;
 }
 
 /**
@@ -75,7 +75,7 @@ constexpr auto FastMath::sin(float_t x_rad)
    b = float_t(4.0) * b * (Pi<float_t> - b);
    b = (float_t(4.0) * b) / ((float_t(5.0) * Pi<float_t> * Pi<float_t>) - b);
 
-   return (x_rad < float_t(0.0)) ? -b : b;
+   return (x_rad < static_cast<float_t>(0.0)) ? -b : b;
 }
 
 } // hoso::flame

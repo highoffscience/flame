@@ -4,9 +4,10 @@
 
 #pragma once
 
-#include <cmath>
-
 #include "hoso.h"
+
+#include <cmath>
+#include <type_traits>
 
 namespace hoso::flame
 {
@@ -17,35 +18,32 @@ namespace hoso::flame
 struct Pixel
 {
    typedef float64 dim_t;
+   static_assert(std::is_floating_point_v<dim_t>, "Pixel channel must be floating point!");
+
+   // TODO research how to use user defined literals. Cleaner than static casting everything
+   template <typename T>
+   static constexpr auto Zero = static_cast<dim_t>(0.0);
 
    explicit constexpr Pixel(void);
    explicit constexpr Pixel(dim_t const R_,
                             dim_t const G_,
                             dim_t const B_,
                             dim_t const A_);
+   implicit constexpr Pixel(dim_t const RGBA_);
 
    constexpr auto isZero(void) const;
 
-   constexpr auto operator + (Pixel const & Rhs) const;
-   constexpr auto operator - (Pixel const & Rhs) const;
-   constexpr auto operator * (Pixel const & Rhs) const;
-   constexpr auto operator / (Pixel const & Rhs) const;
-
-   constexpr auto operator + (dim_t const Rhs) const;
-   constexpr auto operator - (dim_t const Rhs) const;
-   constexpr auto operator * (dim_t const Rhs) const;
-   constexpr auto operator / (dim_t const Rhs) const;
+   constexpr auto operator +  (Pixel const & Rhs) const;
+   constexpr auto operator -  (Pixel const & Rhs) const;
+   constexpr auto operator *  (Pixel const & Rhs) const;
+   constexpr auto operator /  (Pixel const & Rhs) const;
+   constexpr auto operator ^  (Pixel const & Rhs) const;
 
    constexpr void operator += (Pixel const & Rhs);
    constexpr void operator -= (Pixel const & Rhs);
    constexpr void operator *= (Pixel const & Rhs);
    constexpr void operator /= (Pixel const & Rhs);
-
-   constexpr void operator += (dim_t const Rhs);
-   constexpr void operator -= (dim_t const Rhs);
-   constexpr void operator *= (dim_t const Rhs);
-   constexpr void operator /= (dim_t const Rhs);
-   constexpr void operator ^= (dim_t const Rhs);
+   constexpr void operator ^= (Pixel const & Rhs);
 
    dim_t r; // red
    dim_t g; // green
@@ -57,7 +55,7 @@ struct Pixel
  *
  */
 constexpr Pixel::Pixel(void)
-   : Pixel(0.0, 0.0, 0.0, 0.0)
+   : Pixel(static_cast<dim_t>(0.0))
 {
 }
 
@@ -72,6 +70,14 @@ constexpr Pixel::Pixel(dim_t const R_,
      g {G_},
      b {B_},
      a {A_}
+{
+}
+
+/**
+ *
+ */
+constexpr Pixel::Pixel(dim_t const RGBA_)
+   : Pixel(RGBA_, RGBA_, RGBA_, RGBA_)
 {
 }
 
@@ -133,46 +139,15 @@ constexpr auto Pixel::operator / (Pixel const & Rhs) const
 /**
  *
  */
-constexpr auto Pixel::operator + (dim_t const Rhs) const
+constexpr auto Pixel::operator ^ (Pixel const & Rhs) const
 {
-   return Pixel(r + Rhs,
-                g + Rhs,
-                b + Rhs,
-                a + Rhs);
+   return Pixel(std::pow(r, Rhs.r),
+                std::pow(g, Rhs.g),
+                std::pow(b, Rhs.b),
+                std::pow(a, Rhs.a));
 }
 
-/**
- *
- */
-constexpr auto Pixel::operator - (dim_t const Rhs) const
-{
-   return Pixel(r - Rhs,
-                g - Rhs,
-                b - Rhs,
-                a - Rhs);
-}
 
-/**
- *
- */
-constexpr auto Pixel::operator * (dim_t const Rhs) const
-{
-   return Pixel(r * Rhs,
-                g * Rhs,
-                b * Rhs,
-                a * Rhs);
-}
-
-/**
- *
- */
-constexpr auto Pixel::operator / (dim_t const Rhs) const
-{
-   return Pixel(r / Rhs,
-                g / Rhs,
-                b / Rhs,
-                a / Rhs);
-}
 
 /**
  *
@@ -209,45 +184,9 @@ constexpr void Pixel::operator /= (Pixel const & Rhs)
 /**
  *
  */
-constexpr void Pixel::operator += (dim_t const Rhs)
+constexpr void Pixel::operator ^= (Pixel const & Rhs)
 {
-   *this = *this + Rhs;
-}
-
-/**
- *
- */
-constexpr void Pixel::operator -= (dim_t const Rhs)
-{
-   *this = *this - Rhs;
-}
-
-/**
- *
- */
-constexpr void Pixel::operator *= (dim_t const Rhs)
-{
-   *this = *this * Rhs;
-}
-
-/**
- *
- */
-constexpr void Pixel::operator /= (dim_t const Rhs)
-{
-   *this = *this / Rhs;
-}
-
-/**
- *
- */
-// #include <cmath>
-constexpr void Pixel::operator ^= (dim_t const Rhs)
-{
-   r = std::pow(r, Rhs);
-   g = std::pow(g, Rhs);
-   b = std::pow(b, Rhs);
-   //a = std::pow(r, Rhs);
+   *this = *this ^ Rhs;
 }
 
 } // hoso::flame
