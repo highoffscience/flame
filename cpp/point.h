@@ -7,6 +7,7 @@
 #include "hoso.h"
 
 #include <cmath>
+#include <type_traits>
 
 namespace hoso::flame
 {
@@ -14,11 +15,14 @@ namespace hoso::flame
 /**
  * Representation of a point in 2D space
  * Either cartesian plane or imaginary plane
- * Or polar coordinates
+ * Or polar coordinates, whatever
  */
 struct Point
 {
-   typedef float64 dim_t;
+   using dim_t = float64;
+   static_assert(std::is_floating_point_v<dim_t>, "Point coordinates must be floating points!");
+
+   static constexpr auto Zero = static_cast<dim_t>(0.0);
 
    explicit constexpr Point(void);
    explicit constexpr Point(dim_t const X_,
@@ -39,15 +43,15 @@ struct Point
    constexpr void operator /= (Point const & Rhs);
    constexpr void operator ^= (Point const & Rhs);
 
-   dim_t x; // x-coordinate (real)
-   dim_t y; // y-coordinate (imaginary)
+   dim_t x;
+   dim_t y;
 };
 
 /**
  *
  */
 constexpr Point::Point(void)
-   : Point(static_cast<dim_t>(0.0))
+   : Point(Zero)
 {
 }
 
@@ -65,7 +69,7 @@ constexpr Point::Point(dim_t const X_,
  *
  */
 constexpr Point::Point(dim_t const XY_)
-   : Point(XY_, XY_)
+   : Point(XY_)
 {
 }
 
@@ -74,8 +78,8 @@ constexpr Point::Point(dim_t const XY_)
  */
 constexpr auto Point::isZero(void) const
 {
-   return x == static_cast<dim_t>(0.0) &&
-          y == static_cast<dim_t>(0.0);
+   return x == Zero &&
+          y == Zero;
 }
 
 /**
