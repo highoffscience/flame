@@ -69,7 +69,7 @@ constexpr Point::Point(dim_t const X_,
  *
  */
 constexpr Point::Point(dim_t const XY_)
-   : Point(XY_)
+   : Point(XY_, XY_)
 {
 }
 
