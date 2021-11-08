@@ -16,6 +16,8 @@ namespace hoso::flame
    public:
       Render(void) = default;
 
-      void populate(class Pixel * const * const histo_Ptr_Ptr) const;
+      void populate(class Pixel * const * const histo_Ptr_Ptr,
+                          uint32          const Width,
+                          uint32          const Height) const;
    };
 } // hoso::flame

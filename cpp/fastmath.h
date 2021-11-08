@@ -33,8 +33,8 @@ public:
    template <typename float_t>
    static constexpr auto sin(float_t x_rad);
 
-   template <typename float_t>
-   static constexpr auto cos(float_t x_rad);
+   // template <typename float_t>
+   // static constexpr auto cos(float_t x_rad);
 };
 
 /**

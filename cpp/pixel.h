@@ -17,12 +17,11 @@ namespace hoso::flame
  */
 struct Pixel
 {
-   typedef float64 dim_t;
+   using dim_t = float64;
    static_assert(std::is_floating_point_v<dim_t>, "Pixel channel must be floating point!");
 
-   // TODO research how to use user defined literals. Cleaner than static casting everything
-   template <typename T>
-   static constexpr auto Zero = static_cast<dim_t>(0.0);
+   static constexpr dim_t Zero = 0.0;
+   static constexpr dim_t One  = 1.0;
 
    explicit constexpr Pixel(void);
    explicit constexpr Pixel(dim_t const R_,
@@ -55,7 +54,7 @@ struct Pixel
  *
  */
 constexpr Pixel::Pixel(void)
-   : Pixel(static_cast<dim_t>(0.0))
+   : Pixel(Zero)
 {
 }
 
@@ -86,10 +85,10 @@ constexpr Pixel::Pixel(dim_t const RGBA_)
  */
 constexpr auto Pixel::isZero(void) const
 {
-   return r == static_cast<dim_t>(0.0) &&
-          g == static_cast<dim_t>(0.0) &&
-          b == static_cast<dim_t>(0.0) &&
-          a == static_cast<dim_t>(0.0);
+   return r == Zero &&
+          g == Zero &&
+          b == Zero &&
+          a == Zero;
 }
 
 /**

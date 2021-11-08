@@ -34,8 +34,8 @@ private:
     */
    struct IFSMatrix
    {
+      float64       const Prob;
       Pixel::dim_t  const Clr;
-      Random::dim_t const Prob;
    };
 
    /**
@@ -43,14 +43,15 @@ private:
     */
    struct IASMatrix
    {
+      float64       const Prob;
+      Pixel::dim_t  const Clr;
+
       Point::dim_t  const A;
       Point::dim_t  const B;
       Point::dim_t  const C;
       Point::dim_t  const D;
       Point::dim_t  const E;
       Point::dim_t  const F;
-      Pixel::dim_t  const Clr;
-      Random::dim_t const Prob;
    };
 };
 

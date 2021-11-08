@@ -17,11 +17,10 @@
 /**
  *
  */
-void hoso::flame::Render::populate(Pixel * const * const histo_Ptr_Ptr) const
+void hoso::flame::Render::populate(Pixel * const * const histo_Ptr_Ptr,
+                                   uint32          const Width,
+                                   uint32          const Height) const
 {
-   constexpr uint32 Width  = 960;
-   constexpr uint32 Height = 540;
-
    Random rand;
 
    Point pnt((2.0 * rand.gen<Point::dim_t>()) - 1.0,  // x
@@ -62,7 +61,7 @@ void hoso::flame::Render::populate(Pixel * const * const histo_Ptr_Ptr) const
 
    ColorScheme cs;
 
-   constexpr uint64 NIters = 10'000'000ull;
+   constexpr uint64 NIters = 1'000'000ull;
    for (uint64 i = 0; i < NIters; ++i)
    {
       auto const Transform_idx = sa.preTransform(pnt, clr);
@@ -101,18 +100,17 @@ void hoso::flame::Render::populate(Pixel * const * const histo_Ptr_Ptr) const
       }
    }
 
-   // constexpr float64 invGamma = 1.0 / (2.2); // 2.2F..4.0F is baseline
-   // for (uint i = 0; i < Height; ++i)
-   // {
-   //    for (uint j = 0; j < Width; ++j)
-   //    {
-   //       Pixel& pxl = histo_Ptr_Ptr[i][j];
-//
-   //       if (pxl.a > 0.0)
-   //       {
-   //          pxl /= alphaMax;
-   //          pxl ^= invGamma;
-   //       }
-   //    }
-   // }
+   constexpr float64 invGamma = 1.0 / (2.2); // 2.2F..4.0F is baseline
+   for (uint i = 0; i < Height; ++i)
+   {
+      for (uint j = 0; j < Width; ++j)
+      {
+         Pixel& pxl = histo_Ptr_Ptr[i][j];
+         if (pxl.a > 0.0)
+         {
+            pxl /= alphaMax;
+            pxl ^= invGamma;
+         }
+      }
+   }
 }

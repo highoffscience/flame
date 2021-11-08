@@ -2,8 +2,8 @@
  * @author Forrest Jablonski
  */
 
-#include "varblend.h"
 #include "fastmath.h"
+#include "varblend.h"
 
 /**
  *
@@ -43,11 +43,13 @@ inline auto hoso::flame::VarBlend::var3(Point const & P) const -> Point
 auto hoso::flame::VarBlend::apply(uint32 const   Transform_idx,
                                   Point  const & P) const -> Point
 {
-   constexpr uint32 NVars = 4;
-   // rows should add up to 1
-   constexpr Point::dim_t Weights[/*NXforms*/][NVars] = {
-      {1.0f, 0.0f, 0.0f, 0.0f},
-      {1.0f, 0.0f, 0.0f, 0.0f},
+   constexpr uint32 NTransforms = 2;
+   constexpr uint32 NVars       = 4;
+
+   // rows should add up to 1 but not strictly necessary
+   constexpr Point::dim_t Weights[NTransforms][NVars] = {
+      {1.0, 0.0, 0.0, 0.0},
+      {1.0, 0.0, 0.0, 0.0},
    };
 
    return (var0(P) * Weights[Transform_idx][0]) +

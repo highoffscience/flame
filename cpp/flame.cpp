@@ -2,6 +2,10 @@
  * @author Forrest Jablonski
  */
 
+/*
+ * g++ -std=c++2a -O2 *.cpp `libpng-config --cflags --ldflags`
+ */
+
 #include "hoso.h"
 #include "pixel.h"
 #include "render.h"
@@ -26,7 +30,7 @@ int main(const int argc, const char* const* const argv)
    }
 
    Render rend;
-   rend.populate(histo);
+   rend.populate(histo, width, height);
 
    png::image<png::rgba_pixel> image(width, height);
 
