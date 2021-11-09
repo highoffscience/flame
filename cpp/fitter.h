@@ -11,19 +11,20 @@ namespace hoso::flame
 {
 
 /**
- * 
+ *
  */
 struct Fitter
 {
-   explicit Fitter(void);
-   explicit Fitter(Point const & Min,
-                   Point const & Max);
+   explicit Fitter(uint32 const   Width,
+                   uint32 const   Height,
+                   Point  const & Min,
+                   Point  const & Max);
 
-   Point apply(Point const & Pnt) const;
+   Point apply(Point const & P) const;
 
 private:
-   Point const Min;
-   Point const Max;
+   Point const _Scale;
+   Point const _Trans;
 };
 
 } // hoso::flame

@@ -10,7 +10,7 @@ namespace hoso::flame
 {
 
 /**
- *
+ * TODO static assert float_t's are floating point
  */
 class FastMath
 {
@@ -29,6 +29,14 @@ public:
 
    template <typename float_t>
    static constexpr auto fabs(float_t const X);
+
+   template <typename T>
+   static constexpr auto min(T const X,
+                             T const Y);
+
+   template <typename T>
+   static constexpr auto max(T const X,
+                             T const Y);
 
    template <typename float_t>
    static constexpr auto sin(float_t x_rad);
@@ -54,6 +62,26 @@ template <typename float_t>
 constexpr auto FastMath::fabs(float_t const X)
 {
    return (X < static_cast<float_t>(0.0)) ? -X : X;
+}
+
+/**
+ *
+ */
+template <typename T>
+constexpr auto FastMath::min(T const X,
+                             T const Y)
+{
+   return (X < Y) ? X : Y;
+}
+
+/**
+ *
+ */
+template <typename T>
+constexpr auto FastMath::max(T const X,
+                             T const Y)
+{
+   return (X > Y) ? X : Y;
 }
 
 /**

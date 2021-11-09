@@ -1,32 +1,26 @@
 /**
  * @author Forrest Jablonski
- *
- * AUTO-GENERATED
  */
 
+#include "fastmath.h"
 #include "fitter.h"
 
-// static fct::Point s_scale;
-// static fct::Point s_trans;
-//
-// /**
-//  * Init scale and trans
-//  */
-// void fct::fit::init(const Point& minFitPnt,
-//                     const Point& maxFitPnt)
-// {
-// }
-//
-// /**
-//  * Scale and translate 'pnt' and return the result
-//  */
-// auto fct::fit::transform(const fct::Point& pnt) -> Point
-// {
-//    constexpr uint width  = 1920;
-//    constexpr uint height = 1080;
-//    constexpr uint mindim = width < height ? width : height;
-//    constexpr Point scale = {mindim * (0.2), mindim * (0.2)};
-//    constexpr Point trans = {width  * (0.5), height * (0.5)};
-//
-//       return (pnt * scale) + trans;
-// }
+/**
+ * TODO can do fancier math to determine the scale more accurately
+ */
+hoso::flame::Fitter::Fitter(uint32 const   Width,
+                            uint32 const   Height,
+                            Point  const & Min,
+                            Point  const & Max)
+   : _Scale {FastMath::min(Width / (Max.x - Min.x), Height / (Max.y - Min.y))},
+     _Trans {-0.5 * (Max.x + Min.x), -0.5 * (Max.y + Min.y)}
+{
+}
+
+/**
+ *
+ */
+auto hoso::flame::Fitter::apply(Point const & P) const -> Point
+{
+   return (P + _Trans) * _Scale;
+}
