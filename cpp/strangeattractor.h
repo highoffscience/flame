@@ -30,28 +30,28 @@ private:
    Random _rand;
 
    /**
-    *
+    * Do not reorder
     */
    struct IFSMatrix
    {
-      float64       const Prob;
-      Pixel::dim_t  const Clr;
+      Pixel::dim_t const Clr;
+      float64      const Prob;
    };
 
    /**
-    *
+    * Do not reorder
     */
    struct IASMatrix
    {
-      float64       const Prob;
-      Pixel::dim_t  const Clr;
+      Point::dim_t const A;
+      Point::dim_t const B;
+      Point::dim_t const C;
+      Point::dim_t const D;
+      Point::dim_t const E;
+      Point::dim_t const F;
 
-      Point::dim_t  const A;
-      Point::dim_t  const B;
-      Point::dim_t  const C;
-      Point::dim_t  const D;
-      Point::dim_t  const E;
-      Point::dim_t  const F;
+      Pixel::dim_t const Clr;
+      float64      const Prob;
    };
 };
 

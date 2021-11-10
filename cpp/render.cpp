@@ -3,6 +3,7 @@
  */
 
 #include "colorscheme.h"
+#include "fitter.h"
 #include "pixel.h"
 #include "point.h"
 #include "random.h"
@@ -12,7 +13,6 @@
 
 #include <cmath>
 #include <iostream>
-#include <limits>
 
 /**
  *
@@ -33,31 +33,24 @@ void hoso::flame::Render::populate(Pixel * const * const histo_Ptr_Ptr,
    for (uint i = 0U; i < 100U; ++i)
    {
       auto const Transform_idx = sa.preTransform(pnt, clr);
-      pnt = vb.apply(Transform_idx, pnt);
+      //pnt = vb.apply(Transform_idx, pnt);
       sa.postTransform(pnt, clr);
    }
 
-   // { // create fitter
-   //    Point minFitPnt = Point(std::numeric_limits<double>::max(),
-   //                            std::numeric_limits<double>::max());
-   //    Point maxFitPnt = Point(std::numeric_limits<double>::lowest(),
-   //                            std::numeric_limits<double>::lowest());
-//
-   //    for (uint i = 0U; i < 10000U; ++i)
-   //    {
-   //       const uint index = sa::preTransform(pnt, clr);
-   //       vb::transform(index, pnt);
-   //       sa::postTransform(pnt, clr);
-//
-   //       if      (pnt.x < minFitPnt.x) { minFitPnt.x = pnt.x; }
-   //       else if (pnt.x > maxFitPnt.x) { maxFitPnt.x = pnt.x; }
-//
-   //       if      (pnt.y < minFitPnt.y) { minFitPnt.y = pnt.y; }
-   //       else if (pnt.y > maxFitPnt.y) { maxFitPnt.y = pnt.y; }
-   //    }
-//
-   //    fit::init(minFitPnt, maxFitPnt);
-   // } // end create fitter
+   auto minFitPnt = pnt;
+   auto maxFitPnt = pnt;
+   for (uint i = 0; i < 10'000; ++i)
+   {
+      auto const Transform_idx = sa.preTransform(pnt, clr);
+      //pnt = vb.apply(Transform_idx, pnt);
+      sa.postTransform(pnt, clr);
+
+      if (pnt.x < minFitPnt.x) { minFitPnt.x = pnt.x; }
+      if (pnt.x > maxFitPnt.x) { maxFitPnt.x = pnt.x; }
+      if (pnt.y < minFitPnt.y) { minFitPnt.y = pnt.y; }
+      if (pnt.y > maxFitPnt.y) { maxFitPnt.y = pnt.y; }
+   }
+   Fitter const Fit(Width, Height, minFitPnt, maxFitPnt);
 
    ColorScheme cs;
 
@@ -65,13 +58,13 @@ void hoso::flame::Render::populate(Pixel * const * const histo_Ptr_Ptr,
    for (uint64 i = 0; i < NIters; ++i)
    {
       auto const Transform_idx = sa.preTransform(pnt, clr);
-      pnt = vb.apply(Transform_idx, pnt);
+      //pnt = vb.apply(Transform_idx, pnt);
       sa.postTransform(pnt, clr);
 
-      // const Point fittedPnt = fit::transform(pnt);
+      auto const FitPnt = Fit.apply(pnt);
 
-      auto const X =          static_cast<int32>(75.0 * pnt.x + Width/2);
-      auto const Y = Height - static_cast<int32>(75.0 * pnt.y + Height/2);
+      auto const X =          static_cast<int32>(FitPnt.x);
+      auto const Y = Height - static_cast<int32>(FitPnt.y);
 
       if (X >= 0 && X < Width &&
           Y >= 0 && Y < Height)
