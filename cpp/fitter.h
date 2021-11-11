@@ -20,11 +20,19 @@ struct Fitter
                    Point  const & Min,
                    Point  const & Max);
 
-   Point apply(Point const & P) const;
+   inline Point apply(Point const & P) const;
 
 private:
    Point const _Scale;
    Point const _Trans;
 };
+
+/**
+ *
+ */
+inline auto hoso::flame::Fitter::apply(Point const & P) const -> Point
+{
+   return P * _Scale + _Trans;
+}
 
 } // hoso::flame

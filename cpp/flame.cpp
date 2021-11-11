@@ -20,42 +20,35 @@ int main(const int argc, const char* const* const argv)
    using namespace hoso;
    using namespace flame;
 
-   constexpr uint32 width  = 960;
-   constexpr uint32 height = 540;
+   constexpr uint32 Width  = 1920;
+   constexpr uint32 Height = 1080;
 
-   Pixel** histo = new Pixel*[height];
-   for (uint i = 0U; i < height; ++i)
+   Pixel * const histo_Ptr = new Pixel[Width * Height];
+
+   Render rend(Width, Height);
+   rend.populate(histo_Ptr);
+
+   png::image<png::rgba_pixel> image(Width, Height);
+
+   for (uint y = 0; y < Height; ++y)
    {
-      histo[i] = new Pixel[width];
-   }
-
-   Render rend;
-   rend.populate(histo, width, height);
-
-   png::image<png::rgba_pixel> image(width, height);
-
-   for (uint i = 0U; i < height; ++i)
-   {
-      for (uint j = 0U; j < width; ++j)
+      for (uint x = 0; x < Width; ++x)
       {
-         const Pixel& pxl = histo[i][j];
+         // TODO I don't think I've done this correctly
+         auto const & pxl = histo_Ptr[x * Height + y];
 
-         const uint8 r = (uint8) ((pxl.r * 255.0F) + 0.5F);
-         const uint8 g = (uint8) ((pxl.g * 255.0F) + 0.5F);
-         const uint8 b = (uint8) ((pxl.b * 255.0F) + 0.5F);
-         const uint8 a = (uint8) ((pxl.a * 255.0F) + 0.5F);
+         auto const R = static_cast<uint8>((pxl.r * 255.0) + 0.5);
+         auto const G = static_cast<uint8>((pxl.g * 255.0) + 0.5);
+         auto const B = static_cast<uint8>((pxl.b * 255.0) + 0.5);
+         auto const A = static_cast<uint8>((pxl.a * 255.0) + 0.5);
 
-         image[i][j] = png::rgba_pixel(r, g, b, a);
+         image[y][x] = png::rgba_pixel(r, g, b, a);
       }
    }
 
    image.write("./pics/fractal-1.0.png");
 
-   for (uint i = 0U; i < height; ++i)
-   {
-      delete[] histo[i];
-   }
-   delete[] histo;
+   delete[] histo_Ptr;
 
    return 0;
 }
