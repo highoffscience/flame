@@ -2,39 +2,30 @@
  * @author Forrest Jablonski
  */
 
+#include "random.h"
 #include "strangeattractor.h"
 
 /**
  *
  */
-hoso::flame::StrangeAttractor::StrangeAttractor(void)
-   : _rand {}
-{
-}
-
-/**
- *
- */
 auto hoso::flame::StrangeAttractor::preTransform(Point        & pnt_ref,
-                                                 Pixel::dim_t & clr_ref) -> uint32
+                                                 Pixel::dim_t & clr_ref,
+                                                 Random       & rand_ref) const -> uint32
 {
-   constexpr IASMatrix Mat0{ 0.5, -0.5, 0.5,  0.5, 0.0, 0.0, 0.0, 0.5};
-   constexpr IASMatrix Mat1{-0.5, -0.5, 0.5, -0.5, 1.0, 0.0, 1.0, 0.5};
+   constexpr IASMatrix Mats[] = {
+      {.A =  0.5, .B = -0.5, .C = 0.5, .D =  0.5, .E = 0.0, .F = 0.0, .Clr = 0.0, .Prob = 0.5},
+      {.A = -0.5, .B = -0.5, .C = 0.5, .D = -0.5, .E = 1.0, .F = 0.0, .Clr = 1.0, .Prob = 0.5}
+   };
 
-   if (_rand.gen<float64>() < Mat0.Prob)
-   {
-      pnt_ref = Point(Mat0.A * pnt_ref.x + Mat0.B * pnt_ref.y + Mat0.E,
-                      Mat0.C * pnt_ref.x + Mat0.D * pnt_ref.y + Mat0.F);
-      clr_ref   = 0.5 * (clr_ref + Mat0.Clr);
-      return 0;
-   }
-   else
-   {
-      pnt_ref = Point(Mat1.A * pnt_ref.x + Mat1.B * pnt_ref.y + Mat1.E,
-                      Mat1.C * pnt_ref.x + Mat1.D * pnt_ref.y + Mat1.F);
-      clr_ref   = 0.5 * (clr_ref + Mat1.Clr);
-      return 1;
-   }
+   auto   const R   = rand_ref.gen<decltype(IASMatrix::Prob)>();
+   uint32 const Idx = (R < Mats[0].Prob) ? 0 : 1;
+
+   pnt_ref = Point(Mats[Idx].A * pnt_ref.x + Mats[Idx].B * pnt_ref.y + Mats[Idx].E,
+                   Mats[Idx].C * pnt_ref.x + Mats[Idx].D * pnt_ref.y + Mats[Idx].F);
+
+   clr_ref = 0.5 * (clr_ref + Mats[Idx].Clr);
+
+   return Idx;
 
    // constexpr IASMatrix Mat0{0.14,  0.01,  0.0 , 0.51, -0.08, -1.31, 0.0/3.0, 0.25};
    // constexpr IASMatrix Mat1{0.43,  0.52, -0.45, 0.5 ,  1.49, -0.75, 1.0/3.0, 0.25};
@@ -77,6 +68,7 @@ auto hoso::flame::StrangeAttractor::preTransform(Point        & pnt_ref,
  *
  */
 void hoso::flame::StrangeAttractor::postTransform(Point        & pnt_ref,
-                                                  Pixel::dim_t & clr_ref)
+                                                  Pixel::dim_t & clr_ref,
+                                                  Random       & rand_ref) const
 {
 }

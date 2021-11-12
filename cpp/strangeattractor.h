@@ -7,7 +7,6 @@
 #include "hoso.h"
 #include "point.h"
 #include "pixel.h"
-#include "random.h"
 
 namespace hoso::flame
 {
@@ -18,17 +17,17 @@ namespace hoso::flame
 class StrangeAttractor
 {
 public:
-   explicit StrangeAttractor(void);
+   explicit StrangeAttractor(void) = default;
 
-   uint32 preTransform(Point        & pnt_ref,
-                       Pixel::dim_t & clr_ref);
+   uint32 preTransform(      Point        & pnt_ref,
+                             Pixel::dim_t & clr_ref,
+                       class Random       & rand_ref) const;
 
-   void postTransform (Point        & pnt_ref,
-                       Pixel::dim_t & clr_ref);
+   void postTransform (      Point        & pnt_ref,
+                             Pixel::dim_t & clr_ref,
+                       class Random       & rand_ref) const;
 
 private:
-   Random _rand;
-
    /**
     * Do not reorder
     */

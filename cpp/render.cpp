@@ -13,23 +13,80 @@
 #include "varblend.h"
 
 #include <cmath>
-#include <iostream>
+#include <cstdio>
 
 hoso::flame::Render::Render(uint32 const Width,
                             uint32 const Height)
-   : _Width  {Width },
-     _Height {Height}
+   : _executors {      },
+     _Width     {Width },
+     _Height    {Height}
 {
+   auto const HC = std::thread::hardware_concurrency();
+   auto const NThreads = (HC == 0) ? 2 : HC;
+   _executors.reserve(NThreads);
+
 }
 
 /**
  *
  */
-inline auto hoso::flame::Render::getIndex(uint32 const X,
-                                          uint32 const Y) const -> uint32
+auto hoso::flame::Render::populate(uint32 const JumpNumber) -> Pixel *
 {
-   return X * _Height + Y;
-}
+   Random rand;
+   rand.jump(JumpNumber);
+
+   Point pnt((2.0 * rand.gen<Point::dim_t>()) - 1.0,  // x
+             (2.0 * rand.gen<Point::dim_t>()) - 1.0); // y
+   auto clr = rand.gen<Pixel::dim_t>();
+
+   StrangeAttractor sa;
+   VarBlend vb;
+
+   for (uint i = 0; i < 100; ++i)
+   {
+      auto const Transform_idx = sa.preTransform(pnt, clr);
+      pnt = vb.apply(Transform_idx, pnt);
+      sa.postTransform(pnt, clr);
+   }
+
+   auto minFitPnt = pnt;
+   auto maxFitPnt = pnt;
+   for (uint i = 0; i < 10'000; ++i)
+   {
+      auto const Transform_idx = sa.preTransform(pnt, clr);
+      pnt = vb.apply(Transform_idx, pnt);
+      sa.postTransform(pnt, clr);
+
+           if (pnt.x < minFitPnt.x) { minFitPnt.x = pnt.x; }
+      else if (pnt.x > maxFitPnt.x) { maxFitPnt.x = pnt.x; }
+
+           if (pnt.y < minFitPnt.y) { minFitPnt.y = pnt.y; }
+      else if (pnt.y > maxFitPnt.y) { maxFitPnt.y = pnt.y; }
+   }
+   Fitter const Fit(_Width, _Height, minFitPnt, maxFitPnt);
+
+   ColorScheme cs;
+
+   constexpr uint64 NIters = 1'000'000ull;
+   for (uint64 i = 0; i < NIters; ++i)
+   {
+      auto const Transform_idx = sa.preTransform(pnt, clr);
+      pnt = vb.apply(Transform_idx, pnt);
+      sa.postTransform(pnt, clr);
+
+      auto const FitPnt = Fit.apply(pnt);
+
+      auto const X =           static_cast<int32>(FitPnt.x);
+      auto const Y = _Height - static_cast<int32>(FitPnt.y);
+
+      if (X >= 0 && X < _Width &&
+          Y >= 0 && Y < _Height)
+      {
+         auto const Idx = Y * _Width + X;
+         histo_Ptr[Idx]   += cs.apply(clr);
+         histo_Ptr[Idx].a += 1.0;
+      }
+   }
 
 /**
  *
@@ -60,16 +117,17 @@ void hoso::flame::Render::populate(Pixel * const histo_Ptr) const
       pnt = vb.apply(Transform_idx, pnt);
       sa.postTransform(pnt, clr);
 
-      if (pnt.x < minFitPnt.x) { minFitPnt.x = pnt.x; }
-      if (pnt.x > maxFitPnt.x) { maxFitPnt.x = pnt.x; }
-      if (pnt.y < minFitPnt.y) { minFitPnt.y = pnt.y; }
-      if (pnt.y > maxFitPnt.y) { maxFitPnt.y = pnt.y; }
+           if (pnt.x < minFitPnt.x) { minFitPnt.x = pnt.x; }
+      else if (pnt.x > maxFitPnt.x) { maxFitPnt.x = pnt.x; }
+
+           if (pnt.y < minFitPnt.y) { minFitPnt.y = pnt.y; }
+      else if (pnt.y > maxFitPnt.y) { maxFitPnt.y = pnt.y; }
    }
    Fitter const Fit(_Width, _Height, minFitPnt, maxFitPnt);
 
    ColorScheme cs;
 
-   constexpr uint64 NIters = 10'000'000ull;
+   constexpr uint64 NIters = 1'000'000ull;
    for (uint64 i = 0; i < NIters; ++i)
    {
       auto const Transform_idx = sa.preTransform(pnt, clr);
@@ -84,8 +142,9 @@ void hoso::flame::Render::populate(Pixel * const histo_Ptr) const
       if (X >= 0 && X < _Width &&
           Y >= 0 && Y < _Height)
       {
-         histo_Ptr[getIndex(X, Y)]   += cs.apply(clr);
-         histo_Ptr[getIndex(X, Y)].a += 1.0;
+         auto const Idx = Y * _Width + X;
+         histo_Ptr[Idx]   += cs.apply(clr);
+         histo_Ptr[Idx].a += 1.0;
       }
    }
 
