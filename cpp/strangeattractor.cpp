@@ -17,7 +17,8 @@ auto hoso::flame::StrangeAttractor::preTransform(Point        & pnt_ref,
       {.A = -0.5, .B = -0.5, .C = 0.5, .D = -0.5, .E = 1.0, .F = 0.0, .Clr = 1.0, .Prob = 0.5}
    };
 
-   auto   const R   = rand_ref.gen<decltype(IASMatrix::Prob)>();
+   // TODO
+   auto   const R   = 0;//rand_ref.gen<decltype(IASMatrix::Prob)>();
    uint32 const Idx = (R < Mats[0].Prob) ? 0 : 1;
 
    pnt_ref = Point(Mats[Idx].A * pnt_ref.x + Mats[Idx].B * pnt_ref.y + Mats[Idx].E,

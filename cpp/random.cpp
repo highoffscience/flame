@@ -104,9 +104,9 @@ void hoso::Random::jump(uint32 const NJumps)
    for (uint32 i = 0; i < NJumpsBounded; ++i)
    {
       uint64 s0 = 0;
-      uint64 s1 = 1;
-      uint64 s2 = 2;
-      uint64 s3 = 3;
+      uint64 s1 = 0;
+      uint64 s2 = 0;
+      uint64 s3 = 0;
 
       for (uint32 j = 0; j < JumpTableSize; ++j)
       {
