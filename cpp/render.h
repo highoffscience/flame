@@ -25,11 +25,14 @@ public:
           uint32 const Width,
           uint32 const Height);
 
-   void /*std::unique_ptr<Pixel>*/ flame(void);
+   class Pixel * flame(void);
 
 private:
    void populate(class Pixel * const histo_Ptr,
                        uint32  const JumpNumber) const;
+
+   void postProcess(class Pixel * const histo_Ptr,
+                          uint32  const HistoSize) const;
 
    std::vector<std::thread> _executors; // coming for their baby executes I'm sure
 

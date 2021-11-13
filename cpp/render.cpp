@@ -15,7 +15,6 @@
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
-#include <memory>
 
 hoso::flame::Render::Render(uint64 const NIters,
                             uint32 const Width,
@@ -33,29 +32,40 @@ hoso::flame::Render::Render(uint64 const NIters,
 /**
  *
  */
-void hoso::flame::Render::flame(void)
+auto hoso::flame::Render::flame(void) -> Pixel *
 {
+   // TODO image is dimmer with more threads
    auto const HC = std::thread::hardware_concurrency();
-   auto const NThreads = (HC == 0) ? 2 : HC;
+   auto const NThreads = 4; //(HC == 0) ? 2 : HC;
+
+   auto   const HistoSize  = _Width * _Height;
+   auto * const histos_Ptr = Pixel::createHisto(HistoSize * NThreads);
+
    _executors.reserve(NThreads);
+   for (uint32 i = 0; i < NThreads; ++i)
+   {
+      _executors.emplace_back(&Render::populate, this, histos_Ptr + (i * HistoSize), i);
+   }
+   for (auto & executor_ref : _executors)
+   {
+      executor_ref.join();
+   }
 
-   // can call with std::free
-   auto * const histos_Ptr =
-      static_cast<Pixel *>(std::aligned_alloc(sizeof(Pixel),
-                                              sizeof(Pixel) * _Width * _Height * NThreads));
+   auto * const mainHisto_Ptr = Pixel::createHisto(HistoSize);
+   for (uint32 i = 0; i < NThreads; ++i)
+   {
+      auto * const tmpHisto_Ptr = histos_Ptr + (i * HistoSize);
+      for (uint32 j = 0; j < HistoSize; ++j)
+      {
+         mainHisto_Ptr[j] += tmpHisto_Ptr[j];
+      }
+   }
 
-   // this does not align!
-   //auto * const hh = new Pixel[_Width * _Height * NThreads];
+   Pixel::destroyHisto(histos_Ptr);
 
-   // must call operator alignment delete[]
-   //auto * const hh = new (std::align_val_t{sizeof(Pixel)}) Pixel[_Width * _Height * NThreads];
+   postProcess(mainHisto_Ptr, HistoSize);
 
-   // this does not align!
-   std::allocator<Pixel> a;
-   auto * const hh = a.allocate(_Width * _Height * NThreads);
-
-   std::printf("%llu -- %llu\n", reinterpret_cast<uint64>(histos_Ptr)%sizeof(Pixel),
-                                 reinterpret_cast<uint64>(hh)%sizeof(Pixel));
+   return mainHisto_Ptr;
 }
 
 /**
@@ -115,89 +125,33 @@ void hoso::flame::Render::populate(Pixel * const histo_Ptr,
    }
 }
 
-// /**
-//  *
-//  */
-// void hoso::flame::Render::populate(Pixel * const histo_Ptr) const
-// {
-//    Random rand;
-//
-//    Point pnt((2.0 * rand.gen<Point::dim_t>()) - 1.0,  // x
-//              (2.0 * rand.gen<Point::dim_t>()) - 1.0); // y
-//    auto clr = rand.gen<Pixel::dim_t>();
-//
-//    StrangeAttractor sa;
-//    VarBlend vb;
-//
-//    for (uint i = 0; i < 100; ++i)
-//    {
-//       auto const Transform_idx = sa.preTransform(pnt, clr);
-//       pnt = vb.apply(Transform_idx, pnt);
-//       sa.postTransform(pnt, clr);
-//    }
-//
-//    auto minFitPnt = pnt;
-//    auto maxFitPnt = pnt;
-//    for (uint i = 0; i < 10'000; ++i)
-//    {
-//       auto const Transform_idx = sa.preTransform(pnt, clr);
-//       pnt = vb.apply(Transform_idx, pnt);
-//       sa.postTransform(pnt, clr);
-//
-//            if (pnt.x < minFitPnt.x) { minFitPnt.x = pnt.x; }
-//       else if (pnt.x > maxFitPnt.x) { maxFitPnt.x = pnt.x; }
-//
-//            if (pnt.y < minFitPnt.y) { minFitPnt.y = pnt.y; }
-//       else if (pnt.y > maxFitPnt.y) { maxFitPnt.y = pnt.y; }
-//    }
-//    Fitter const Fit(_Width, _Height, minFitPnt, maxFitPnt);
-//
-//    ColorScheme cs;
-//
-//    constexpr uint64 NIters = 1'000'000ull;
-//    for (uint64 i = 0; i < NIters; ++i)
-//    {
-//       auto const Transform_idx = sa.preTransform(pnt, clr);
-//       pnt = vb.apply(Transform_idx, pnt);
-//       sa.postTransform(pnt, clr);
-//
-//       auto const FitPnt = Fit.apply(pnt);
-//
-//       auto const X =           static_cast<int32>(FitPnt.x);
-//       auto const Y = _Height - static_cast<int32>(FitPnt.y);
-//
-//       if (X >= 0 && X < _Width &&
-//           Y >= 0 && Y < _Height)
-//       {
-//          auto const Idx = Y * _Width + X;
-//          histo_Ptr[Idx]   += cs.apply(clr);
-//          histo_Ptr[Idx].a += 1.0;
-//       }
-//    }
-//
-//    // TODO following should be in another class?
-//
-//    float64 alphaMax = 0.0;
-//    for (uint i = 0; i < _Width * _Height; ++i)
-//    {
-//       auto & pxl = histo_Ptr[i];
-//
-//       if (pxl.a > Pixel::Zero)
-//       {
-//          pxl      *= std::log(pxl.a) / pxl.a;
-//          alphaMax  = FastMath::max(alphaMax, pxl.a);
-//       }
-//    }
-//
-//    constexpr auto InvGamma = static_cast<Pixel::dim_t>(1.0 / (2.2)); // 2.2 - 4.0 is baseline
-//    for (uint i = 0; i < _Width * _Height; ++i)
-//    {
-//       auto & pxl = histo_Ptr[i];
-//
-//       if (pxl.a > Pixel::Zero)
-//       {
-//          pxl /= alphaMax;
-//          pxl ^= InvGamma;
-//       }
-//    }
-// }
+/**
+ *
+ */
+void hoso::flame::Render::postProcess(Pixel * const histo_Ptr,
+                                      uint32  const HistoSize) const
+{
+   auto alphaMax = Pixel::Zero;
+   for (uint i = 0; i < HistoSize; ++i)
+   {
+      auto & pxl = histo_Ptr[i];
+
+      if (pxl.a > Pixel::Zero)
+      {
+         pxl      *= std::log(pxl.a) / pxl.a;
+         alphaMax  = FastMath::max(alphaMax, pxl.a);
+      }
+   }
+
+   constexpr auto InvGamma = static_cast<Pixel::dim_t>(1.0 / (2.2)); // 2.2 - 4.0 is baseline
+   for (uint i = 0; i < HistoSize; ++i)
+   {
+      auto & pxl = histo_Ptr[i];
+
+      if (pxl.a > Pixel::Zero)
+      {
+         pxl /= alphaMax;
+         pxl ^= InvGamma;
+      }
+   }
+}

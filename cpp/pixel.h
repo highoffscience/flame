@@ -30,6 +30,9 @@ struct Pixel
                             dim_t const A_);
    implicit constexpr Pixel(dim_t const RGBA_);
 
+   static Pixel * createHisto(uint32 const HistoSize);
+   static void destroyHisto(Pixel * const histo_Ptr);
+
    constexpr auto isZero(void) const;
 
    constexpr auto operator +  (Pixel const & Rhs) const;
