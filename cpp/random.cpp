@@ -34,19 +34,21 @@ auto hoso::Random::gen<hoso::float32>(void) -> float32
       uint64  u64;
       uint32  u32;
       float32 f32;
-   } uf{.u64 = _s1};
+   } uf{.u64 = _s0 + _s3};
+
+   auto const Tmp = _s1 << 17;
 
    _s2 ^= _s0;
    _s3 ^= _s1;
    _s1 ^= _s2;
    _s0 ^= _s3;
 
-   _s2 ^= (uf.u64 << 17ull);
+   _s2 ^= Tmp;
 
-   _s3 ^= (_s3 << 45ull) | (_s3 >> (64ull - 45ull)); // rotate left
+   _s3 ^= (_s3 << 45) | (_s3 >> (64 - 45)); // rotate left
 
-   uf.u32  = (_s0 + _s3) >> (64ull - 23ull); // move highest bits into mantissa
-   uf.u32 |= 127u << 23u; // bias exponent
+   uf.u32  = uf.u64 >> (64 - 23); // move highest bits into mantissa
+   uf.u32 |= 127u << 23; // bias exponent
    uf.f32 -= 1.0f;
 
    return uf.f32;
@@ -68,19 +70,21 @@ auto hoso::Random::gen<hoso::float64>(void) -> float64
    {
       uint64  u64;
       float64 f64;
-   } uf{.u64 = _s1};
+   } uf{.u64 = _s0 + _s3};
+
+   auto const Tmp = _s1 << 17;
 
    _s2 ^= _s0;
    _s3 ^= _s1;
    _s1 ^= _s2;
    _s0 ^= _s3;
 
-   _s2 ^= (uf.u64 << 17ull);
+   _s2 ^= Tmp;
 
-   _s3 ^= (_s3 << 45ull) | (_s3 >> (64ull - 45ull)); // rotate left
+   _s3 ^= (_s3 << 45) | (_s3 >> (64 - 45)); // rotate left
 
-   uf.u64  = (_s0 + _s3) >> (64ull - 52ull); // move highest bits into mantissa
-   uf.u64 |= 1023ull << 52ull; // bias exponent
+   uf.u64  = uf.u64 >> (64 - 52); // move highest bits into mantissa
+   uf.u64 |= 1023ull << 52; // bias exponent
    uf.f64 -= 1.0;
 
    return uf.f64;
@@ -99,9 +103,7 @@ void hoso::Random::jump(uint32 const NJumps)
    };
    constexpr uint32 JumpTableSize = sizeof(JumpTable) / sizeof(*JumpTable);
 
-   auto const NJumpsBounded = NJumps % 128u;
-
-   for (uint32 i = 0; i < NJumpsBounded; ++i)
+   for (uint32 i = 0; i < NJumps; ++i)
    {
       uint64 s0 = 0;
       uint64 s1 = 0;
@@ -110,7 +112,7 @@ void hoso::Random::jump(uint32 const NJumps)
 
       for (uint32 j = 0; j < JumpTableSize; ++j)
       {
-         for (uint64 k = 0; k < 64; ++k)
+         for (uint32 k = 0; k < 64; ++k)
          {
             if (JumpTable[j] & (1ull << k))
             {
@@ -120,7 +122,8 @@ void hoso::Random::jump(uint32 const NJumps)
                s3 ^= _s3;
             }
 
-            void(gen());
+            // TODO just need the body of the generator, not the transform into float
+            gen<float32>();
          }
       }
 

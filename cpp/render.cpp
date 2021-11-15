@@ -34,9 +34,9 @@ hoso::flame::Render::Render(uint64 const NIters,
  */
 auto hoso::flame::Render::flame(void) -> Pixel *
 {
-   // TODO image is dimmer with more threads
+   // TODO image is fuzzier with more threads
    auto const HC = std::thread::hardware_concurrency();
-   auto const NThreads = 4; //(HC == 0) ? 2 : HC;
+   auto const NThreads = 8; //(HC == 0) ? 2 : HC;
 
    auto   const HistoSize  = _Width * _Height;
    auto * const histos_Ptr = Pixel::createHisto(HistoSize * NThreads);
@@ -115,6 +115,9 @@ void hoso::flame::Render::populate(Pixel * const histo_Ptr,
       auto const X =           static_cast<int32>(FitPnt.x);
       auto const Y = _Height - static_cast<int32>(FitPnt.y);
 
+      // TODO I think this can be optimized by only comparing the bounds
+      //      on Idx (ie Idx > 0 && Idx < HistoSize)
+      //      Further, exploiting int -> uint, maybe just Idx < HistoSize?
       if (X >= 0 && X < _Width &&
           Y >= 0 && Y < _Height)
       {
