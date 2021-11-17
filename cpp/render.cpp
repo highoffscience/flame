@@ -30,7 +30,8 @@ hoso::flame::Render::Render(uint64 const NIters,
 }
 
 /**
- *
+ * TODO need to calculate center of mass,
+ *      or perform best fit
  */
 auto hoso::flame::Render::flame(void) -> Pixel *
 {
@@ -44,7 +45,7 @@ auto hoso::flame::Render::flame(void) -> Pixel *
    _executors.reserve(NThreads);
    for (uint32 i = 0; i < NThreads; ++i)
    {
-      _executors.emplace_back(&Render::populate, this, histos_Ptr + (i * HistoSize), i);
+      _executors.emplace_back(&Render::populate, this, histos_Ptr + (i * HistoSize), i+1);
    }
    for (auto & executor_ref : _executors)
    {
@@ -55,6 +56,17 @@ auto hoso::flame::Render::flame(void) -> Pixel *
    for (uint32 i = 0; i < NThreads; ++i)
    {
       auto * const tmpHisto_Ptr = histos_Ptr + (i * HistoSize);
+      Point com; // centre of mass
+      auto mass = Point::Zero;
+      for (uint32 y = 0; y < _Height; ++y)
+      {
+         for (uint32 x = 0; x < _Width; ++x)
+         {
+            auto const Idx = y * _Width + x;
+            com.x += (x + 0.5) * tmpHisto_Ptr[Idx].a;
+         }
+         com.y += (y + 0.5) * tmpHisto_Ptr[y * _Width].a;
+      }
       for (uint32 j = 0; j < HistoSize; ++j)
       {
          mainHisto_Ptr[j] += tmpHisto_Ptr[j];
@@ -77,8 +89,10 @@ void hoso::flame::Render::populate(Pixel * const histo_Ptr,
    Random rand;
    rand.jump(JumpNumber);
 
-   Point pnt((2.0 * rand.gen<Point::dim_t>()) - 1.0,  // x
-             (2.0 * rand.gen<Point::dim_t>()) - 1.0); // y
+   //Point pnt((2.0 * rand.gen<Point::dim_t>()) - 1.0,  // x
+   //          (2.0 * rand.gen<Point::dim_t>()) - 1.0); // y
+   Point pnt(0.0,  // x
+             0.0); // y
    auto clr = rand.gen<Pixel::dim_t>();
 
    for (uint i = 0; i < 100; ++i)

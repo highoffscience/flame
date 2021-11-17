@@ -56,7 +56,7 @@ int main(const int argc, const char* const* const argv)
 
    Pixel::destroyHisto(histo_Ptr);
 
-   image.write("./pics/fractal-1.0.png");
+   image.write("./pics/fractal-2.0.png");
 
    return 0;
 }
