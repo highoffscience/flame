@@ -21,7 +21,7 @@ int main(const int argc, const char* const* const argv)
    using namespace hoso;
    using namespace flame;
 
-   constexpr uint64 NIters = 1'000'000ull;
+   constexpr uint64 NIters = 100'000'000ull;
    constexpr uint32 Width  = 1920;
    constexpr uint32 Height = 1080;
 
@@ -56,7 +56,7 @@ int main(const int argc, const char* const* const argv)
 
    Pixel::destroyHisto(histo_Ptr);
 
-   image.write("./pics/fractal-2.0.png");
+   image.write("./pics/fractal-1.0.png");
 
    return 0;
 }

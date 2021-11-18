@@ -36,8 +36,14 @@ hoso::flame::Render::Render(uint64 const NIters,
 auto hoso::flame::Render::flame(void) -> Pixel *
 {
    // TODO image is fuzzier with more threads
+   //      The image across different threads actually produce slightly different images.
+   //      I loaded them in gimp and tried to overlay them and there are slight
+   //      differences. Unless I can someone jump ahead in the attractor I don't think
+   //      multiple threads will produce better results. Unfortunately.
+   //      Even if the starting points and color is the same, the images produced are different
+   //      and cannot be overlayed.
    auto const HC = std::thread::hardware_concurrency();
-   auto const NThreads = 8; //(HC == 0) ? 2 : HC;
+   auto const NThreads = 1; //(HC == 0) ? 2 : HC;
 
    auto   const HistoSize  = _Width * _Height;
    auto * const histos_Ptr = Pixel::createHisto(HistoSize * NThreads);
@@ -45,7 +51,7 @@ auto hoso::flame::Render::flame(void) -> Pixel *
    _executors.reserve(NThreads);
    for (uint32 i = 0; i < NThreads; ++i)
    {
-      _executors.emplace_back(&Render::populate, this, histos_Ptr + (i * HistoSize), i+1);
+      _executors.emplace_back(&Render::populate, this, histos_Ptr + (i * HistoSize), i);
    }
    for (auto & executor_ref : _executors)
    {
@@ -55,21 +61,26 @@ auto hoso::flame::Render::flame(void) -> Pixel *
    auto * const mainHisto_Ptr = Pixel::createHisto(HistoSize);
    for (uint32 i = 0; i < NThreads; ++i)
    {
+      // // TODO fix this
       auto * const tmpHisto_Ptr = histos_Ptr + (i * HistoSize);
-      Point com; // centre of mass
-      auto mass = Point::Zero;
-      for (uint32 y = 0; y < _Height; ++y)
-      {
-         for (uint32 x = 0; x < _Width; ++x)
-         {
-            auto const Idx = y * _Width + x;
-            com.x += (x + 0.5) * tmpHisto_Ptr[Idx].a;
-         }
-         com.y += (y + 0.5) * tmpHisto_Ptr[y * _Width].a;
-      }
+      // Point com; // centre of mass
+      // auto mass = Point::Zero;
+      // for (uint32 y = 0; y < _Height; ++y)
+      // {
+      //    for (uint32 x = 0; x < _Width; ++x)
+      //    {
+      //       auto const Idx = y * _Width + x;
+      //       com.x += (x + 0.5) * tmpHisto_Ptr[Idx].a;
+      //       com.y += (y + 0.5) * tmpHisto_Ptr[Idx].a;
+      //       mass += tmpHisto_Ptr[Idx].a;
+      //    }
+      // }
+      // com.x /= mass;
+      // com.y /= mass;
       for (uint32 j = 0; j < HistoSize; ++j)
       {
-         mainHisto_Ptr[j] += tmpHisto_Ptr[j];
+         // TODO +=
+         mainHisto_Ptr[j] = tmpHisto_Ptr[j];
       }
    }
 
@@ -89,11 +100,15 @@ void hoso::flame::Render::populate(Pixel * const histo_Ptr,
    Random rand;
    rand.jump(JumpNumber);
 
-   //Point pnt((2.0 * rand.gen<Point::dim_t>()) - 1.0,  // x
-   //          (2.0 * rand.gen<Point::dim_t>()) - 1.0); // y
-   Point pnt(0.0,  // x
-             0.0); // y
-   auto clr = rand.gen<Pixel::dim_t>();
+   // TODO I don't think this works if it comes out 0, 0
+   // Point pnt((2.0 * rand.gen<Point::dim_t>()) - 1.0,  // x
+   //           (2.0 * rand.gen<Point::dim_t>()) - 1.0); // y
+   // auto clr = rand.gen<Pixel::dim_t>();
+
+   // TODO I don't think this works if it comes out 0, 0
+   Point pnt(0.5,  // x
+             0.5); // y
+   Pixel::dim_t clr = 0.5;
 
    for (uint i = 0; i < 100; ++i)
    {
