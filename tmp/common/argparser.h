@@ -6,14 +6,12 @@
 
 #include <cstdio>
 #include <exception>
-#include <vector>
+
+namespace hoso
+{
 
 /**
  * Arg names must be string literals
- * 
- * In Elaine the table for this class would be a minimal perfect hash
- * 
- * TODO change to use constexpr std::vector when it finally comes out
  */
 class ArgParser
 {
@@ -24,26 +22,20 @@ public:
    class Arg
    {
    public:
-      explicit Arg(Str_T const Name);
+      explicit Arg(str const Name);
 
-      inline auto getName (void) const { return _Name;                                  }
-      inline auto getDesc (void) const { return _desc;                                  }
-      inline auto getVal  (void) const { return isBinary() ? _binVal : _args[_val_idx]; }
-      inline auto getAbbr (void) const { return _abbr;                                  }
-      inline auto isBinary(void) const { return _val_idx == 0;                          }
+      inline auto getName(void) const { return _Name; }
+      inline auto getDesc(void) const { return _desc; }
+      inline auto getAbbr(void) const { return _abbr; }
 
-      Arg * desc      (Str_T const Desc      );
-      Arg * defaultVal(Str_T const DefaultVal);
-      Arg * defaultVal(bool  const DefaultVal); // sets the arg to be binary
-      Arg * abbr      (char  const Abbr      );
-      Arg * binary    (void                  );
+      Arg * desc (str  const Desc);
+      Arg * abbr (char const Abbr);
+      Arg * yesno(void           );
 
    private:
-      Str_T const _Name;    // arg name (used as the key)
-      Str_T const _Desc;    // description
-      uint16      _val_idx; // index of value (0 indicates binary value)
-      char        _abbr;    // abbreviation of name
-      bool        _binVal;  // value, if applicable
+      str const _Name;    // arg name (used as the key)
+      str       _desc;    // description
+      char      _abbr;    // abbreviation of name
    };
 
    /**
@@ -53,18 +45,22 @@ public:
    {
    public:
       template<typename... Args_T>
-      explicit ParseError(Str_T  const    Format,
+      explicit ParseError(str    const    Format,
                           Args_T const... Args);
       virtual ~ParseError(void) = default;
 
-      virtual Str_T what(void) const noexcept override;
+      virtual str what(void) const noexcept override;
 
    private:
-      static constexpr uint32 MsgSize_bytes = 128;
+      static constexpr uint32 MsgSize_bytes = 256;
       char _msg[MsgSize_bytes];
    };
 
-   static ArgParser * getInstancePtr(void);
+   explicit ArgParser(void);
+   ~ArgParser(void);
+
+   template <typename... Args_T>
+   void init(Args_T const... Args);
 
    Arg * add(Str_T const Name);
 
@@ -74,19 +70,37 @@ public:
    Arg * get(Str_T const Key);
 
 private:
-   explicit ArgParser(void) = default;
-
-   static std::vector<Arg> _args;
-   static uint16           _abbrs[52];
+   Arg *  _args_ptr;
+   uint32 _abbrs[52];
 };
 
 /**
  * 
  */
 template<typename... Args_T>
-ArgParser::ParseError::ParseError(Str_T  const    Format,
+ArgParser::ParseError::ParseError(str    const    Format,
                                   Args_T const... Args)
    : _msg {'\0'}
 {
-   (void)std::snprintf(_msg, MsgSize_bytes, Format, Args...);
+   std::snprintf(_msg, MsgSize_bytes, Format, Args...);
 }
+
+/**
+ * 
+ */
+template <typename... Args_T>
+void ArgParser::init(Args_T const... Args)
+{
+   constexpr auto NArgs = sizeof...(Args_T);
+   static_assert(NArgs > 0, "Number of args in init() must be greater than 0!");
+
+   _args_ptr = static_cast<Arg *>(::operator new(NArgs * sizeof(Arg)));
+   if (!_args_ptr)
+   {
+      throw ParseError("Unable to allocate memory to store argument details!");
+   }
+
+   
+}
+
+} // hoso

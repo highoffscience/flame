@@ -7,17 +7,23 @@
 #include <cstdlib>
 #include <cstring>
 
-std::vector<ArgParser::Arg> ArgParser::_args;
-ArgParser::Arg *            ArgParser::_abbrs[52] = {nullptr};
+/**
+ * TODO
+ */
+hoso::ArgParser::ArgParser(void)
+{
+
+}
 
 /**
- * 
+ * TODO
  */
-auto ArgParser::getInstancePtr(void) -> ArgParser *
+hoso::ArgParser::~ArgParser(void)
 {
-   static ArgParser s_instance;
-
-   return &s_instance;
+   if (_args_ptr)
+   {
+      ::operator delete(_args_ptr);
+   }
 }
 
 /**
