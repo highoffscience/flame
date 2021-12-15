@@ -7,6 +7,38 @@
 #include <cstdio>
 #include <exception>
 
+/*
+struct Arg
+{
+    Arg(int i_) : i(i_) {}
+    
+    Arg & addJ(int j_) { j = j_; return *this; }
+    Arg & addK(int k_) { k = k_; return *this; }
+    
+    int i, j, k;
+};
+
+template <typename... Params_T>
+void print(Params_T const... Params)
+{
+    static_assert(std::conjunction_v<std::is_same<Params_T, Arg>...>, "Not Arg type");
+    
+    std::cout << "NArgs " << sizeof...(Params_T) << std::endl;
+    
+    ((std::cout << Params.i << ", "
+                << Params.j << ", "
+                << Params.k << std::endl), ...);
+}
+ 
+int main() 
+{
+    print(Arg(1).addJ(2).addK(3),
+          Arg(4).addJ(5).addK(6),
+          Arg(7).addJ(8).addK(9));
+    return 0;
+}
+*/
+
 namespace hoso
 {
 
@@ -62,12 +94,7 @@ public:
    template <typename... Args_T>
    void init(Args_T const... Args);
 
-   Arg * add(Str_T const Name);
-
-   void parse(int   const         Argc,
-              Str_T const * const Argv_Ptr);
-
-   Arg * get(Str_T const Key);
+   Arg * add(str const Name);
 
 private:
    Arg *  _args_ptr;
@@ -86,7 +113,7 @@ ArgParser::ParseError::ParseError(str    const    Format,
 }
 
 /**
- * 
+ * TODO change from Args_T to Params_T
  */
 template <typename... Args_T>
 void ArgParser::init(Args_T const... Args)
@@ -99,8 +126,6 @@ void ArgParser::init(Args_T const... Args)
    {
       throw ParseError("Unable to allocate memory to store argument details!");
    }
-
-   
 }
 
 } // hoso
