@@ -30,8 +30,7 @@ hoso::flame::Render::Render(uint64 const NIters,
 }
 
 /**
- * TODO need to calculate center of mass,
- *      or perform best fit
+ *
  */
 auto hoso::flame::Render::flame(void) -> Pixel *
 {

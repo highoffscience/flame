@@ -11,8 +11,8 @@
  * TODO
  */
 hoso::ArgParser::ArgParser(void)
+   : _args_ptr {nullptr}
 {
-
 }
 
 /**
@@ -26,22 +26,22 @@ hoso::ArgParser::~ArgParser(void)
    }
 }
 
-/**
- * 
- */
-auto hoso::ArgParser::add(str const Name) -> Arg *
-{
-   // // because of the magic std::vector uses to manages it's elements we need to
-   // //  guarantee there will be space for elements - no on-the-fly allocation
-   // if (_args.size() == _args.capacity())
-   // {
-   //    _args.reserve((_args.capacity() == 0) ? 4 : _args.capacity() * 2);
-   // }
-// 
-   // _args.emplace_back(Name);
-// 
-   // return &_args.back();
-}
+// /**
+//  *
+//  */
+// auto hoso::ArgParser::add(str const Name) -> Arg *
+// {
+//    // // because of the magic std::vector uses to manages it's elements we need to
+//    // //  guarantee there will be space for elements - no on-the-fly allocation
+//    // if (_args.size() == _args.capacity())
+//    // {
+//    //    _args.reserve((_args.capacity() == 0) ? 4 : _args.capacity() * 2);
+//    // }
+// //
+//    // _args.emplace_back(Name);
+// //
+//    // return &_args.back();
+// }
 
 /**
  * TODO this should return an exception with all the errors
@@ -53,11 +53,11 @@ auto hoso::ArgParser::add(str const Name) -> Arg *
 //       return (C >= 'A' && C <= 'Z') ||
 //              (C >= 'a' && C <= 'z');
 //    }
-// 
+//
 //    for (int i = 1; i < Argc; ++i)
 //    {
 //       auto name = Argv_Ptr[i];
-// 
+//
 //       if (name[0] == '-') // accessing 0th element is safe because it's null terminated
 //       { // potential arg
 //          if (name[1] == '-')
@@ -97,16 +97,16 @@ auto hoso::ArgParser::add(str const Name) -> Arg *
 //             continue;
 //          }
 //       }
-// 
+//
 //       std::printf("Found rogue value %s!\n", arg);
 //       everythingGood = false;
 //    }
-// 
+//
 //    return everythingGood;
 // }
-// 
+//
 // /**
-//  * 
+//  *
 //  */
 // auto ArgParser::get(Str_T const Key) -> Arg *
 // {
@@ -117,7 +117,7 @@ auto hoso::ArgParser::add(str const Name) -> Arg *
 // }
 
 /**
- * 
+ *
  */
 hoso::ArgParser::Arg::Arg(str const Name)
    : _Name   {Name   },
@@ -140,9 +140,9 @@ hoso::ArgParser::Arg::Arg(str const Name)
 }
 
 /**
- * 
+ *
  */
-auto hoso::ArgParser::Arg::desc(str const Desc) -> Arg *
+auto hoso::ArgParser::Arg::desc(str const Desc) -> Arg &
 {
    if (_desc)
    {
@@ -156,37 +156,37 @@ auto hoso::ArgParser::Arg::desc(str const Desc) -> Arg *
       throw ParseError("%s", "Desc must be non-empty!");
    }
 
-   return this;
+   return *this;
 }
 
 /**
- * 
+ *
  */
-auto hoso::ArgParser::Arg::abbr(char const Abbr) -> Arg *
+auto hoso::ArgParser::Arg::abbr(char const Abbr) -> Arg &
 {
    // uint32 const Idx = (Abbr >= 'A' && Abbr <= 'Z') ? (Abbr - 'A'     ) :
    //                    (Abbr >= 'a' && Abbr <= 'z') ? (Abbr - 'a' + 26) : _args.size();
-// 
+//
    // if (Idx >= 52)
    // {
    //    throw ParseError("Illegal abbr '%c' found for arg '%s'!", Abbr, getName());
    // }
-// 
+//
    // if (_abbrs[Idx])
    // {
    //    throw ParseError("Arg '%s' wants abbr '%c' but it's already used by arg '%s'!",
    //                     getName(), Abbr, _abbrs[Idx]->getName());
    // }
-// 
+//
    // // TODO need to preserve MSB
    // _abbr = Abbr & 0x7F;
    // _abbrs[Idx] = this;
 
-   return this;
+   return *this;
 }
 
 /**
- * 
+ *
  */
 auto hoso::ArgParser::ParseError::what(void) const noexcept -> str
 {
@@ -194,22 +194,23 @@ auto hoso::ArgParser::ParseError::what(void) const noexcept -> str
 }
 
 /*
- * 
+ *
  */
 #ifdef drive_argparser
-int main(int   const         Argc,
-         Str_T const * const Argv_Ptr)
+int main(int  const         Argc,
+         char const * const Argv_Ptr)
 {
-   auto * const argparser_Ptr = ArgParser::getInstancePtr();
+   hoso::ArgParser argParser;
    try
    {
-      argparser_Ptr->add("input")->abbr('i')->desc("Input file");
-      argparser_Ptr->add("output")->abbr('o')->desc("Output file");
-      argparser_Ptr->parse(Argc, Argv_Ptr);
+      argParser.init(
+         hoso::ArgParser::Arg("verbose").abbr('v').desc("Increase logging"),
+         hoso::ArgParser::Arg("deploy").abbr('d').desc("Deploys project")
+      );
    }
-   catch (ArgParser::ParseError const & E)
+   catch (hoso::ArgParser::ParseError const & E)
    {
-      std::printf("ArgParser failure! %s\n", E.what());
+      std::printf("ArgParser failure! %s!\n", E.what());
       return 1;
    }
    return 0;
