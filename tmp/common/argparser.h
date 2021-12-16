@@ -57,9 +57,9 @@ public:
    public:
       explicit Arg(str const Name);
 
-      inline auto getName(void) const { return _Name; }
-      inline auto getDesc(void) const { return _desc; }
-      inline auto getAbbr(void) const { return _abbr; }
+      inline auto name(void) const { return _Name; }
+      inline auto desc(void) const { return _desc; }
+      inline auto abbr(void) const { return _abbr; }
 
       Arg & desc (str  const Desc);
       Arg & abbr (char const Abbr);
@@ -77,6 +77,7 @@ public:
    class ParseError : public std::exception
    {
    public:
+      explicit ParseError(str      const    Format);
       template<typename... Params_T>
       explicit ParseError(str      const    Format,
                           Params_T const... Params);
@@ -95,6 +96,8 @@ public:
    template <typename... Params_T>
    void init(Params_T const... Params);
 
+   Arg * get(str const ArgName);
+
 private:
    template <typename Head_T>
    void init_helper(uint32 const   Idx,
@@ -109,6 +112,14 @@ private:
    Arg *  _args_ptr;
    uint32 _abbrs[52];
 };
+
+/**
+ * Get rid of "format ain't a string literal" error
+ */
+ArgParser::ParseError::ParseError(str const Format)
+   : ParseError("%s", Format)
+{
+}
 
 /**
  *
@@ -158,7 +169,7 @@ void ArgParser::init(Params_T const... Params)
    _args_ptr = static_cast<Arg *>(::operator new(NArgs * sizeof(Arg)));
    if (!_args_ptr)
    {
-      throw ParseError("Unable to allocate memory to store argument details!");
+      throw ParseError("Unable to allocate memory to store argument details");
    }
 
    init_helper(0, Params...);

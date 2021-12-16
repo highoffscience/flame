@@ -105,16 +105,16 @@ hoso::ArgParser::~ArgParser(void)
 //    return everythingGood;
 // }
 //
-// /**
-//  *
-//  */
-// auto ArgParser::get(Str_T const Key) -> Arg *
-// {
-//    return static_cast<Arg *>(std::bsearch(Key, _args.data(), _args.size(), sizeof(Arg),
-//                                           [](void const * Lhs_ptr, void const * Rhs_ptr) -> int {
-//       return std::strcmp(static_cast<Str_T>(Lhs_ptr), static_cast<Str_T>(Rhs_ptr));
-//    }));
-// }
+/**
+ *
+ */
+auto hoso::ArgParser::get(str const ArgName) -> Arg *
+{
+   return static_cast<Arg *>(std::bsearch(ArgName, _args_ptr, 2/*size*/, sizeof(Arg),
+                                          [](void const * Lhs_ptr, void const * Rhs_ptr) -> int {
+      return std::strcmp(static_cast<str>(Lhs_ptr), static_cast<str>(Rhs_ptr));
+   }));
+}
 
 /**
  *
@@ -146,7 +146,7 @@ auto hoso::ArgParser::Arg::desc(str const Desc) -> Arg &
 {
    if (_desc)
    {
-      throw ParseError("Arg '%s' already has a description!", getName());
+      throw ParseError("Arg '%s' already has a description!", name());
    }
 
    _desc = Desc;
@@ -197,8 +197,9 @@ auto hoso::ArgParser::ParseError::what(void) const noexcept -> str
  *
  */
 #ifdef drive_argparser
-int main(int  const         Argc,
-         char const * const Argv_Ptr)
+#include <iostream>
+int main(int       const         Argc,
+         hoso::str const * const Argv_Ptr)
 {
    hoso::ArgParser argParser;
    try
@@ -213,6 +214,7 @@ int main(int  const         Argc,
       std::printf("ArgParser failure! %s!\n", E.what());
       return 1;
    }
+   std::cout << argParser.get("verbose")->desc() << std::endl;
    return 0;
 }
 #endif // drive_argparser
