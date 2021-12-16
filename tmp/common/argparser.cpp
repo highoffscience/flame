@@ -11,7 +11,9 @@
  * TODO
  */
 hoso::ArgParser::ArgParser(void)
-   : _args_ptr {nullptr}
+   : _args_ptr {nullptr},
+     _abbrs    {0      },
+     _nArgs    {0      }
 {
 }
 
@@ -110,9 +112,11 @@ hoso::ArgParser::~ArgParser(void)
  */
 auto hoso::ArgParser::get(str const ArgName) -> Arg *
 {
-   return static_cast<Arg *>(std::bsearch(ArgName, _args_ptr, 2/*size*/, sizeof(Arg),
+   Arg arg(ArgName);
+   return static_cast<Arg *>(std::bsearch(&arg, _args_ptr, _nArgs, sizeof(Arg),
                                           [](void const * Lhs_ptr, void const * Rhs_ptr) -> int {
-      return std::strcmp(static_cast<str>(Lhs_ptr), static_cast<str>(Rhs_ptr));
+      return std::strcmp(static_cast<Arg const *>(Lhs_ptr)->name(),
+                         static_cast<Arg const *>(Rhs_ptr)->name());
    }));
 }
 
@@ -126,7 +130,7 @@ hoso::ArgParser::Arg::Arg(str const Name)
 {
    if (!_Name || !_Name[0])
    {
-      throw ParseError("%s", "Name must be non-empty!");
+      throw ParseError("Name must be non-empty!");
    }
 
    // if (_args.data() && this != _args.data())
@@ -153,7 +157,7 @@ auto hoso::ArgParser::Arg::desc(str const Desc) -> Arg &
 
    if (!_desc || !_desc[0])
    {
-      throw ParseError("%s", "Desc must be non-empty!");
+      throw ParseError("Desc must be non-empty!");
    }
 
    return *this;
@@ -204,9 +208,10 @@ int main(int       const         Argc,
    hoso::ArgParser argParser;
    try
    {
-      argParser.init(
-         hoso::ArgParser::Arg("verbose").abbr('v').desc("Increase logging"),
-         hoso::ArgParser::Arg("deploy").abbr('d').desc("Deploys project")
+      using Arg = hoso::ArgParser::Arg;
+      argParser.parse(Argc, Argv_Ptr,
+         Arg("clean").abbr('c').desc("Cleans project"),
+         Arg("verbose").abbr('v').desc("Increases logging")
       );
    }
    catch (hoso::ArgParser::ParseError const & E)

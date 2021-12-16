@@ -8,38 +8,6 @@
 #include <exception>
 #include <type_traits>
 
-/*
-struct Arg
-{
-    Arg(int i_) : i(i_) {}
-
-    Arg & addJ(int j_) { j = j_; return *this; }
-    Arg & addK(int k_) { k = k_; return *this; }
-
-    int i, j, k;
-};
-
-template <typename... Params_T>
-void print(Params_T const... Params)
-{
-    static_assert(std::conjunction_v<std::is_same<Params_T, Arg>...>, "Not Arg type");
-
-    std::cout << "NArgs " << sizeof...(Params_T) << std::endl;
-
-    ((std::cout << Params.i << ", "
-                << Params.j << ", "
-                << Params.k << std::endl), ...);
-}
-
-int main()
-{
-    print(Arg(1).addJ(2).addK(3),
-          Arg(4).addJ(5).addK(6),
-          Arg(7).addJ(8).addK(9));
-    return 0;
-}
-*/
-
 namespace hoso
 {
 
@@ -94,23 +62,26 @@ public:
    ~ArgParser(void);
 
    template <typename... Params_T>
-   void init(Params_T const... Params);
+   void parse(int      const         Argc,
+              str      const * const Argv_Ptr,
+              Params_T const &...    Params);
 
    Arg * get(str const ArgName);
 
 private:
    template <typename Head_T>
-   void init_helper(uint32 const   Idx,
-                    Head_T const & Head);
+   constexpr void parse_helper(uint32 const   Idx,
+                               Head_T const & Head);
 
    template <typename    Head_T,
              typename... Rest_T>
-   void init_helper(uint32 const      Idx,
-                    Head_T const &    Head,
-                    Rest_T const &... Rest);
+   constexpr void parse_helper(uint32 const      Idx,
+                               Head_T const &    Head,
+                               Rest_T const &... Rest);
 
    Arg *  _args_ptr;
    uint32 _abbrs[52];
+   uint32 _nArgs;
 };
 
 /**
@@ -136,8 +107,8 @@ ArgParser::ParseError::ParseError(str      const    Format,
  *
  */
 template <typename Head_T>
-void ArgParser::init_helper(uint32 const   Idx,
-                            Head_T const & Head)
+constexpr void ArgParser::parse_helper(uint32 const   Idx,
+                                       Head_T const & Head)
 {
    new (_args_ptr + Idx) Arg(Head);
 }
@@ -147,22 +118,24 @@ void ArgParser::init_helper(uint32 const   Idx,
  */
 template <typename    Head_T,
           typename... Rest_T>
-void ArgParser::init_helper(uint32 const      Idx,
-                            Head_T const &    Head,
-                            Rest_T const &... Rest)
+constexpr void ArgParser::parse_helper(uint32 const      Idx,
+                                       Head_T const &    Head,
+                                       Rest_T const &... Rest)
 {
-   init_helper(Idx,     Head   );
-   init_helper(Idx + 1, Rest...);
+   parse_helper(Idx,     Head   );
+   parse_helper(Idx + 1, Rest...);
 }
 
 /**
  *
  */
 template <typename... Params_T>
-void ArgParser::init(Params_T const... Params)
+void ArgParser::parse(int      const         Argc,
+                      str      const * const Argv_Ptr,
+                      Params_T const &...    Params)
 {
    constexpr auto NArgs = sizeof...(Params_T);
-   static_assert(NArgs > 0, "Number of params in init() must be greater than 0!");
+   static_assert(NArgs > 0, "Number of params in parse() must be greater than 0!");
 
    static_assert(std::conjunction_v<std::is_same<Params_T, Arg>...>, "Param not Arg type!");
 
@@ -172,7 +145,9 @@ void ArgParser::init(Params_T const... Params)
       throw ParseError("Unable to allocate memory to store argument details");
    }
 
-   init_helper(0, Params...);
+   _nArgs = NArgs;
+
+   parse_helper(0, Params...);
 }
 
 } // hoso
