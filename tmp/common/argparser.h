@@ -34,9 +34,9 @@ public:
       Arg & yesno(void           );
 
    private:
-      str const _Name;    // arg name (used as the key)
-      str       _desc;    // description
-      char      _abbr;    // abbreviation of name
+      str const _Name; // arg name (used as the key)
+      str       _desc; // description
+      char      _abbr; // abbreviation of name
    };
 
    /**
@@ -66,7 +66,8 @@ public:
               str      const * const Argv_Ptr,
               Params_T const &...    Params);
 
-   Arg * get(str const ArgName);
+   inline auto        operator[](str const ArgName) const { return get(ArgName); }
+          Arg const & get       (str const ArgName) const;
 
 private:
    template <typename Head_T>
@@ -111,6 +112,15 @@ constexpr void ArgParser::parse_helper(uint32 const   Idx,
                                        Head_T const & Head)
 {
    new (_args_ptr + Idx) Arg(Head);
+
+   if (Idx > 0)
+   {
+      auto const PrevName = (this - 1)->getName();
+   //    if (std::strcmp(PrevName, _Name) > 0)
+   //    { // _Name is lexicographically smaller than previous name - uh oh
+   //       throw ParseError("Arg '%s' is not supposed to preceed arg '%s'!", _Name, PrevName);
+   //    }
+   }
 }
 
 /**

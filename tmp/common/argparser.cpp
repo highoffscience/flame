@@ -110,11 +110,11 @@ hoso::ArgParser::~ArgParser(void)
 /**
  *
  */
-auto hoso::ArgParser::get(str const ArgName) -> Arg *
+auto hoso::ArgParser::get(str const ArgName) const -> Arg const &
 {
    Arg arg(ArgName);
-   return static_cast<Arg *>(std::bsearch(&arg, _args_ptr, _nArgs, sizeof(Arg),
-                                          [](void const * Lhs_ptr, void const * Rhs_ptr) -> int {
+   return *static_cast<Arg *>(std::bsearch(&arg, _args_ptr, _nArgs, sizeof(Arg),
+                                           [](void const * Lhs_ptr, void const * Rhs_ptr) -> int {
       return std::strcmp(static_cast<Arg const *>(Lhs_ptr)->name(),
                          static_cast<Arg const *>(Rhs_ptr)->name());
    }));
@@ -201,7 +201,6 @@ auto hoso::ArgParser::ParseError::what(void) const noexcept -> str
  *
  */
 #ifdef drive_argparser
-#include <iostream>
 int main(int       const         Argc,
          hoso::str const * const Argv_Ptr)
 {
@@ -219,7 +218,7 @@ int main(int       const         Argc,
       std::printf("ArgParser failure! %s!\n", E.what());
       return 1;
    }
-   std::cout << argParser.get("verbose")->desc() << std::endl;
+   std::printf("%s\n", argParser["verbose"].desc());
    return 0;
 }
 #endif // drive_argparser
