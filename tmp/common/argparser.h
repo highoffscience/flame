@@ -5,6 +5,7 @@
 #include "standard.h"
 
 #include <cstdio>
+#include <cstring>
 #include <exception>
 #include <type_traits>
 
@@ -70,18 +71,20 @@ public:
           Arg const & get       (str const ArgName) const;
 
 private:
-   template <typename Head_T>
-   constexpr void parse_helper(uint32 const   Idx,
-                               Head_T const & Head);
+   void parse_args(int const         Argc,
+                   str const * const Argv_Ptr);
+
+   void parse_helper(uint32 const   Idx,
+                     Arg    const & Head);
 
    template <typename    Head_T,
              typename... Rest_T>
-   constexpr void parse_helper(uint32 const      Idx,
-                               Head_T const &    Head,
-                               Rest_T const &... Rest);
+   inline void parse_helper(uint32 const      Idx,
+                            Head_T const &    Head,
+                            Rest_T const &... Rest);
 
    Arg *  _args_ptr;
-   uint32 _abbrs[52];
+   uint16 _abbrs[52];
    uint32 _nArgs;
 };
 
@@ -107,30 +110,11 @@ ArgParser::ParseError::ParseError(str      const    Format,
 /**
  *
  */
-template <typename Head_T>
-constexpr void ArgParser::parse_helper(uint32 const   Idx,
-                                       Head_T const & Head)
-{
-   new (_args_ptr + Idx) Arg(Head);
-
-   if (Idx > 0)
-   {
-      auto const PrevName = (this - 1)->getName();
-   //    if (std::strcmp(PrevName, _Name) > 0)
-   //    { // _Name is lexicographically smaller than previous name - uh oh
-   //       throw ParseError("Arg '%s' is not supposed to preceed arg '%s'!", _Name, PrevName);
-   //    }
-   }
-}
-
-/**
- *
- */
 template <typename    Head_T,
           typename... Rest_T>
-constexpr void ArgParser::parse_helper(uint32 const      Idx,
-                                       Head_T const &    Head,
-                                       Rest_T const &... Rest)
+inline void ArgParser::parse_helper(uint32 const      Idx,
+                                    Head_T const &    Head,
+                                    Rest_T const &... Rest)
 {
    parse_helper(Idx,     Head   );
    parse_helper(Idx + 1, Rest...);
@@ -145,6 +129,7 @@ void ArgParser::parse(int      const         Argc,
                       Params_T const &...    Params)
 {
    constexpr auto NArgs = sizeof...(Params_T);
+
    static_assert(NArgs > 0, "Number of params in parse() must be greater than 0!");
 
    static_assert(std::conjunction_v<std::is_same<Params_T, Arg>...>, "Param not Arg type!");
@@ -158,6 +143,8 @@ void ArgParser::parse(int      const         Argc,
    _nArgs = NArgs;
 
    parse_helper(0, Params...);
+
+   parse_args(Argc, Argv_Ptr);
 }
 
 } // hoso

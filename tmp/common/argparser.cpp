@@ -5,10 +5,9 @@
 #include "argparser.h"
 
 #include <cstdlib>
-#include <cstring>
 
 /**
- * TODO
+ *
  */
 hoso::ArgParser::ArgParser(void)
    : _args_ptr {nullptr},
@@ -18,7 +17,7 @@ hoso::ArgParser::ArgParser(void)
 }
 
 /**
- * TODO
+ *
  */
 hoso::ArgParser::~ArgParser(void)
 {
@@ -27,23 +26,6 @@ hoso::ArgParser::~ArgParser(void)
       ::operator delete(_args_ptr);
    }
 }
-
-// /**
-//  *
-//  */
-// auto hoso::ArgParser::add(str const Name) -> Arg *
-// {
-//    // // because of the magic std::vector uses to manages it's elements we need to
-//    // //  guarantee there will be space for elements - no on-the-fly allocation
-//    // if (_args.size() == _args.capacity())
-//    // {
-//    //    _args.reserve((_args.capacity() == 0) ? 4 : _args.capacity() * 2);
-//    // }
-// //
-//    // _args.emplace_back(Name);
-// //
-//    // return &_args.back();
-// }
 
 /**
  * TODO this should return an exception with all the errors
@@ -132,15 +114,6 @@ hoso::ArgParser::Arg::Arg(str const Name)
    {
       throw ParseError("Name must be non-empty!");
    }
-
-   // if (_args.data() && this != _args.data())
-   // {
-   //    auto const PrevName = (this - 1)->getName();
-   //    if (std::strcmp(PrevName, _Name) > 0)
-   //    { // _Name is lexicographically smaller than previous name - uh oh
-   //       throw ParseError("Arg '%s' is not supposed to preceed arg '%s'!", _Name, PrevName);
-   //    }
-   // }
 }
 
 /**
@@ -157,7 +130,7 @@ auto hoso::ArgParser::Arg::desc(str const Desc) -> Arg &
 
    if (!_desc || !_desc[0])
    {
-      throw ParseError("Desc must be non-empty!");
+      throw ParseError("Arg desc must be non-empty!");
    }
 
    return *this;
@@ -187,6 +160,38 @@ auto hoso::ArgParser::Arg::abbr(char const Abbr) -> Arg &
    // _abbrs[Idx] = this;
 
    return *this;
+}
+
+/**
+ *
+ */
+void hoso::ArgParser::parse_args(int const         Argc,
+                                 str const * const Argv_Ptr)
+{
+
+}
+
+/**
+ *
+ */
+void hoso::ArgParser::parse_helper(uint32 const   Idx,
+                                   Arg    const & Head)
+{
+   if (!Head.name() || !Head.name()[0])
+   {
+      throw ParseError("Arg name must be non-empty!");
+   }
+
+   if (Idx > 0)
+   {
+      auto const PrevName = _args_ptr[Idx - 1].name();
+      if (std::strcmp(PrevName, Head.name()) > 0)
+      { // name is lexicographically smaller than previous name - uh oh
+         throw ParseError("Arg '%s' is not supposed to preceed arg '%s'!", PrevName, Head.name());
+      }
+   }
+
+   new (_args_ptr + Idx) Arg(Head);
 }
 
 /**
