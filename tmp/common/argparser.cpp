@@ -11,7 +11,7 @@
  */
 hoso::ArgParser::ArgParser(void)
    : _args_ptr {nullptr},
-     _abbrs    {0      },
+     _abbrs    {nullptr},
      _nArgs    {0      }
 {
 }
@@ -94,72 +94,38 @@ hoso::ArgParser::~ArgParser(void)
  */
 auto hoso::ArgParser::get(str const ArgName) const -> Arg const &
 {
-   Arg arg(ArgName);
-   return *static_cast<Arg *>(std::bsearch(&arg, _args_ptr, _nArgs, sizeof(Arg),
-                                           [](void const * Lhs_ptr, void const * Rhs_ptr) -> int {
-      return std::strcmp(static_cast<Arg const *>(Lhs_ptr)->name(),
-                         static_cast<Arg const *>(Rhs_ptr)->name());
-   }));
-}
+   // Arg arg(ArgName);
+   // return *static_cast<Arg *>(std::bsearch(&arg, _args_ptr, _nArgs, sizeof(Arg),
+   //                                         [](void const * Lhs_ptr, void const * Rhs_ptr) -> int {
+   //    return std::strcmp(static_cast<Arg const *>(Lhs_ptr)->name(),
+   //                       static_cast<Arg const *>(Rhs_ptr)->name());
+   // }));
 
-/**
- *
- */
-hoso::ArgParser::Arg::Arg(str const Name)
-   : _Name   {Name   },
-     _desc   {nullptr},
-     _abbr   {'\0'   }
-{
-   if (!_Name || !_Name[0])
-   {
-      throw ParseError("Name must be non-empty!");
-   }
-}
-
-/**
- *
- */
-auto hoso::ArgParser::Arg::desc(str const Desc) -> Arg &
-{
-   if (_desc)
-   {
-      throw ParseError("Arg '%s' already has a description!", name());
-   }
-
-   _desc = Desc;
-
-   if (!_desc || !_desc[0])
-   {
-      throw ParseError("Arg desc must be non-empty!");
-   }
-
-   return *this;
-}
-
-/**
- *
- */
-auto hoso::ArgParser::Arg::abbr(char const Abbr) -> Arg &
-{
-   // uint32 const Idx = (Abbr >= 'A' && Abbr <= 'Z') ? (Abbr - 'A'     ) :
-   //                    (Abbr >= 'a' && Abbr <= 'z') ? (Abbr - 'a' + 26) : _args.size();
+   //uint32 lower    = 0;
+   //uint32 upper    = _nArgs;
+   //uint32 char_idx = 0;
+   //char   prevChar = '\0';
+   //while (lower < upper)
+   //{
+   //   uint32 const Idx = (lower + upper) / 2;
+   //   __p = (void *) (((const char *) __base) + (__idx * __size));
+   //   __comparison = (*__compar) (__key, __p);
 //
-   // if (Idx >= 52)
-   // {
-   //    throw ParseError("Illegal abbr '%c' found for arg '%s'!", Abbr, getName());
-   // }
+   //   char const CurrChar = _args_ptr[Idx].name()[char_idx];
 //
-   // if (_abbrs[Idx])
-   // {
-   //    throw ParseError("Arg '%s' wants abbr '%c' but it's already used by arg '%s'!",
-   //                     getName(), Abbr, _abbrs[Idx]->getName());
-   // }
+   //   if (CurrChar )
 //
-   // // TODO need to preserve MSB
-   // _abbr = Abbr & 0x7F;
-   // _abbrs[Idx] = this;
-
-   return *this;
+   //   if (_args_ptr[Idx].name()[char_idx])
+//
+   //   if (__comparison < 0)
+   //      __u = __idx;
+   //   else if (__comparison > 0)
+   //      __l = __idx + 1;
+   //   else
+   //      return (void *) __p;
+   //}
+//
+   // return NULL;
 }
 
 /**
@@ -177,19 +143,43 @@ void hoso::ArgParser::parse_args(int const         Argc,
 void hoso::ArgParser::parse_helper(uint32 const   Idx,
                                    Arg    const & Head)
 {
-   if (!Head.name() || !Head.name()[0])
-   {
-      throw ParseError("Arg name must be non-empty!");
-   }
+   // if (!Head.name() || !Head.name()[0])
+   // {
+   //    throw ParseError("Arg name must be non-empty");
+   // }
 
-   if (Idx > 0)
-   {
-      auto const PrevName = _args_ptr[Idx - 1].name();
-      if (std::strcmp(PrevName, Head.name()) > 0)
-      { // name is lexicographically smaller than previous name - uh oh
-         throw ParseError("Arg '%s' is not supposed to preceed arg '%s'!", PrevName, Head.name());
-      }
-   }
+   // if (Idx > 0)
+   // {
+   //    auto const PrevName = _args_ptr[Idx - 1].name();
+   //    if (std::strcmp(PrevName, Head.name()) > 0)
+   //    { // name is lexicographically smaller than previous name - uh oh
+   //       throw ParseError("Arg '%s' is not supposed to preceed arg '%s'", PrevName, Head.name());
+   //    }
+   // }
+
+   // if (!Head.desc() || !Head.desc()[0])
+   // {
+   //    throw ParseError("Arg '%s' desc must have a description", Head.name());
+   // }
+//
+   // { // check abbr
+   //    uint32 const Abbr_idx =
+   //       (Head.abbr() >= 'A' && Head.abbr() <= 'Z') ? (Head.abbr() - 'A'     ) :
+   //       (Head.abbr() >= 'a' && Head.abbr() <= 'z') ? (Head.abbr() - 'a' + 26) : (-1u);
+//
+   //    if (Abbr_idx >= 52)
+   //    {
+   //       throw ParseError("Illegal abbr '%c' found for arg '%s'!", Head.abbr(), Head.name());
+   //    }
+//
+   //    if (_abbrs[Abbr_idx])
+   //    {
+   //       throw ParseError("Arg '%s' wants abbr '%c' but it's already used by arg '%s'!",
+   //          Head.name(), Head.abbr(), _abbrs[Abbr_idx]->name());
+   //    }
+//
+   //    _abbrs[Abbr_idx] = (_args_ptr + Idx); // this memory addr is invalid until this function completes
+   // }
 
    new (_args_ptr + Idx) Arg(Head);
 }
@@ -214,8 +204,9 @@ int main(int       const         Argc,
    {
       using Arg = hoso::ArgParser::Arg;
       argParser.parse(Argc, Argv_Ptr,
-         Arg("clean").abbr('c').desc("Cleans project"),
-         Arg("verbose").abbr('v').desc("Increases logging")
+         //Arg("clean").abbr('c').desc("Cleans project"),
+         //Arg("verbose").abbr('v').desc("Increases logging"),
+         Arg{.Name="clean"}
       );
    }
    catch (hoso::ArgParser::ParseError const & E)
@@ -223,7 +214,7 @@ int main(int       const         Argc,
       std::printf("ArgParser failure! %s!\n", E.what());
       return 1;
    }
-   std::printf("%s\n", argParser["verbose"].desc());
+   std::printf("%s\n", argParser["verbose"].Desc);
    return 0;
 }
 #endif // drive_argparser

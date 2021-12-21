@@ -21,23 +21,35 @@ public:
    /**
     *
     */
-   class Arg
+   struct Arg
    {
-   public:
-      explicit Arg(str const Name);
+   //public:
+      //explicit inline Arg(str const Name)
+      //   : _Name   {Name   },
+      //     _desc   {nullptr},
+      //     _abbr   {'\0'   },
+      //     _yesno  {false  }
+      //{}
 
-      inline auto name(void) const { return _Name; }
-      inline auto desc(void) const { return _desc; }
-      inline auto abbr(void) const { return _abbr; }
+      //inline auto name (void) const { return _Name;  }
+      //inline auto desc (void) const { return _desc;  }
+      //inline auto abbr (void) const { return _abbr;  }
+      //inline auto yesno(void) const { return _yesno; }
 
-      Arg & desc (str  const Desc);
-      Arg & abbr (char const Abbr);
-      Arg & yesno(void           );
+      //inline Arg & desc (str  const Desc ) { _desc  = Desc;  return *this; }
+      //inline Arg & abbr (char const Abbr ) { _abbr  = Abbr;  return *this; }
+      //inline Arg & yesno(bool const YesNo) { _yesno = YesNo; return *this; }
 
-   private:
-      str const _Name; // arg name (used as the key)
-      str       _desc; // description
-      char      _abbr; // abbreviation of name
+   //private:
+      enum class Switch_T : uint8 { No = 0, Yes, Composite   };
+      enum class Req_T    : uint8 { No = 0, Yes, Conditional };
+
+      str      const Name   = nullptr;      // arg name (used as the key)
+      str      const Desc   = nullptr;      // description
+      uint32   const
+      char     const Abbr   = '\0';         // abbreviation of name
+      Switch_T const Switch = Switch_T::No; // is argument binary
+      Req_T    const Req    = Req_T::No;    // is argument required
    };
 
    /**
@@ -84,7 +96,7 @@ private:
                             Rest_T const &... Rest);
 
    Arg *  _args_ptr;
-   uint16 _abbrs[52];
+   Arg *  _abbrs[52];
    uint32 _nArgs;
 };
 

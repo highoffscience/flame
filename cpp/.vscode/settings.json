@@ -44,6 +44,10 @@
       "thread": "cpp",
       "typeinfo": "cpp",
       "cwchar": "cpp",
-      "*.script": "cpp"
+      "*.script": "cpp",
+      "ranges": "cpp",
+      "fstream": "cpp",
+      "*.ipp": "cpp",
+      "typeindex": "cpp"
    }
 }
