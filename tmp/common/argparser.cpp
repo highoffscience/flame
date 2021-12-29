@@ -94,16 +94,35 @@ hoso::ArgParser::~ArgParser(void)
  */
 auto hoso::ArgParser::operator[](str const Key) const -> Arg const *
 {
+   /* TODO this is wrong
+      if !endkey
+         whole word matched, return index
+      else
+         if endkey-key == 0
+            no prefix match, continue with binary search
+         else
+            // this part devolves into a linear search
+            if a[i-1] or a[i+1] matches prefix of a[i]
+               multiple matches found, report error
+            else
+               single match found, return index
+   */
    uint32 lower = 0;
    uint32 upper = _nArgs;
-
    while (lower != upper)
    {
       uint32 const Arg_idx = (lower + upper) / 2;
+      auto const * const Arg_Ptr = _args_ptr + Arg_idx;
+      auto const KeyEnd = findKeysEnd(Key, Arg_Ptr->name());
 
-      auto const KeyEnd = findKeysEnd(Key, _args_ptr[Arg_idx].name());
+      if (!*KeyEnd && !Arg_Ptr->name()[KeyEnd - Key])
+      { // Key and name are exact match
+         return Arg_Ptr;
+      }
+      else if (KeyEnd - Key == 0)
+      { // no prefix match - continue searching
 
-      std::printf("Comp %d\n", Comparison);
+      }
 
       if (Comparison < 0)
       {
@@ -183,8 +202,7 @@ inline auto hoso::ArgParser::findKeysEnd(str key,
 {
    while (*key && (*key == *searchable))
    {
-      ++key;
-      ++searchable;
+      ++key, ++searchable;
    }
 
    return key;
