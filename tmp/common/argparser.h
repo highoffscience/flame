@@ -23,33 +23,39 @@ public:
     */
    struct Arg
    {
-   //public:
-      //explicit inline Arg(str const Name)
-      //   : _Name   {Name   },
-      //     _desc   {nullptr},
-      //     _abbr   {'\0'   },
-      //     _yesno  {false  }
-      //{}
+   public:
+      enum class State_T : uint8 { No = 0, Yes, Composite   };
+      enum class Req_T   : uint8 { No = 0, Yes, Conditional }; // require
 
-      //inline auto name (void) const { return _Name;  }
-      //inline auto desc (void) const { return _desc;  }
-      //inline auto abbr (void) const { return _abbr;  }
-      //inline auto yesno(void) const { return _yesno; }
+      explicit inline Arg(str const Name)
+         : _Name  {Name       },
+           _desc  {nullptr    },
+           _val   {nullptr    },
+           _abbr  {'\0'       },
+           _state {State_T::No},
+           _req   {Req_T::No  }
+      {}
 
-      //inline Arg & desc (str  const Desc ) { _desc  = Desc;  return *this; }
-      //inline Arg & abbr (char const Abbr ) { _abbr  = Abbr;  return *this; }
-      //inline Arg & yesno(bool const YesNo) { _yesno = YesNo; return *this; }
+      inline auto name (void) const { return _Name;  }
+      inline auto desc (void) const { return _desc;  }
+      inline auto val  (void) const { return _val;   }
+      inline auto abbr (void) const { return _abbr;  }
+      inline auto state(void) const { return _state; }
+      inline auto req  (void) const { return _req;   }
 
-   //private:
-      enum class Switch_T : uint8 { No = 0, Yes, Composite   };
-      enum class Req_T    : uint8 { No = 0, Yes, Conditional };
+      inline auto & desc  (str     const Desc  ) { _desc  = Desc;   return *this; }
+      inline auto & defVal(str     const DefVal) { _val   = DefVal; return *this; }
+      inline auto & abbr  (char    const Abbr  ) { _abbr  = Abbr;   return *this; }
+      inline auto & state (State_T const State ) { _state = State;  return *this; }
+      inline auto & req   (Req_T   const Req   ) { _req   = Req;    return *this; }
 
-      str      const Name   = nullptr;      // arg name (used as the key)
-      str      const Desc   = nullptr;      // description
-      uint32   const
-      char     const Abbr   = '\0';         // abbreviation of name
-      Switch_T const Switch = Switch_T::No; // is argument binary
-      Req_T    const Req    = Req_T::No;    // is argument required
+   private:
+      str const _Name;  // arg name (used as the key)
+      str       _desc;  // description
+      str       _val;   // if null, value of cmdline if specified, else default val
+      char      _abbr;  // abbreviation of name
+      State_T   _state; // is argument binary
+      Req_T     _req;   // is argument required
    };
 
    /**
@@ -79,8 +85,8 @@ public:
               str      const * const Argv_Ptr,
               Params_T const &...    Params);
 
-   inline auto        operator[](str const ArgName) const { return get(ArgName); }
-          Arg const & get       (str const ArgName) const;
+   // Key is the name of the desired Arg
+   Arg const * operator[](str const Key) const;
 
 private:
    void parse_args(int const         Argc,
@@ -94,6 +100,9 @@ private:
    inline void parse_helper(uint32 const      Idx,
                             Head_T const &    Head,
                             Rest_T const &... Rest);
+
+   inline str findKeysEnd(str key,
+                          str searchable) const;
 
    Arg *  _args_ptr;
    Arg *  _abbrs[52];
