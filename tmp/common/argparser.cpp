@@ -89,24 +89,54 @@ hoso::ArgParser::~ArgParser(void)
 //    return everythingGood;
 // }
 //
+
+/**
+ *
+ */
+inline auto hoso::ArgParser::findKeysEnd(str key,
+                                         str searchable) const -> str
+{
+   while (*key && (*key == *searchable))
+   {
+      ++key, ++searchable;
+   }
+
+   return key;
+}
+
 /**
  *
  */
 auto hoso::ArgParser::operator[](str const Key) const -> Arg const *
 {
-   /* TODO this is wrong
-      if !endkey
-         whole word matched, return index
-      else
-         if endkey-key == 0
-            no prefix match, continue with binary search
+   uint32 longestPrefixLength = 0;
+   for (uint32 i = 0; i < _nArgs; ++i)
+   {
+      auto const * const Arg_Ptr      = _args_ptr + i;
+      auto const         Name         = Arg_Ptr->name();
+      auto const         KeyEnd       = findKeysEnd(Key, Name);
+      auto const         PrefixLength = KeyEnd - Key;
+
+      if (!*KeyEnd)
+      { // whole key matched
+         if (!Name[PrefixLength])
+         { // exact match found
+            return Arg_Ptr;
+         }
          else
-            // this part devolves into a linear search
-            if a[i-1] or a[i+1] matches prefix of a[i]
-               multiple matches found, report error
-            else
-               single match found, return index
-   */
+         {
+            if (PrefixLength > longestPrefixLength)
+            {
+               longestPrefixLength = PrefixLength;
+            }
+            else if (PrefixLength == longestPrefixLength)
+            {
+               // TODO ambiguous
+            }
+         }
+      }
+   }
+
    uint32 lower = 0;
    uint32 upper = _nArgs;
    while (lower != upper)
@@ -164,7 +194,7 @@ void hoso::ArgParser::parse_helper(uint32 const   Idx,
    if (Idx > 0)
    {
       auto const PrevName = _args_ptr[Idx - 1].name();
-      if (std::strcmp(PrevName, Head.name()) > 0)
+      if (std::strcmp(PrevName, Head.name()) >= 0) // = detects duplicates
       { // name is lexicographically smaller than previous name - uh oh
          throw ParseError("Arg '%s' is not supposed to preceed arg '%s'", PrevName, Head.name());
       }
@@ -195,17 +225,6 @@ void hoso::ArgParser::parse_helper(uint32 const   Idx,
    }
 
    new (_args_ptr + Idx) Arg(Head);
-}
-
-inline auto hoso::ArgParser::findKeysEnd(str key,
-                                         str searchable) const -> str
-{
-   while (*key && (*key == *searchable))
-   {
-      ++key, ++searchable;
-   }
-
-   return key;
 }
 
 /**
