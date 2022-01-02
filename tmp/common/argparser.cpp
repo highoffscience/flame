@@ -109,66 +109,33 @@ inline auto hoso::ArgParser::findKeysEnd(str key,
  */
 auto hoso::ArgParser::operator[](str const Key) const -> Arg const *
 {
-   uint32 longestPrefixLength = 0;
+   Arg const * Target_ptr = nullptr;
+
    for (uint32 i = 0; i < _nArgs; ++i)
    {
-      auto const * const Arg_Ptr      = _args_ptr + i;
-      auto const         Name         = Arg_Ptr->name();
-      auto const         KeyEnd       = findKeysEnd(Key, Name);
-      auto const         PrefixLength = KeyEnd - Key;
+      auto const KeyEnd = findKeysEnd(Key, _args_ptr[i].name());
 
-      if (!*KeyEnd)
-      { // whole key matched
-         if (!Name[PrefixLength])
-         { // exact match found
-            return Arg_Ptr;
+      if (!*KeyEnd) // Key must be consumed
+      { // Key matched
+         if (Target_ptr)
+         { // ambiguity detected
+            throw ParseError("Key '%s' matches multiple targets", Key);
          }
-         else
-         {
-            if (PrefixLength > longestPrefixLength)
-            {
-               longestPrefixLength = PrefixLength;
-            }
-            else if (PrefixLength == longestPrefixLength)
-            {
-               // TODO ambiguous
-            }
-         }
+
+         Target_ptr = _args_ptr + i;
+      }
+      else if (Target_ptr)
+      { // Key matches previous entry and no ambiguity detected
+         break;
       }
    }
 
-   uint32 lower = 0;
-   uint32 upper = _nArgs;
-   while (lower != upper)
+   if (!Target_ptr)
    {
-      uint32 const Arg_idx = (lower + upper) / 2;
-      auto const * const Arg_Ptr = _args_ptr + Arg_idx;
-      auto const KeyEnd = findKeysEnd(Key, Arg_Ptr->name());
-
-      if (!*KeyEnd && !Arg_Ptr->name()[KeyEnd - Key])
-      { // Key and name are exact match
-         return Arg_Ptr;
-      }
-      else if (KeyEnd - Key == 0)
-      { // no prefix match - continue searching
-
-      }
-
-      if (Comparison < 0)
-      {
-         upper = arg_idx;
-      }
-      else if (Comparison > 0)
-      {
-         lower = arg_idx + 1;
-      }
-      else
-      {
-         return _args_ptr + arg_idx;
-      }
+      throw ParseError("No match for key '%s' found", Key);
    }
 
-   return nullptr;
+   return Target_ptr;
 }
 
 /**
@@ -196,7 +163,7 @@ void hoso::ArgParser::parse_helper(uint32 const   Idx,
       auto const PrevName = _args_ptr[Idx - 1].name();
       if (std::strcmp(PrevName, Head.name()) >= 0) // = detects duplicates
       { // name is lexicographically smaller than previous name - uh oh
-         throw ParseError("Arg '%s' is not supposed to preceed arg '%s'", PrevName, Head.name());
+         throw ParseError("Arg '%s' is not supposed to preceed or equate to '%s'", PrevName, Head.name());
       }
    }
 
@@ -217,7 +184,7 @@ void hoso::ArgParser::parse_helper(uint32 const   Idx,
 
       if (_abbrs[Abbr_idx])
       {
-         throw ParseError("Arg '%s' wants abbr '%c' but it's already used by arg '%s'!",
+         throw ParseError("Arg '%s' wants abbr '%c' but it's already used by arg '%s'",
             Head.name(), Head.abbr(), _abbrs[Abbr_idx]->name());
       }
 
@@ -248,7 +215,8 @@ int main(int       const         Argc,
       using Arg = hoso::ArgParser::Arg;
       argParser.parse(Argc, Argv_Ptr,
          Arg("clean").abbr('c').desc("Cleans project"),
-         Arg("verbose").abbr('v').desc("Increases logging")
+         Arg("verbose").abbr('v').desc("Increases logging"),
+         Arg("verbose").desc("Prints version info")
       );
    }
    catch (hoso::ArgParser::ParseError const & E)
@@ -256,7 +224,7 @@ int main(int       const         Argc,
       std::printf("ArgParser failure! %s!\n", E.what());
       return 1;
    }
-   std::printf("%s\n", argParser["verbos"]->desc());
+   std::printf("%s\n", argParser["v"]->desc());
    return 0;
 }
 #endif // drive_argparser
