@@ -215,8 +215,10 @@ int main(int       const         Argc,
       using Arg = hoso::ArgParser::Arg;
       argParser.parse(Argc, Argv_Ptr,
          Arg("clean").abbr('c').desc("Cleans project"),
+         Arg("geometry").desc("Shapes n' stuff"),
+         Arg("geometry-angle").desc("Angles n' stuff"),
          Arg("verbose").abbr('v').desc("Increases logging"),
-         Arg("verbose").desc("Prints version info")
+         Arg("version").desc("Prints version info")
       );
    }
    catch (hoso::ArgParser::ParseError const & E)
@@ -224,7 +226,8 @@ int main(int       const         Argc,
       std::printf("ArgParser failure! %s!\n", E.what());
       return 1;
    }
-   std::printf("%s\n", argParser["v"]->desc());
+   std::printf("%s\n", argParser["geo"]->desc());   // should print "Shapes n' stuff"
+   std::printf("%s\n", argParser["geo-a"]->desc()); // should print "Angles n' stuff"
    return 0;
 }
 #endif // drive_argparser
