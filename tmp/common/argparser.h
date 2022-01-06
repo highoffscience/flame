@@ -101,8 +101,8 @@ private:
                             Head_T const &    Head,
                             Rest_T const &... Rest);
 
-   inline str findKeysEnd(str key,
-                          str searchable) const;
+   str findKeysEnd(str key,
+                   str searchable) const;
 
    Arg *  _args_ptr;
    Arg *  _abbrs[52];

@@ -93,12 +93,17 @@ hoso::ArgParser::~ArgParser(void)
 /**
  *
  */
-inline auto hoso::ArgParser::findKeysEnd(str key,
-                                         str searchable) const -> str
+auto hoso::ArgParser::findKeysEnd(str key,
+                                  str searchable) const -> str
 {
-   while (*key && (*key == *searchable))
+   while (*key && (*key != '-') && (*key == *searchable))
    {
       ++key, ++searchable;
+   }
+
+   while (*searchable && (*searchable != '-'))
+   {
+      ++searchable;
    }
 
    return key;
@@ -113,16 +118,25 @@ auto hoso::ArgParser::operator[](str const Key) const -> Arg const *
 
    for (uint32 i = 0; i < _nArgs; ++i)
    {
-      auto const KeyEnd = findKeysEnd(Key, _args_ptr[i].name());
+      str key  = Key;
+      str name = _args_ptr[i].name();
+
+      auto const KeyEnd = findKeysEnd(key, name);
 
       if (!*KeyEnd) // Key must be consumed
       { // Key matched
          if (Target_ptr)
          { // ambiguity detected
-            throw ParseError("Key '%s' matches multiple targets", Key);
+            throw ParseError("Key '%s' matches multiple targets", key);
          }
 
          Target_ptr = _args_ptr + i;
+      }
+      else if (*KeyEnd == '-')
+      {
+         auto const PrefixLength = KeyEnd - key;
+         key += PrefixLength + 1;
+
       }
       else if (Target_ptr)
       { // Key matches previous entry and no ambiguity detected

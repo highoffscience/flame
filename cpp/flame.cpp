@@ -3,7 +3,7 @@
  */
 
 /*
- * g++ -std=c++2a -O2 *.cpp -pthread `libpng-config --cflags --ldflags`
+ * g++ -std=c++2a -Ofast *.cpp -pthread `libpng-config --cflags --ldflags`
  */
 
 #include "hoso.h"
@@ -21,7 +21,7 @@ int main(const int argc, const char* const* const argv)
    using namespace hoso;
    using namespace flame;
 
-   constexpr uint64 NIters = 100'000'000ull;
+   constexpr uint64 NIters = 10'000'000ull;
    constexpr uint32 Width  = 1920;
    constexpr uint32 Height = 1080;
 
