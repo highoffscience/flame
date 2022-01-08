@@ -96,21 +96,41 @@ hoso::ArgParser::~ArgParser(void)
 auto hoso::ArgParser::findKeysEnd(str key,
                                   str searchable) const -> str
 {
-   while (*key && (*key != '-') && (*key == *searchable))
+
+
+   while (*key && (*key == *searchable))
    {
       ++key, ++searchable;
    }
 
-   while (*searchable && (*searchable != '-'))
+   for (; *key && (*key == *searchable); ++key, ++searchable)
    {
-      ++searchable;
+      if (*key == '-')
+      {
+         // TODO
+      }
+   }
+
+   if (*key == '-')
+   {
+      for (; *searchable; ++searchable)
+      {
+         if (*searchable == '-')
+         {
+            ++searchable;
+            break;
+         }
+      }
+
+      ++key;
    }
 
    return key;
 }
 
 /**
- *
+ * --geo-a
+ * --geometry-angle
  */
 auto hoso::ArgParser::operator[](str const Key) const -> Arg const *
 {
@@ -134,9 +154,10 @@ auto hoso::ArgParser::operator[](str const Key) const -> Arg const *
       }
       else if (*KeyEnd == '-')
       {
-         auto const PrefixLength = KeyEnd - key;
-         key += PrefixLength + 1;
-
+         while (*name && (*name != '-'))
+         {
+            ++name;
+         }
       }
       else if (Target_ptr)
       { // Key matches previous entry and no ambiguity detected
