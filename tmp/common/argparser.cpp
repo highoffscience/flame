@@ -91,38 +91,29 @@ hoso::ArgParser::~ArgParser(void)
 //
 
 /**
- *
+ * --geo-a
+ * --geometry-angle
  */
 auto hoso::ArgParser::findKeysEnd(str key,
                                   str searchable) const -> str
 {
-
-
-   while (*key && (*key == *searchable))
+   while (*key)
    {
-      ++key, ++searchable;
-   }
-
-   for (; *key && (*key == *searchable); ++key, ++searchable)
-   {
-      if (*key == '-')
+      if (*key == *searchable)
       {
-         // TODO
+         ++key, ++searchable;
       }
-   }
-
-   if (*key == '-')
-   {
-      for (; *searchable; ++searchable)
+      else if (*key == '-')
       {
-         if (*searchable == '-')
+         while (*searchable && (*searchable != '-'))
          {
             ++searchable;
-            break;
          }
       }
-
-      ++key;
+      else
+      {
+         break;
+      }
    }
 
    return key;
