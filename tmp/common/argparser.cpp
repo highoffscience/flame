@@ -97,7 +97,7 @@ hoso::ArgParser::~ArgParser(void)
 auto hoso::ArgParser::findKeysEnd(str key,
                                   str searchable) const -> str
 {
-   while (*key)
+   while (*key && *searchable)
    {
       if (*key == *searchable)
       {
@@ -105,10 +105,11 @@ auto hoso::ArgParser::findKeysEnd(str key,
       }
       else if (*key == '-')
       {
-         while (*searchable && (*searchable != '-'))
+         do
          {
             ++searchable;
          }
+         while (*searchable && (*searchable != '-'));
       }
       else
       {
@@ -129,26 +130,28 @@ auto hoso::ArgParser::operator[](str const Key) const -> Arg const *
 
    for (uint32 i = 0; i < _nArgs; ++i)
    {
-      str key  = Key;
       str name = _args_ptr[i].name();
-
-      auto const KeyEnd = findKeysEnd(key, name);
+      auto const KeyEnd = findKeysEnd(Key, name);
 
       if (!*KeyEnd) // Key must be consumed
       { // Key matched
          if (Target_ptr)
-         { // ambiguity detected
-            throw ParseError("Key '%s' matches multiple targets", key);
+         { // potential ambiguity detected
+            name += KeyEnd - Key;
+            while (*name && (*name != '-'))
+            {
+               ++name;
+            }
+
+            if (!*name)
+            {
+               throw ParseError("Key '%s' matches multiple targets", Key);
+            }
+
+            break;
          }
 
          Target_ptr = _args_ptr + i;
-      }
-      else if (*KeyEnd == '-')
-      {
-         while (*name && (*name != '-'))
-         {
-            ++name;
-         }
       }
       else if (Target_ptr)
       { // Key matches previous entry and no ambiguity detected
@@ -198,6 +201,7 @@ void hoso::ArgParser::parse_helper(uint32 const   Idx,
       throw ParseError("Arg '%s' must have a description", Head.name());
    }
 
+   if (Head.abbr() != '\0')
    { // check abbr
       uint32 const Abbr_idx =
          (Head.abbr() >= 'A' && Head.abbr() <= 'Z') ? (Head.abbr() - 'A'     ) :
@@ -205,7 +209,7 @@ void hoso::ArgParser::parse_helper(uint32 const   Idx,
 
       if (Abbr_idx >= 52)
       {
-         throw ParseError("Illegal abbr '%c' found for arg '%s'!", Head.abbr(), Head.name());
+         throw ParseError("Illegal abbr '%c' found for arg '%s'", Head.abbr(), Head.name());
       }
 
       if (_abbrs[Abbr_idx])
@@ -246,14 +250,16 @@ int main(int       const         Argc,
          Arg("verbose").abbr('v').desc("Increases logging"),
          Arg("version").desc("Prints version info")
       );
+
+      std::printf("%s\n", argParser["geo"]->desc());   // should print "Shapes n' stuff"
+      std::printf("%s\n", argParser["geo-a"]->desc()); // should print "Angles n' stuff"
    }
    catch (hoso::ArgParser::ParseError const & E)
    {
       std::printf("ArgParser failure! %s!\n", E.what());
       return 1;
    }
-   std::printf("%s\n", argParser["geo"]->desc());   // should print "Shapes n' stuff"
-   std::printf("%s\n", argParser["geo-a"]->desc()); // should print "Angles n' stuff"
+   
    return 0;
 }
 #endif // drive_argparser

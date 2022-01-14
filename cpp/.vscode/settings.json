@@ -48,6 +48,19 @@
       "ranges": "cpp",
       "fstream": "cpp",
       "*.ipp": "cpp",
-      "typeindex": "cpp"
+      "typeindex": "cpp",
+      "cctype": "cpp",
+      "clocale": "cpp",
+      "codecvt": "cpp",
+      "cstring": "cpp",
+      "cwctype": "cpp",
+      "deque": "cpp",
+      "numeric": "cpp",
+      "optional": "cpp",
+      "string_view": "cpp",
+      "iomanip": "cpp",
+      "iostream": "cpp",
+      "sstream": "cpp",
+      "streambuf": "cpp"
    }
 }
