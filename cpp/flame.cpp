@@ -21,7 +21,7 @@ int main(const int argc, const char* const* const argv)
    using namespace hoso;
    using namespace flame;
 
-   constexpr uint64 NIters = 10'000'000ull;
+   constexpr uint64 NIters = 1'000'000ull;
    constexpr uint32 Width  = 1920;
    constexpr uint32 Height = 1080;
 

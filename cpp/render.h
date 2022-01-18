@@ -9,9 +9,6 @@
 #include "strangeattractor.h"
 #include "varblend.h"
 
-#include <thread>
-#include <vector>
-
 namespace hoso::flame
 {
 
@@ -33,8 +30,6 @@ private:
 
    void postProcess(class Pixel * const histo_Ptr,
                           uint32  const HistoSize) const;
-
-   std::vector<std::thread> _executors; // coming for their baby executes I'm sure
 
    ColorScheme      const _Cs;
    StrangeAttractor const _Sa;

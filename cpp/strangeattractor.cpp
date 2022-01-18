@@ -10,10 +10,11 @@
 /**
  *
  */
-auto hoso::flame::StrangeAttractor::preTransform(Point        & pnt_ref,
-                                                 Pixel::dim_t & clr_ref,
-                                                 Random       & rand_ref) const -> uint32
+auto hoso::flame::StrangeAttractor::preTransform(Point  & pnt_ref,
+                                                 dim_t  & clr_ref,
+                                                 Random & rand_ref) const -> uint32
 {
+   // Heighway Dragon
    constexpr IASMatrix Mats[] = {
       {.A =  0.5, .B = -0.5, .C = 0.5, .D =  0.5, .E = 0.0, .F = 0.0, .Clr = 0.0, .Prob = 0.5},
       {.A = -0.5, .B = -0.5, .C = 0.5, .D = -0.5, .E = 1.0, .F = 0.0, .Clr = 1.0, .Prob = 0.5}
@@ -69,8 +70,8 @@ auto hoso::flame::StrangeAttractor::preTransform(Point        & pnt_ref,
 /**
  *
  */
-void hoso::flame::StrangeAttractor::postTransform(Point        & pnt_ref,
-                                                  Pixel::dim_t & clr_ref,
-                                                  Random       & rand_ref) const
+void hoso::flame::StrangeAttractor::postTransform(Point  & pnt_ref,
+                                                  dim_t  & clr_ref,
+                                                  Random & rand_ref) const
 {
 }

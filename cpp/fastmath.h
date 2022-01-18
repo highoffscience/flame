@@ -4,53 +4,44 @@
 
 #pragma once
 
+#include "dim.h"
 #include "hoso.h"
 
 namespace hoso::flame
 {
 
 /**
- * TODO static assert float_t's are floating point
+ *
  */
 class FastMath
 {
 public:
    explicit FastMath(void) = delete;
 
-   template <typename float_t>
-   static constexpr auto Pi  = static_cast<float_t>(3.14159265358979324);
+   static constexpr auto Pi  = static_cast<dim_t>(3.14159265358979324);
+   static constexpr auto Tau = static_cast<dim_t>(2.0 * Pi); // upcast intentional
 
-   template <typename float_t>
-   static constexpr auto Tau = static_cast<float_t>(2.0 * Pi<float_t>); // upcast intentional
+   static constexpr auto fmod(dim_t const X,
+                              dim_t const Y);
 
-   template <typename float_t>
-   static constexpr auto fmod(float_t const X,
-                              float_t const Y);
+   static constexpr auto fabs(dim_t const X);
 
-   template <typename float_t>
-   static constexpr auto fabs(float_t const X);
+   static constexpr auto min(dim_t const X,
+                             dim_t const Y);
 
-   template <typename T>
-   static constexpr auto min(T const X,
-                             T const Y);
+   static constexpr auto max(dim_t const X,
+                             dim_t const Y);
 
-   template <typename T>
-   static constexpr auto max(T const X,
-                             T const Y);
+   static constexpr auto sin(dim_t x_rad);
 
-   template <typename float_t>
-   static constexpr auto sin(float_t x_rad);
-
-   // template <typename float_t>
-   // static constexpr auto cos(float_t x_rad);
+   // static constexpr auto cos(dim_t x_rad);
 };
 
 /**
  *
  */
-template <typename float_t>
-constexpr auto FastMath::fmod(float_t const X,
-                              float_t const Y)
+constexpr auto FastMath::fmod(dim_t const X,
+                              dim_t const Y)
 {
    return X - (int64(X / Y) * Y);
 }
@@ -58,18 +49,16 @@ constexpr auto FastMath::fmod(float_t const X,
 /**
  *
  */
-template <typename float_t>
-constexpr auto FastMath::fabs(float_t const X)
+constexpr auto FastMath::fabs(dim_t const X)
 {
-   return (X < static_cast<float_t>(0.0)) ? -X : X;
+   return (X < Zero) ? -X : X;
 }
 
 /**
  *
  */
-template <typename T>
-constexpr auto FastMath::min(T const X,
-                             T const Y)
+constexpr auto FastMath::min(dim_t const X,
+                             dim_t const Y)
 {
    return (X < Y) ? X : Y;
 }
@@ -77,9 +66,8 @@ constexpr auto FastMath::min(T const X,
 /**
  *
  */
-template <typename T>
-constexpr auto FastMath::max(T const X,
-                             T const Y)
+constexpr auto FastMath::max(dim_t const X,
+                             dim_t const Y)
 {
    return (X > Y) ? X : Y;
 }
@@ -88,22 +76,21 @@ constexpr auto FastMath::max(T const X,
  * Bhaskara I's approximation
  * Discovered in the 7th century!
  */
-template <typename float_t>
-constexpr auto FastMath::sin(float_t x_rad)
+constexpr auto FastMath::sin(dim_t x_rad)
 {
    // wrap into interval [-Tau..Tau]
-   x_rad = fmod(x_rad, Tau<float_t>);
+   x_rad = FastMath::fmod(x_rad, Tau);
 
    // map into interval [-Pi..Pi]
-        if (x_rad < -Pi<float_t>) { x_rad += Tau<float_t>; }
-   else if (x_rad > +Pi<float_t>) { x_rad -= Tau<float_t>; }
+        if (x_rad < -Pi) { x_rad += Tau; }
+   else if (x_rad > +Pi) { x_rad -= Tau; }
 
    // method only works in interval [0..Pi]
-   auto b = fabs(x_rad);
-   b = float_t(4.0) * b * (Pi<float_t> - b);
-   b = (float_t(4.0) * b) / ((float_t(5.0) * Pi<float_t> * Pi<float_t>) - b);
+   auto b = FastMath::fabs(x_rad);
+   b = 4.0 * b * (Pi - b);
+   b = (4.0 * b) / ((5.0 * Pi * Pi) - b);
 
-   return (x_rad < static_cast<float_t>(0.0)) ? -b : b;
+   return (x_rad < Zero) ? -b : b;
 }
 
 } // hoso::flame

@@ -4,10 +4,10 @@
 
 #pragma once
 
+#include "dim.h"
 #include "hoso.h"
 
 #include <cmath>
-#include <type_traits>
 
 namespace hoso::flame
 {
@@ -19,12 +19,6 @@ namespace hoso::flame
  */
 struct Point
 {
-   using dim_t = float64;
-   static_assert(std::is_floating_point_v<dim_t>, "Point coordinate must be floating point!");
-
-   static constexpr dim_t Zero = 0.0;
-   static constexpr dim_t One  = 1.0;
-
    explicit constexpr Point(void);
    explicit constexpr Point(dim_t const X_,
                             dim_t const Y_);
