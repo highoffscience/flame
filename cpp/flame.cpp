@@ -44,10 +44,10 @@ int main(const int argc, const char* const* const argv)
       {
          auto const & pxl = histo_Ptr[y * Width + x];
 
-         auto const R = static_cast<uint8>((pxl.r * 255.0) + 0.5);
-         auto const G = static_cast<uint8>((pxl.g * 255.0) + 0.5);
-         auto const B = static_cast<uint8>((pxl.b * 255.0) + 0.5);
-         auto const A = static_cast<uint8>((pxl.a * 255.0) + 0.5);
+         auto const R = static_cast<uint8>((pxl.r * 255.0) /*+ 0.5*/);
+         auto const G = static_cast<uint8>((pxl.g * 255.0) /*+ 0.5*/);
+         auto const B = static_cast<uint8>((pxl.b * 255.0) /*+ 0.5*/);
+         auto const A = static_cast<uint8>((pxl.a * 255.0) /*+ 0.5*/);
 
          // TODO is this correct? or do I want x, y?
          image[y][x] = png::rgba_pixel(R, G, B, A);

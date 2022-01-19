@@ -19,9 +19,9 @@ namespace hoso::flame
    /**
     *
     */
-   constexpr dim_t operator"" _d (long double const X)
+   constexpr dim_t operator"" _f(long double const X)
    {
-      return X;
+      return static_cast<dim_t>(X);
    }
 
 } // hoso::flame

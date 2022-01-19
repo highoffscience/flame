@@ -123,6 +123,8 @@ auto hoso::ArgParser::findKeysEnd(str key,
 /**
  * --geo-a
  * --geometry-angle
+ * --geonet
+ *
  */
 auto hoso::ArgParser::operator[](str const Key) const -> Arg const *
 {
@@ -247,6 +249,7 @@ int main(int       const         Argc,
          Arg("clean").abbr('c').desc("Cleans project"),
          Arg("geometry").desc("Shapes n' stuff"),
          Arg("geometry-angle").desc("Angles n' stuff"),
+         Arg("geonet").desc("Geo net and cache"),
          Arg("verbose").abbr('v').desc("Increases logging"),
          Arg("version").desc("Prints version info")
       );
@@ -259,7 +262,7 @@ int main(int       const         Argc,
       std::printf("ArgParser failure! %s!\n", E.what());
       return 1;
    }
-   
+
    return 0;
 }
 #endif // drive_argparser
