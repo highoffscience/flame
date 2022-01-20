@@ -90,9 +90,6 @@ void hoso::flame::Render::populate(Pixel * const histo_Ptr,
       auto const X =           static_cast<int32>(FitPnt.x);
       auto const Y = _Height - static_cast<int32>(FitPnt.y);
 
-      // TODO I think this can be optimized by only comparing the bounds
-      //      on Idx (ie Idx > 0 && Idx < HistoSize)
-      //      Further, exploiting int -> uint, maybe just Idx < HistoSize?
       if (X >= 0 && X < _Width &&
           Y >= 0 && Y < _Height)
       {
@@ -121,7 +118,7 @@ void hoso::flame::Render::postProcess(Pixel * const histo_Ptr,
       }
    }
 
-   constexpr auto InvGamma = static_cast<dim_t>(1.0 / (2.2)); // 2.2 - 4.0 is baseline
+   constexpr auto InvGamma = 1.0_f / (2.2_f); // 2.2 - 4.0 is baseline
    for (uint i = 0; i < HistoSize; ++i)
    {
       auto & pxl = histo_Ptr[i];

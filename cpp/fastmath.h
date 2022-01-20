@@ -18,8 +18,8 @@ class FastMath
 public:
    explicit FastMath(void) = delete;
 
-   static constexpr auto Pi  = static_cast<dim_t>(3.14159265358979324);
-   static constexpr auto Tau = static_cast<dim_t>(2.0 * Pi); // upcast intentional
+   static constexpr auto Pi  = 3.14159265358979324_f;
+   static constexpr auto Tau = 2.0_f * Pi;
 
    static constexpr auto fmod(dim_t const X,
                               dim_t const Y);
@@ -34,7 +34,7 @@ public:
 
    static constexpr auto sin(dim_t x_rad);
 
-   // static constexpr auto cos(dim_t x_rad);
+   static constexpr auto cos(dim_t x_rad);
 };
 
 /**
@@ -91,6 +91,14 @@ constexpr auto FastMath::sin(dim_t x_rad)
    b = (4.0 * b) / ((5.0 * Pi * Pi) - b);
 
    return (x_rad < Zero) ? -b : b;
+}
+
+/**
+ *
+ */
+constexpr auto FastMath::cos(dim_t x_rad)
+{
+   return sin(x_rad + (Pi / 2.0_f));
 }
 
 } // hoso::flame
