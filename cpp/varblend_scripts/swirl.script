@@ -1,0 +1,11 @@
+/**
+ * @author Forrest Jablonski
+ */
+
+// Point const & P -> Point
+
+auto const R2 = P.x * P.x + P.y * P.y;
+auto const SinR2 = FastMath::sin(R2);
+auto const CosR2 = FastMath::cos(R2);
+return Point(P.x * SinR2 - P.y * CosR2,
+             P.x * CosR2 - P.y * SinR2);

@@ -21,9 +21,9 @@ int main(const int argc, const char* const* const argv)
    using namespace hoso;
    using namespace flame;
 
-   constexpr uint64 NIters = 1'000'000ull;
-   constexpr uint32 Width  = 1920;
-   constexpr uint32 Height = 1080;
+   constexpr uint64 NIters = 100'000'000ull;
+   constexpr uint32 Width  = 1920 / 2;
+   constexpr uint32 Height = 1080 / 2;
 
    Render rend(NIters, Width, Height);
    auto * const histo_Ptr = rend.flame();

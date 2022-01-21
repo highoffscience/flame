@@ -1,0 +1,7 @@
+/**
+ * @author Forrest Jablonski
+ */
+
+// Point const & P -> Point
+
+return Point(FastMath::sin(P.x), FastMath::sin(P.y));

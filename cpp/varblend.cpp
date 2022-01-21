@@ -10,7 +10,7 @@
  */
 inline auto hoso::flame::VarBlend::var0(Point const & P) const -> Point
 {
-   #include "var0.script"
+   #include "varblend_scripts/var0.script"
 }
 
 /**
@@ -18,7 +18,7 @@ inline auto hoso::flame::VarBlend::var0(Point const & P) const -> Point
  */
 inline auto hoso::flame::VarBlend::var1(Point const & P) const -> Point
 {
-   #include "var1.script"
+   #include "varblend_scripts/var1.script"
 }
 
 /**
@@ -26,7 +26,7 @@ inline auto hoso::flame::VarBlend::var1(Point const & P) const -> Point
  */
 inline auto hoso::flame::VarBlend::var2(Point const & P) const -> Point
 {
-   #include "var2.script"
+   #include "varblend_scripts/var2.script"
 }
 
 /**
@@ -34,7 +34,7 @@ inline auto hoso::flame::VarBlend::var2(Point const & P) const -> Point
  */
 inline auto hoso::flame::VarBlend::var3(Point const & P) const -> Point
 {
-   #include "var3.script"
+   #include "varblend_scripts/var3.script"
 }
 
 /**
@@ -48,7 +48,7 @@ auto hoso::flame::VarBlend::apply(uint32 const   Transform_idx,
 
    // rows should add up to 1 but not strictly necessary
    constexpr dim_t Weights[NTransforms][NVars] = {
-      {1.0, 0.0, 0.0, 0.0},
+      {0.5, 0.5, 0.0, 0.0},
       {1.0, 0.0, 0.0, 0.0},
    };
 

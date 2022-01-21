@@ -1,0 +1,7 @@
+/**
+ * @author Forrest Jablonski
+ */
+
+// Point const & P -> Point
+
+#include "linear.script"

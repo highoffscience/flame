@@ -31,6 +31,9 @@ hoso::flame::Render::Render(uint64 const NIters,
 
 /**
  * Images produced by different rngs generate different images, they cannot be overlayed
+ *
+ * TODO often times I want to rescale the image, so maybe multithreaded would be useful,
+ *      record the states at opportune times and rerun
  */
 auto hoso::flame::Render::flame(void) -> Pixel *
 {
@@ -77,6 +80,12 @@ void hoso::flame::Render::populate(Pixel * const histo_Ptr,
            if (pnt.y < minFitPnt.y) { minFitPnt.y = pnt.y; }
       else if (pnt.y > maxFitPnt.y) { maxFitPnt.y = pnt.y; }
    }
+   std::printf("W %u, H %u, min (%f, %f), max (%f, %f)\n",
+               _Width, _Height, minFitPnt.x, minFitPnt.y, maxFitPnt.x, maxFitPnt.y);
+   minFitPnt.x = -2.0;
+   minFitPnt.y = -2.0;
+   maxFitPnt.x =  2.0;
+   maxFitPnt.y =  2.0;
    Fitter const Fit(_Width, _Height, minFitPnt, maxFitPnt);
 
    for (uint64 i = 0; i < _NIters; ++i)

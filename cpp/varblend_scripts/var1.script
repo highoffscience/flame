@@ -4,4 +4,4 @@
 
 // Point const & P -> Point
 
-return P;
+#include "swirl.script"
