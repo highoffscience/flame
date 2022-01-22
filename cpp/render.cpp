@@ -34,6 +34,10 @@ hoso::flame::Render::Render(uint64 const NIters,
  *
  * TODO often times I want to rescale the image, so maybe multithreaded would be useful,
  *      record the states at opportune times and rerun
+ *      After testing the speed benefits are as good as I thought. And fastforwarding
+ *      the particle isn't significantly faster than iterating AND rendering. I thought
+ *      I could have a rabbit and turtle thread but the rabbit isn't that much faster
+ *      than the turtle.
  */
 auto hoso::flame::Render::flame(void) -> Pixel *
 {
@@ -55,11 +59,12 @@ void hoso::flame::Render::populate(Pixel * const histo_Ptr,
    Random rand;
    rand.jump(JumpNumber);
 
-   Point pnt(0.5,  // x
-             0.5); // y
-   dim_t clr = 0.5;
+   Point pnt(0.5_f,  // x
+             0.5_f); // y
+   dim_t clr = 0.5_f;
 
-   for (uint i = 0; i < 100; ++i)
+   constexpr uint64 NFastForwards = 1'000ull;
+   for (uint64 i = 0; i < NFastForwards; ++i)
    {
       auto const Transform_idx = _Sa.preTransform(pnt, clr, rand);
       pnt = _Vb.apply(Transform_idx, pnt);
@@ -68,7 +73,7 @@ void hoso::flame::Render::populate(Pixel * const histo_Ptr,
 
    auto minFitPnt = pnt;
    auto maxFitPnt = pnt;
-   for (uint i = 0; i < 10'000; ++i)
+   for (uint32 i = 0; i < 10'000; ++i)
    {
       auto const Transform_idx = _Sa.preTransform(pnt, clr, rand);
       pnt = _Vb.apply(Transform_idx, pnt);
