@@ -41,7 +41,7 @@ hoso::flame::Render::Render(uint64 const NIters,
  */
 auto hoso::flame::Render::flame(void) -> Pixel *
 {
-   auto   const HistoSize  = _Width * _Height;
+   auto   const HistoSize = _Width * _Height;
    auto * const histo_Ptr = Pixel::createHisto(HistoSize);
 
    populate(histo_Ptr, 0);
@@ -59,12 +59,11 @@ void hoso::flame::Render::populate(Pixel * const histo_Ptr,
    Random rand;
    rand.jump(JumpNumber);
 
-   Point pnt(0.5_f,  // x
-             0.5_f); // y
-   dim_t clr = 0.5_f;
+   Point pnt(0.5, 0.5);
+   dim_t clr = 0.5;
 
-   constexpr uint64 NFastForwards = 1'000ull;
-   for (uint64 i = 0; i < NFastForwards; ++i)
+   constexpr uint32 NFastForwards = 100;
+   for (uint32 i = 0; i < NFastForwards; ++i)
    {
       auto const Transform_idx = _Sa.preTransform(pnt, clr, rand);
       pnt = _Vb.apply(Transform_idx, pnt);

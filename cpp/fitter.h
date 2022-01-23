@@ -32,7 +32,7 @@ private:
  */
 inline auto hoso::flame::Fitter::apply(Point const & P) const -> Point
 {
-   return P * _Scale + _Trans;
+   return (P * _Scale) + _Trans;
 }
 
 } // hoso::flame

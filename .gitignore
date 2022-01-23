@@ -36,3 +36,6 @@
 
 # Editor files
 .vscode/
+
+# Generated files
+*.png
