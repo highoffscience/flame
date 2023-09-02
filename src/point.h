@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include "ym/common/ymdefs.h"
+#include "ymdefs.h"
 
 #include <cmath>
 #include <type_traits>
