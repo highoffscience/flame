@@ -14,10 +14,13 @@
 namespace flame
 {
 
-/**
- * Representation of a point in 2D space
- * Either cartesian plane or imaginary plane
- * Or polar coordinates, whatever
+/** Point
+ * 
+ * @brief Representation of a point in 2D space: either cartesian plane, imaginary plane,
+ *        polar coordinates, whatever.
+ * 
+ * @note This class is specific for this program, it is the users responsibility to avoid
+ *       dividing by 0, or doing anything as dangerous.
  */
 template <typename dim_t = ym::float64>
 requires(std::is_floating_point_v<dim_t>)
@@ -76,9 +79,6 @@ constexpr Point<dim_t>::Point(dim_t const X_,
  * @brief Constructor.
  * 
  * @note This constructor is used (and why it is implicit) to perform operations with scalars.
- * 
- * @todo Is this approach just as fast as implementing functions that do scalar math directly?
- *       godbolt.org but be able to assist.
  * 
  * @param XY_ -- Initial value of x and y.
  */
