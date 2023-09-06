@@ -48,6 +48,7 @@ struct VerboGroup
       Timer,           UnitTest_Timer,
       Ymception,       UnitTest_Ymception,
 
+      Pixel,           UnitTest_Pixel,
       Point,           UnitTest_Point,
       
       NGroups
@@ -118,6 +119,7 @@ struct VerboGroupMask
       Ymception         = YM_FMT_MSK(Ymception               ), UnitTest_Ymception       = YM_FMT_MSK(UnitTest_Ymception      ),
       Ymception_Assert  = YM_FMT_MSK(Ymception,  0b0000'0001 ),
 
+      Pixel             = YM_FMT_MSK(Pixel                   ), UnitTest_Pixel           = YM_FMT_MSK(UnitTest_Pixel          ),
       Point             = YM_FMT_MSK(Point                   ), UnitTest_Point           = YM_FMT_MSK(UnitTest_Point          ),
 
    // don't pollute namespace

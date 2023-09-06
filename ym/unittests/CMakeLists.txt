@@ -41,3 +41,4 @@ ym_common_subbuild(timer          ) # ym-common-timer
 
 include(flame/build.cmake         ) # flame-src
 flame_subbuild(point              ) # flame-src-point
+flame_subbuild(pixel              ) # flame-src-pixel

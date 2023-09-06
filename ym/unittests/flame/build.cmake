@@ -11,7 +11,13 @@ set(Target flame-src)
 add_library(${Target} SHARED)
 
 target_sources(${Target} PRIVATE
-   ${RootDir}/src/flame.cpp
+   ${RootDir}/src/pixel.cpp
+)
+
+target_include_directories(${Target} PRIVATE
+   ${RootDir}/ym/common/
+   ${RootDir}/src/
+   ${CMAKE_SOURCE_DIR}/common/
 )
 
 set_target_properties(${Target} PROPERTIES VERSION ${PROJECT_VERSION})

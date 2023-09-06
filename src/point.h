@@ -37,7 +37,8 @@ struct Point
    constexpr Point operator - (Point const & Rhs) const { return Point(x - Rhs.x, y - Rhs.y); }
    constexpr Point operator * (Point const & Rhs) const { return Point(x * Rhs.x, y * Rhs.y); }
    constexpr Point operator / (Point const & Rhs) const { return Point(x / Rhs.x, y / Rhs.y); }
-   constexpr Point operator ^ (Point const & Rhs) const { return Point(std::pow(x, Rhs.x), std::pow(y + Rhs.y)); }
+   constexpr Point operator ^ (Point const & Rhs) const { return Point(std::pow(x, Rhs.x),
+                                                                       std::pow(y, Rhs.y)); }
 
    constexpr Point & operator += (Point const & Rhs) { return *this = *this + Rhs; }
    constexpr Point & operator -= (Point const & Rhs) { return *this = *this - Rhs; }
@@ -55,7 +56,7 @@ struct Point
  */
 template <typename dim_t>
 constexpr Point<dim_t>::Point(void)
-   : Point(0.0, 0.0)
+   : Point(0.0)
 {
 }
 
