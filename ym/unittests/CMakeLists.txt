@@ -26,7 +26,7 @@ set(CompileFlags
    -DYM_UT_DBG
    -DYM_PRINT_TO_SCREEN)
 
-include(common/build.cmake)    # ut-common
+include(common/build.cmake        ) # ut-common
 
 include(ym/common/build.cmake     ) # ym-common
 ym_common_subbuild(argparser      ) # ym-common-argparser
@@ -38,3 +38,6 @@ ym_common_subbuild(prng           ) # ym-common-prng
 ym_common_subbuild(textlogger     ) # ym-common-textlogger
 ym_common_subbuild(threadsafeproxy) # ym-common-threadsafeproxy
 ym_common_subbuild(timer          ) # ym-common-timer
+
+include(flame/build.cmake         ) # flame-src
+flame_subbuild(point              ) # flame-src-point

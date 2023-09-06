@@ -47,6 +47,8 @@ struct VerboGroup
       PRNG,            UnitTest_PRNG,
       Timer,           UnitTest_Timer,
       Ymception,       UnitTest_Ymception,
+
+      Point,           UnitTest_Point,
       
       NGroups
    };
@@ -114,7 +116,9 @@ struct VerboGroupMask
       PRNG              = YM_FMT_MSK(PRNG                    ), UnitTest_PRNG            = YM_FMT_MSK(UnitTest_PRNG           ),
       Timer             = YM_FMT_MSK(Timer                   ), UnitTest_Timer           = YM_FMT_MSK(UnitTest_Timer          ),
       Ymception         = YM_FMT_MSK(Ymception               ), UnitTest_Ymception       = YM_FMT_MSK(UnitTest_Ymception      ),
-      Ymception_Assert  = YM_FMT_MSK(Ymception,  0b0000'0001 )
+      Ymception_Assert  = YM_FMT_MSK(Ymception,  0b0000'0001 ),
+
+      Point             = YM_FMT_MSK(Point                   ), UnitTest_Point           = YM_FMT_MSK(UnitTest_Point          ),
 
    // don't pollute namespace
    #undef YM_FMT_MSK1
