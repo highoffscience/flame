@@ -21,10 +21,10 @@ namespace flame
  * @note This class is specific for this program, it is the users responsibility to avoid
  *       dividing by 0, or doing anything as dangerous.
  */
-template <typename dim_t = ym::float64>
-requires(std::is_floating_point_v<dim_t>)
 struct Pixel
 {
+   using dim_t = ym::float64;
+
    explicit    constexpr Pixel(void);
    explicit    constexpr Pixel(dim_t const R_,
                                dim_t const G_,
@@ -64,8 +64,7 @@ struct Pixel
  *
  * @brief Constructor.
  */
-template <typename dim_t>
-constexpr Pixel<dim_t>::Pixel(void)
+constexpr Pixel::Pixel(void)
    : Pixel(0.0)
 {
 }
@@ -79,11 +78,10 @@ constexpr Pixel<dim_t>::Pixel(void)
  * @param B_ -- Initial blue value.
  * @param A_ -- Initial alpha value.
  */
-template <typename dim_t>
-constexpr Pixel<dim_t>::Pixel(dim_t const R_,
-                              dim_t const G_,
-                              dim_t const B_,
-                              dim_t const A_)
+constexpr Pixel::Pixel(dim_t const R_,
+                       dim_t const G_,
+                       dim_t const B_,
+                       dim_t const A_)
    : r{R_}, g{G_}, b{B_}, a{A_}
 {
 }
@@ -96,8 +94,7 @@ constexpr Pixel<dim_t>::Pixel(dim_t const R_,
  * 
  * @param RGBA_ -- Initial value of r, g, b, and a.
  */
-template <typename dim_t>
-constexpr Pixel<dim_t>::Pixel(dim_t const RGBA_)
+constexpr Pixel::Pixel(dim_t const RGBA_)
    : Pixel(RGBA_, RGBA_, RGBA_, RGBA_)
 {
 }

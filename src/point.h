@@ -8,8 +8,9 @@
 
 #include "ymdefs.h"
 
+#include "fastmath.h"
+
 #include <cmath>
-#include <type_traits>
 
 namespace flame
 {
@@ -22,10 +23,10 @@ namespace flame
  * @note This class is specific for this program, it is the users responsibility to avoid
  *       dividing by 0, or doing anything as dangerous.
  */
-template <typename dim_t = ym::float64>
-requires(std::is_floating_point_v<dim_t>)
 struct Point
 {
+   using dim_t = ym::float64;
+
    explicit    constexpr Point(void);
    explicit    constexpr Point(dim_t const X_,
                                dim_t const Y_);
@@ -54,8 +55,7 @@ struct Point
  *
  * @brief Constructor.
  */
-template <typename dim_t>
-constexpr Point<dim_t>::Point(void)
+constexpr Point::Point(void)
    : Point(0.0)
 {
 }
@@ -67,9 +67,8 @@ constexpr Point<dim_t>::Point(void)
  * @param X_ -- Initial value of x.
  * @param Y_ -- Initial value of y.
  */
-template <typename dim_t>
-constexpr Point<dim_t>::Point(dim_t const X_,
-                              dim_t const Y_)
+constexpr Point::Point(dim_t const X_,
+                       dim_t const Y_)
    : x {X_},
      y {Y_}
 {
@@ -83,8 +82,7 @@ constexpr Point<dim_t>::Point(dim_t const X_,
  * 
  * @param XY_ -- Initial value of x and y.
  */
-template <typename dim_t>
-constexpr Point<dim_t>::Point(dim_t const XY_)
+constexpr Point::Point(dim_t const XY_)
    : Point(XY_, XY_)
 {
 }
