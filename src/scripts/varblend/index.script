@@ -1,0 +1,14 @@
+///
+/// @file index.script
+/// 
+/// @note AUTO-GENERATED
+///
+
+constexpr uint32 NTransforms = 2u;
+constexpr uint32 NVars       = 4u;
+
+// rows should add up to 1 but not strictly necessary
+constexpr Point::dim_t Weights[NTransforms][NVars] = {
+   {1.0, 0.0, 0.0, 0.0},
+   {1.0, 0.0, 0.0, 0.0},
+};

@@ -14,7 +14,6 @@ target_sources(${Target} PRIVATE
    ${RootDir}/src/fastmath.cpp
    ${RootDir}/src/fitter.cpp
    ${RootDir}/src/flame.cpp
-   ${RootDir}/src/pixel.cpp
 )
 
 target_include_directories(${Target} PRIVATE

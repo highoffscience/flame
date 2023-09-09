@@ -23,7 +23,11 @@ class ColorScheme
 public:
    YM_NO_DEFAULT(ColorScheme)
 
-   static inline Pixel apply(Pixel const Clr)
+   /** apply
+    * 
+    * @brief Maps [Clr] -> [Red, Green, Blue].
+    */
+   static inline Pixel apply(Pixel::dim_t const Clr)
    {
       #include "scripts/colorscheme/index.script"
    }

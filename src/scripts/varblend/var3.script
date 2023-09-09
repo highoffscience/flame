@@ -1,0 +1,9 @@
+///
+/// @file var3.script
+/// 
+/// @note AUTO-GENERATED
+/// 
+
+// Point const P -> Point
+
+return P;
