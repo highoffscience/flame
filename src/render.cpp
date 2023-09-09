@@ -16,6 +16,7 @@
 
 #include "memio.h"
 #include "prng.h"
+#include "textlogger.h"
 
 #include <cmath>
 #include <cstdio>
@@ -31,6 +32,7 @@ auto flame::Render::lightFlame(ym::uint64 const NIters,
 {
    if (Width_pxls < 2u || Height_pxls < 2u)
    {
+      ym::ymLog(ym::VG::Render, "Width and Height need to be at least 2 pixels!");
       return nullptr;
    }
 
@@ -71,18 +73,26 @@ auto flame::Render::lightFlame(ym::uint64 const NIters,
       }
    }
 
+   // std::printf("W = %u, H = %u\n", Width_pxls, Height_pxls);
+   // std::printf("Max = (%lf, %lf), Min = (%lf, %lf)\n", maxPnt.x, maxPnt.y, minPnt.x, minPnt.y);
+
    Fitter const Fit(Width_pxls, Height_pxls, maxPnt, minPnt);
+
+   // std::printf("S = (%lf, %lf), T = (%lf, %lf)\n", Fit.getScale().x, Fit.getScale().y, Fit.getTrans().x, Fit.getTrans().y);
 
    for (ym::uint64 i = 0u; i < NIters; ++i)
    {
       auto const Transform_idx = Strangor::apply(prng.gen<ym::float64>(), pnt, clr);
       pnt = VarBlend::apply(Transform_idx, pnt);
-      pnt = Fit.apply(pnt);
 
-      if (pnt.x >= 0.0 && pnt.y >= 0.0)
+      auto const FitPnt = Fit.apply(pnt);
+
+      // std::printf("P = (%lf, %lf)\n", FitPnt.x, FitPnt.y);
+
+      if (FitPnt.x >= 0.0 && FitPnt.y >= 0.0)
       {
-         auto const X = static_cast<ym::uint32>(pnt.x);
-         auto const Y = static_cast<ym::uint32>(pnt.y);
+         auto const X = static_cast<ym::uint32>(FitPnt.x);
+         auto const Y = static_cast<ym::uint32>(FitPnt.y);
 
          if (X < Width_pxls && Y < Height_pxls)
          {
@@ -102,11 +112,11 @@ auto flame::Render::lightFlame(ym::uint64 const NIters,
  *
  * @brief Deallocates histogram.
  */
-void flame::Render::destroyHisto(Pixel const * const Histo_Ptr,
-                                 ym::uint32    const Width_pxls,
-                                 ym::uint32    const Height_pxls)
+void flame::Render::destroyHisto(Pixel *    const histo_Ptr,
+                                 ym::uint32 const Width_pxls,
+                                 ym::uint32 const Height_pxls)
 {
-   ym::MemIO::dealloc(Histo_Ptr, Width_pxls * Height_pxls);
+   ym::MemIO::dealloc(histo_Ptr, Width_pxls * Height_pxls);
 }
 
 /** postProcess

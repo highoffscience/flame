@@ -4,10 +4,6 @@
  * @author  Forrest Jablonski
  */
 
-/*
- * g++ -std=c++2a -Ofast *.cpp -pthread `libpng-config --cflags --ldflags`
- */
-
 #include "ymdefs.h"
 
 #include "pixel.h"
@@ -17,16 +13,16 @@
 
 /** main
  *
- * @brief kick-off.
+ * @brief Kick-off.
  */
 int main([[maybe_unused]] int             const Argc,
          [[maybe_unused]] ym::str const * const Argv)
 {
-   constexpr ym::uint64 NIters      = 1'000'000'000ul;
+   constexpr ym::uint64 NIters      = 100'000'000ul;
    constexpr ym::uint32 Width_pxls  = 1920u / 4u;
    constexpr ym::uint32 Height_pxls = 1080u / 4u;
 
-   auto const * const Histo_Ptr = flame::Render::lightFlame(NIters, Width_pxls, Height_pxls);
+   auto * const histo_Ptr = flame::Render::lightFlame(NIters, Width_pxls, Height_pxls);
 
    // 
    //                 Width
@@ -42,7 +38,7 @@ int main([[maybe_unused]] int             const Argc,
    {
       for (ym::uint32 x = 0u; x < Width_pxls; ++x)
       {
-         auto const & Pxl = Histo_Ptr[(y * Width_pxls) + x];
+         auto const & Pxl = histo_Ptr[(y * Width_pxls) + x];
 
          auto const R = static_cast<ym::uint8>((Pxl.r * 255.0) + 0.5);
          auto const G = static_cast<ym::uint8>((Pxl.g * 255.0) + 0.5);
@@ -53,9 +49,9 @@ int main([[maybe_unused]] int             const Argc,
       }
    }
 
-   flame::Render::destroyHisto(Histo_Ptr);
+   flame::Render::destroyHisto(histo_Ptr, Width_pxls, Height_pxls);
 
-   image.write("./pics/fractal-1.0.png");
+   image.write("./pics/flame-1.0.png");
 
    return 0;
 }

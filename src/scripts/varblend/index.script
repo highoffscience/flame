@@ -4,8 +4,8 @@
 /// @note AUTO-GENERATED
 ///
 
-constexpr uint32 NTransforms = 2u;
-constexpr uint32 NVars       = 4u;
+constexpr ym::uint32 NTransforms = 2u;
+constexpr ym::uint32 NVars       = 4u;
 
 // rows should add up to 1 but not strictly necessary
 constexpr Point::dim_t Weights[NTransforms][NVars] = {

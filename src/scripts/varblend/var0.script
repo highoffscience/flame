@@ -6,5 +6,4 @@
 
 // Point const P -> Point
 
-auto const R2 = (P.x * P.x) + (P.y * P.y);
-return Point(P.x / R2, P.y / R2);
+return P;

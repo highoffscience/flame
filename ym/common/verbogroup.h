@@ -48,8 +48,15 @@ struct VerboGroup
       Timer,           UnitTest_Timer,
       Ymception,       UnitTest_Ymception,
 
+      ColorScheme,     UnitTest_ColorScheme,
+      FastMath,        UnitTest_FastMath,
+      Fitter,          UnitTest_Fitter,
+      Flame,
       Pixel,           UnitTest_Pixel,
       Point,           UnitTest_Point,
+      Render,          UnitTest_Render,
+      Strangor,        UnitTest_Strangor,
+      VarBlend,        UnitTest_VarBlend,
       
       NGroups
    };
@@ -119,8 +126,15 @@ struct VerboGroupMask
       Ymception         = YM_FMT_MSK(Ymception               ), UnitTest_Ymception       = YM_FMT_MSK(UnitTest_Ymception      ),
       Ymception_Assert  = YM_FMT_MSK(Ymception,  0b0000'0001 ),
 
+      ColorScheme       = YM_FMT_MSK(ColorScheme             ), UnitTest_ColorScheme     = YM_FMT_MSK(UnitTest_ColorScheme    ),
+      FastMath          = YM_FMT_MSK(FastMath                ), UnitTest_FastMath        = YM_FMT_MSK(UnitTest_FastMath       ),
+      Fitter            = YM_FMT_MSK(Fitter                  ), UnitTest_Fitter          = YM_FMT_MSK(UnitTest_Fitter         ),
+      Flame             = YM_FMT_MSK(Flame                   ),
       Pixel             = YM_FMT_MSK(Pixel                   ), UnitTest_Pixel           = YM_FMT_MSK(UnitTest_Pixel          ),
       Point             = YM_FMT_MSK(Point                   ), UnitTest_Point           = YM_FMT_MSK(UnitTest_Point          ),
+      Render            = YM_FMT_MSK(Render                  ), UnitTest_Render          = YM_FMT_MSK(UnitTest_Render         ),
+      Strangor          = YM_FMT_MSK(Strangor                ), UnitTest_Strangor        = YM_FMT_MSK(UnitTest_Strangor       ),
+      VarBlend          = YM_FMT_MSK(VarBlend                ), UnitTest_VarBlend        = YM_FMT_MSK(UnitTest_VarBlend       ),
 
    // don't pollute namespace
    #undef YM_FMT_MSK1

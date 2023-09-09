@@ -48,11 +48,11 @@ struct Pixel
                                                                       std::pow(b, Rhs.b),
                                                                       std::pow(a, Rhs.a)); }
 
-   constexpr void operator += (Pixel const & Rhs) { return *this = *this + Rhs; }
-   constexpr void operator -= (Pixel const & Rhs) { return *this = *this - Rhs; }
-   constexpr void operator *= (Pixel const & Rhs) { return *this = *this * Rhs; }
-   constexpr void operator /= (Pixel const & Rhs) { return *this = *this / Rhs; }
-   constexpr void operator ^= (Pixel const & Rhs) { return *this = *this ^ Rhs; }
+   constexpr Pixel & operator += (Pixel const & Rhs) { return *this = *this + Rhs; }
+   constexpr Pixel & operator -= (Pixel const & Rhs) { return *this = *this - Rhs; }
+   constexpr Pixel & operator *= (Pixel const & Rhs) { return *this = *this * Rhs; }
+   constexpr Pixel & operator /= (Pixel const & Rhs) { return *this = *this / Rhs; }
+   constexpr Pixel & operator ^= (Pixel const & Rhs) { return *this = *this ^ Rhs; }
 
    dim_t r; // red
    dim_t g; // green

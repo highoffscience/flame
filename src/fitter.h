@@ -29,6 +29,9 @@ public:
       return (Pnt * _Scale) + _Trans;
    }
 
+   inline auto getScale(void) const { return _Scale; }
+   inline auto getTrans(void) const { return _Trans; }
+
 private:
    Point const _Scale;
    Point const _Trans;

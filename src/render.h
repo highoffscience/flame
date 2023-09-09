@@ -26,9 +26,9 @@ public:
                              ym::uint32 const Width_pxls,
                              ym::uint32 const Height_pxls);
 
-   static void destroyHisto(Pixel const * const Histo_Ptr,
-                            ym::uint32    const Width_pxls,
-                            ym::uint32    const Height_pxls);
+   static void destroyHisto(Pixel *    const histo_Ptr,
+                            ym::uint32 const Width_pxls,
+                            ym::uint32 const Height_pxls);
 
 private:
    static void postProcess(Pixel *    const histo_Ptr,

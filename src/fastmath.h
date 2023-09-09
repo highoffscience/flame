@@ -73,7 +73,7 @@ public:
  */
 template <typename float_t>
 requires(std::is_floating_point_v<float_t>)
-constexpr auto FastMath::sin(float_t x_rad)
+inline auto FastMath::sin(float_t x_rad)
 {
    // wrap into interval [-Tau..Tau]
    x_rad = fmod(x_rad, Tau<float_t>);
