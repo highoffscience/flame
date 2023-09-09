@@ -11,9 +11,9 @@ set(Target flame-src)
 add_library(${Target} SHARED)
 
 target_sources(${Target} PRIVATE
-   ${RootDir}/src/fastmath.cpp
    ${RootDir}/src/fitter.cpp
    ${RootDir}/src/flame.cpp
+   ${RootDir}/src/render.cpp
 )
 
 target_include_directories(${Target} PRIVATE

@@ -8,6 +8,7 @@
 
 #include "ymdefs.h"
 
+#include <cmath>
 #include <type_traits>
 
 namespace flame

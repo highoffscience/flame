@@ -17,6 +17,7 @@
 #include "memio.h"
 #include "prng.h"
 
+#include <cmath>
 #include <cstdio>
 #include <cstdlib>
 
@@ -91,32 +92,50 @@ auto flame::Render::lightFlame(ym::uint64 const NIters,
          }
       }
    }
+
+   postProcess(histo_Ptr, HistoSize_pxls);
+
+   return histo_Ptr;
 }
 
-/**
+/** destroyHisto
  *
+ * @brief Deallocates histogram.
  */
-void hoso::flame::Render::postProcess(Pixel * const histo_Ptr,
-                                      uint32  const HistoSize) const
+void flame::Render::destroyHisto(Pixel const * const Histo_Ptr,
+                                 ym::uint32    const Width_pxls,
+                                 ym::uint32    const Height_pxls)
 {
-   auto alphaMax = Pixel::Zero;
-   for (uint i = 0; i < HistoSize; ++i)
+   ym::MemIO::dealloc(Histo_Ptr, Width_pxls * Height_pxls);
+}
+
+/** postProcess
+ *
+ * @brief Applies beautification standards.
+ */
+void flame::Render::postProcess(Pixel *    const histo_Ptr,
+                                ym::uint32 const HistoSize_pxls)
+{
+   Pixel::dim_t alphaMax = 0.0;
+
+   for (ym::uint32 i = 0u; i < HistoSize_pxls; ++i)
    {
       auto & pxl = histo_Ptr[i];
 
-      if (pxl.a > Pixel::Zero)
+      if (pxl.a > 0.0)
       {
          pxl      *= std::log(pxl.a) / pxl.a;
          alphaMax  = FastMath::max(alphaMax, pxl.a);
       }
    }
 
-   constexpr auto InvGamma = static_cast<Pixel::dim_t>(1.0 / (2.2)); // 2.2 - 4.0 is baseline
-   for (uint i = 0; i < HistoSize; ++i)
+   constexpr auto InvGamma = 1.0 / (2.2); // 2.2 - 4.0 is baseline
+
+   for (ym::uint32 i = 0u; i < HistoSize_pxls; ++i)
    {
       auto & pxl = histo_Ptr[i];
 
-      if (pxl.a > Pixel::Zero)
+      if (pxl.a > 0.0)
       {
          pxl /= alphaMax;
          pxl ^= InvGamma;

@@ -38,3 +38,6 @@ data.txt
 
 # python virtual environment
 venv/
+
+# flame specific
+pics/

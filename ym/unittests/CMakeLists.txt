@@ -40,5 +40,12 @@ ym_common_subbuild(threadsafeproxy) # ym-common-threadsafeproxy
 ym_common_subbuild(timer          ) # ym-common-timer
 
 include(flame/build.cmake         ) # flame-src
-flame_subbuild(point              ) # flame-src-point
+flame_subbuild(colorscheme        ) # flame-src-colorscheme
+flame_subbuild(fastmath           ) # flame-src-fastmath
+flame_subbuild(fitter             ) # flame-src-fitter
+flame_subbuild(flame              ) # flame-src-flame
 flame_subbuild(pixel              ) # flame-src-pixel
+flame_subbuild(point              ) # flame-src-point
+flame_subbuild(render             ) # flame-src-render
+flame_subbuild(strangor           ) # flame-src-strangor
+flame_subbuild(varblend           ) # flame-src-varblend
