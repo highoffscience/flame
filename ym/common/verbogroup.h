@@ -140,6 +140,7 @@ struct VerboGroupMask
       YM_MAKE_MSK_AND_UNIT_MSK(VarBlend   ),
 
    // don't pollute namespace
+   #undef YM_MAKE_MSK_AND_UNIT_MSK
    #undef YM_FMT_MSK1
    #undef YM_FMT_MSK2
    #undef YM_FMT_MSK
