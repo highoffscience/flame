@@ -30,6 +30,8 @@ auto flame::Render::lightFlame(ym::uint64 const NIters,
                                ym::uint32 const Width_pxls,
                                ym::uint32 const Height_pxls) -> Pixel *
 {
+   auto const SE = ym::ymLogPushEnable(ym::VG::Render);
+
    if (Width_pxls < 2u || Height_pxls < 2u)
    {
       ym::ymLog(ym::VG::Render, "Width and Height need to be at least 2 pixels!");
@@ -78,7 +80,8 @@ auto flame::Render::lightFlame(ym::uint64 const NIters,
 
    Fitter const Fit(Width_pxls, Height_pxls, maxPnt, minPnt);
 
-   // std::printf("S = (%lf, %lf), T = (%lf, %lf)\n", Fit.getScale().x, Fit.getScale().y, Fit.getTrans().x, Fit.getTrans().y);
+   ym::ymLog(ym::VG::Render, "S = (%lf, %lf), T = (%lf, %lf)\n",
+      Fit.getScale().x, Fit.getScale().y, Fit.getTrans().x, Fit.getTrans().y);
 
    for (ym::uint64 i = 0u; i < NIters; ++i)
    {

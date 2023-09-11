@@ -47,5 +47,6 @@ set(CompileFlags
    -Wall
    -Wextra
    -Wno-format-security
-   -Ofast)
+   -Ofast
+   -DYM_PRINT_TO_SCREEN)
 target_compile_options(${Target} PRIVATE ${CompileFlags})

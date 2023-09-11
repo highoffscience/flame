@@ -1,0 +1,13 @@
+///
+/// @file bispectrum.script
+/// 
+
+// Clr [0..1] -> Pixel
+
+//                     r    g    b    a
+constexpr Pixel Begin(0.0, 1.0, 0.0, 0.0);
+constexpr Pixel End  (1.0, 0.0, 0.0, 0.0);
+
+constexpr auto Alpha(End - Begin);
+
+return (Alpha * Clr) + Begin;

@@ -9,28 +9,31 @@
 #include "pixel.h"
 #include "render.h"
 
+#include "argparser.h"
+#include "ops.h"
+
 #include <png++/png.hpp>
 
 /** main
  *
  * @brief Kick-off.
  */
-int main([[maybe_unused]] int             const Argc,
-         [[maybe_unused]] ym::str const * const Argv)
+int main(int             const Argc,
+         ym::str const * const Argv)
 {
-   constexpr ym::uint64 NIters      = 100'000'000ul;
-   constexpr ym::uint32 Width_pxls  = 1920u / 4u;
-   constexpr ym::uint32 Height_pxls = 1080u / 4u;
+   auto * const ap_Ptr = ym::ArgParser::getInstancePtr();
+   ap_Ptr->parse({
+      ap_Ptr->arg("niters").desc("# of iterations" ).abbr('n').val("1000000"),
+      ap_Ptr->arg("width" ).desc("Width in pixels" ).abbr('w').val("480"    ),
+      ap_Ptr->arg("height").desc("Height in pixels").abbr('t').val("270"    ),
+   },
+   Argc, Argv);
+
+   auto const NIters      = ym::Ops::castTo<ym::uint64>(ap_Ptr->get("niters")->getVal());
+   auto const Width_pxls  = ym::Ops::castTo<ym::uint32>(ap_Ptr->get("width" )->getVal());
+   auto const Height_pxls = ym::Ops::castTo<ym::uint32>(ap_Ptr->get("height")->getVal());
 
    auto * const histo_Ptr = flame::Render::lightFlame(NIters, Width_pxls, Height_pxls);
-
-   // 
-   //                 Width
-   //           x0 x1 x2 x3 x4 x5
-   //        y0
-   // Height y1
-   //        y2
-   // 
 
    png::image<png::rgba_pixel> image(Width_pxls, Height_pxls);
 
