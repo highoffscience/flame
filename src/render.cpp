@@ -57,6 +57,9 @@ auto flame::Render::lightFlame(ym::uint64 const NIters,
       pnt.y = (2.0 * prng.gen<Point::dim_t>()) - 1.0;
    }
 
+   ym::ymLog(ym::VG::Render, "Init = (%lf, %lf)",
+      pnt.x, pnt.y);
+
    auto minPnt = pnt;
    auto maxPnt = pnt;
 
@@ -65,7 +68,7 @@ auto flame::Render::lightFlame(ym::uint64 const NIters,
       auto const Transform_idx = Strangor::apply(prng.gen<ym::float64>(), pnt, clr);
       pnt = VarBlend::apply(Transform_idx, pnt);
 
-      if (i > 20u)
+      if (i > 100u)
       {
          if (pnt.x < minPnt.x) { minPnt.x = pnt.x; }
          if (pnt.y < minPnt.y) { minPnt.y = pnt.y; }
@@ -75,11 +78,11 @@ auto flame::Render::lightFlame(ym::uint64 const NIters,
       }
    }
 
-   // std::printf("W = %u, H = %u\n", Width_pxls, Height_pxls);
-   // std::printf("Max = (%lf, %lf), Min = (%lf, %lf)\n", maxPnt.x, maxPnt.y, minPnt.x, minPnt.y);
-
    Fitter const Fit(Width_pxls, Height_pxls, maxPnt, minPnt);
 
+   ym::ymLog(ym::VG::Render, "W = %u, H = %u", Width_pxls, Height_pxls);
+   ym::ymLog(ym::VG::Render, "Max = (%lf, %lf), Min = (%lf, %lf)",
+      maxPnt.x, maxPnt.y, minPnt.x, minPnt.y);
    ym::ymLog(ym::VG::Render, "S = (%lf, %lf), T = (%lf, %lf)\n",
       Fit.getScale().x, Fit.getScale().y, Fit.getTrans().x, Fit.getTrans().y);
 
@@ -88,11 +91,8 @@ auto flame::Render::lightFlame(ym::uint64 const NIters,
       auto const Transform_idx = Strangor::apply(prng.gen<ym::float64>(), pnt, clr);
       pnt = VarBlend::apply(Transform_idx, pnt);
 
-      auto const FitPnt = Fit.apply(pnt);
-
-      // std::printf("P = (%lf, %lf)\n", FitPnt.x, FitPnt.y);
-
-      if (FitPnt.x >= 0.0 && FitPnt.y >= 0.0)
+      if (auto const FitPnt = Fit.apply(pnt);
+         FitPnt.x >= 0.0 && FitPnt.y >= 0.0)
       {
          auto const X = static_cast<ym::uint32>(FitPnt.x);
          auto const Y = static_cast<ym::uint32>(FitPnt.y);

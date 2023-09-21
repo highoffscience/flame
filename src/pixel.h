@@ -29,7 +29,7 @@ struct Pixel
    explicit    constexpr Pixel(dim_t const R_,
                                dim_t const G_,
                                dim_t const B_,
-                               dim_t const A_);
+                               dim_t const A_ = 0.0);
    YM_IMPLICIT constexpr Pixel(dim_t const RGBA_);
 
    static Pixel * createHisto (ym::uint32 const HistoSize);

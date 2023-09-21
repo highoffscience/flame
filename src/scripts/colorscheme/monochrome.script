@@ -1,0 +1,10 @@
+///
+/// @file monochrome.script
+/// 
+
+// Clr [0..1] -> Pixel
+
+//                        r    g    b
+constexpr Pixel PxlColor(1.0, 1.0, 1.0);
+
+return PxlColor * Clr;
