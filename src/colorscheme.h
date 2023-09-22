@@ -29,7 +29,7 @@ public:
     */
    static inline Pixel apply(Pixel::dim_t const Clr)
    {
-      #include "scripts/colorscheme/index.script"
+      #include "./scripts/colorscheme.script"
    }
 };
 

@@ -1,0 +1,8 @@
+/// @file colorscheme.script
+///                         
+/// @note AUTO-GENERATED    
+///                         
+constexpr Pixel C1(1.0, 0.0, 0.0);
+constexpr Pixel C2(0.0, 1.0, 0.0);
+constexpr auto Alpha(C2 - C1);       
+return (Alpha * Clr) + C1;           

@@ -1,0 +1,19 @@
+/// @file varblend.script                             
+///                                                   
+/// @note AUTO-GENERATED                              
+///                                                   
+constexpr ym::uint32 NTransforms = 4u;        
+constexpr ym::uint32 NVars       = 1u;
+                                                      
+constexpr Point::dim_t Weights[NTransforms][NVars] = {
+{1,},
+{1,},
+{1,},
+{1,},
+};
+      
+auto var0 = [](Point const P) { return P; };
+      
+return
+   (var0(P) * Weights[Transform_idx][0]) +
+   0.0;

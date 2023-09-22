@@ -50,24 +50,7 @@ private:
 inline auto flame::VarBlend::apply(ym::uint32 const Transform_idx,
                                    Point      const P            ) -> Point
 {
-   // #include "scripts/varblend/index.script"
-
-   constexpr ym::uint32 NTransforms = 4u;
-   constexpr ym::uint32 NVars       = 4u;
-
-   // rows should add up to 1 but not strictly necessary
-   constexpr Point::dim_t Weights[NTransforms][NVars] = {
-      {1.0, 0.0, 0.0, 0.0,},
-      {1.0, 0.0, 0.0, 0.0},
-      {1.0, 0.0, 0.0, 0.0},
-      {1.0, 0.0, 0.0, 0.0},
-   };
-
-   return
-      (var0(P) * Weights[Transform_idx][0]) +
-      (var1(P) * Weights[Transform_idx][1]) +
-      (var2(P) * Weights[Transform_idx][2]) +
-      (var3(P) * Weights[Transform_idx][3]);
+   #include "./scripts/varblend.script"
 }
 
 } // flame

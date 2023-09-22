@@ -33,10 +33,10 @@ def write_cs_scripts(cfg):
       r, g, b = float(cfg["clr"][0]), \
                 float(cfg["clr"][1]), \
                 float(cfg["clr"][2])
-      return f"""
-         constexpr Pixel PxlColor({r}, {g}, {b});\n
-         return PxlColor * Clr;                  \n
-      """
+      return \
+         f"constexpr Pixel PxlColor({r}, {g}, {b});\n" \
+         f"return PxlColor * Clr;                  \n"
+   
    def write_bichrome(cfg):
       r1, g1, b1 = float(cfg["c1"][0]), \
                    float(cfg["c1"][1]), \
@@ -44,12 +44,11 @@ def write_cs_scripts(cfg):
       r2, g2, b2 = float(cfg["c2"][0]), \
                    float(cfg["c2"][1]), \
                    float(cfg["c2"][2])
-      return f"""
-         text += f'constexpr Pixel C1({r1}, {g1}, {b1});\n'
-         text += f'constexpr Pixel C2({r2}, {g2}, {b2});\n'
-         text += f'constexpr auto Alpha(C2 - C1);       \n'
-         text += f'return (Alpha * Clr) + Begin;        \n'
-      """
+      return \
+         f"constexpr Pixel C1({r1}, {g1}, {b1});\n" \
+         f"constexpr Pixel C2({r2}, {g2}, {b2});\n" \
+         f"constexpr auto Alpha(C2 - C1);       \n" \
+         f"return (Alpha * Clr) + C1;           \n"
    
    handlers = {
       "monochrome": write_monochrome,
@@ -70,15 +69,15 @@ def write_vb_scripts(cfg, nXforms):
    @brief (ym::uint32 const Transform_idx, Point const P) -> Point
    """
    def write_identity(cfg):
-      return f"return P;\n"
+      return f"return P;"
    
    handlers = {
       "identity": write_identity
    }
 
-   active_sa      = cfg["strangor"]["active"]
-   active_vbs     = cfg["strangor"][active_sa]["varblends"]
-   active_weights = cfg["strangor"][active_sa]["weights"]
+   active_sa      = cfg["strangors"]["active"]
+   active_vbs     = cfg["strangors"][active_sa]["varblends"]
+   active_weights = cfg["strangors"][active_sa]["weights"]
 
    if nXforms != len(active_weights):
       print(f"nXforms {nXforms} must equal len(active_weights) {len(active_weights)}!")
@@ -89,9 +88,10 @@ def write_vb_scripts(cfg, nXforms):
       f.write(f"///                                                   \n")
       f.write(f"/// @note AUTO-GENERATED                              \n")
       f.write(f"///                                                   \n")
-      f.write(f"constexpr ym::uint32 NTransforms = {nXforms}u         \n")
-      f.write(f"constexpr ym::uint32 NVars       = {len(active_vbs)}u \n")
+      f.write(f"constexpr ym::uint32 NTransforms = {nXforms}u;        \n")
+      f.write(f"constexpr ym::uint32 NVars       = {len(active_vbs)}u;\n")
       f.write(f"                                                      \n")
+
       f.write( "constexpr Point::dim_t Weights[NTransforms][NVars] = {\n")
       for xFormWeights in active_weights:
          if len(active_vbs) != len(xFormWeights):
@@ -102,23 +102,34 @@ def write_vb_scripts(cfg, nXforms):
          f.write("},\n")
       f.write("};\n")
 
+      f.write(f"      \n")
+      for idx, vb in enumerate(active_vbs):
+         vb_cfg = cfg["varblends"][vb]
+         vb_txt = handlers[vb](vb_cfg)
+         f.write(f"auto var{idx} = [](Point const P) {{ {vb_txt} }};\n")
+      f.write(f"      \n")
+
+      f.write(f"return\n")
+      for idx, _ in enumerate(active_vbs):
+         f.write(f"   (var{idx}(P) * Weights[Transform_idx][{idx}]) +\n")
+      f.write(f"   0.0;\n")
+
 def write_sa_scripts(cfg):
    """
    @brief TODO.
    """
    def write_heighway_dragon(cfg):
-      text = """
-         {.A =  0.5, .B = -0.5, .C = 0.5, .D =  0.5, .E = 0.0, .F = 0.0, .Clr = 0.0, .Prob = 0.5},
-         {.A = -0.5, .B = -0.5, .C = 0.5, .D = -0.5, .E = 1.0, .F = 0.0, .Clr = 1.0, .Prob = 0.5}
-      """
+      text = \
+         "{.A =  0.5, .B = -0.5, .C = 0.5, .D =  0.5, .E = 0.0, .F = 0.0, .Clr = 0.0, .Prob = 0.5},\n" \
+         "{.A = -0.5, .B = -0.5, .C = 0.5, .D = -0.5, .E = 1.0, .F = 0.0, .Clr = 1.0, .Prob = 0.5} \n"
       return (2, text)
+   
    def write_maple_leaf(cfg):
-      text = """
-         {.A = 0.14, .B =  0.01, .C =  0.0 , .D = 0.51, .E = -0.08, .F = -1.31, .Clr = 0.0/3.0, .Prob = 0.25},
-         {.A = 0.43, .B =  0.52, .C = -0.45, .D = 0.5 , .E =  1.49, .F = -0.75, .Clr = 1.0/3.0, .Prob = 0.25},
-         {.A = 0.45, .B = -0.49, .C =  0.47, .D = 0.47, .E = -1.62, .F = -0.74, .Clr = 2.0/3.0, .Prob = 0.25},
-         {.A = 0.49, .B =  0.0 , .C =  0.0 , .D = 0.51, .E =  0.02, .F =  1.62, .Clr = 3.0/3.0, .Prob = 0.25}
-      """
+      text = \
+         "{.A = 0.14, .B =  0.01, .C =  0.0 , .D = 0.51, .E = -0.08, .F = -1.31, .Clr = 0.0/3.0, .Prob = 0.25},\n" \
+         "{.A = 0.43, .B =  0.52, .C = -0.45, .D = 0.5 , .E =  1.49, .F = -0.75, .Clr = 1.0/3.0, .Prob = 0.25},\n" \
+         "{.A = 0.45, .B = -0.49, .C =  0.47, .D = 0.47, .E = -1.62, .F = -0.74, .Clr = 2.0/3.0, .Prob = 0.25},\n" \
+         "{.A = 0.49, .B =  0.0 , .C =  0.0 , .D = 0.51, .E =  0.02, .F =  1.62, .Clr = 3.0/3.0, .Prob = 0.25} \n"
       return (4, text)
    
    handlers = {
@@ -126,9 +137,9 @@ def write_sa_scripts(cfg):
       "maple_leaf"     : write_maple_leaf
    }
 
-   active_sa = cfg["strangor"]["active"]
-   (nXforms, text) = handlers[active_sa](cfg["strangor"][active_sa])
-   with open("./src/strangor.script", "w") as f:
+   active_sa = cfg["strangors"]["active"]
+   (nXforms, text) = handlers[active_sa](cfg["strangors"][active_sa])
+   with open("./src/scripts/strangor.script", "w") as f:
       f.write("/// @file strangor.script\n")
       f.write("///                      \n")
       f.write("/// @note AUTO-GENERATED \n")
@@ -138,9 +149,10 @@ def write_sa_scripts(cfg):
    write_vb_scripts(cfg, nXforms)
 
 def parse_json(args):
-   cfg = json.loads(args.config)
-   write_cs_scripts(cfg["colorscheme"])
-   write_sa_scripts(cfg)
+   with open("config.json", "r") as f:
+      cfg = json.load(f)
+      write_cs_scripts(cfg["colorschemes"])
+      write_sa_scripts(cfg)
 
 def main():
    """
@@ -152,7 +164,7 @@ def main():
    parser.add_argument("--cs", help="colorscheme", default="bispectrum",      type=str)
    args = parser.parse_args()
 
-   # TODO
+   parse_json(args)
 
    runCmd("cmake --build build/", per_line_action_func=lambda line: print(line, end=""))
 

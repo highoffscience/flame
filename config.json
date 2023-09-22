@@ -1,13 +1,13 @@
 {
-   "colorscheme": {"active": "bichrome",
+   "colorschemes": {"active": "bichrome",
       "monochrome": {"clr": [1, 1, 1]},
       "bichrome": {"c1": [1, 0, 0], "c2": [0, 1, 0]}
    },
-   "varblend": {
+   "varblends": {
       "identity": {},
       "spherical": {}
    },
-   "strangor": {"active": "maple_leaf",
+   "strangors": {"active": "maple_leaf",
       "heighway_dragon": {"varblends": ["identity"], "weights": [[1], [1]]},
       "maple_leaf": {"varblends": ["identity"], "weights": [[1], [1], [1], [1]]}
    }
