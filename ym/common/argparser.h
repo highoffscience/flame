@@ -61,9 +61,8 @@ private:
       inline auto getDesc(void) const { return _desc; }
       inline auto getVal (void) const { return _val;  }
 
-      inline auto isFlag (void) const { return (getVal() == _s_TrueFlag ) ||
-                                               (getVal() == _s_FalseFlag); }
-      inline auto isEnbl (void) const { return  getVal() == _s_TrueFlag;   }
+      inline auto isFlag (void) const { return _flag; }
+      inline auto isEnbl (void) const { return _enbl; }
 
       Arg & desc(str  const Desc      );
       Arg & val (str  const DefaultVal);
@@ -71,20 +70,15 @@ private:
       Arg & flag(void                 ); // defaults to false
 
    private:
-      // These cannot be made constexpr - we need a const storage location for these
-      // variables since we do direct pointer comparisons. The compiler may optimize
-      // away storage locations for constexpr, breaking our use cases.
-      // static volatile constexpr is also allowed but appears to messy.
-      static str _s_TrueFlag;
-      static str _s_FalseFlag;
-
       void setVal(str  const Val );
       void enable(bool const Enbl);
 
       // no consts - see static assert below
-      str _name; // arg name (used as the key)
-      str _desc; // description
-      str _val;  // value
+      str  _name; // arg name (used as the key)
+      str  _desc; // description
+      str  _val;  // value
+      bool _flag; // flag
+      bool _enbl; // enabled
    };
 
    // copyable to load Arg params into vector
