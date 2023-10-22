@@ -26,15 +26,11 @@ public:
                    Point      const Min);
 
    inline Point apply(Point const Pnt) const {
-      return (Pnt * _Scale) + _Trans;
+      return (Pnt * _scale) + _trans;
    }
 
-   inline auto getScale(void) const { return _Scale; }
-   inline auto getTrans(void) const { return _Trans; }
-
-private:
-   Point const _Scale;
-   Point const _Trans;
+   Point _scale;
+   Point _trans;
 };
 
 } // flame

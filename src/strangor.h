@@ -50,8 +50,9 @@ private:
    };
 };
 
-/**
+/** apply
  *
+ * @brief Applies the affine transform to the given point.
  */
 inline ym::uint32 Strangor::apply(ym::float64    const RandVal,
                                   Point        &       pnt_ref,

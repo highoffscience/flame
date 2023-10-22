@@ -9,14 +9,11 @@
 #include "colorscheme.h"
 #include "fastmath.h"
 #include "fitter.h"
-#include "pixel.h"
-#include "point.h"
 #include "strangor.h"
 #include "varblend.h"
 
 #include "memio.h"
 #include "prng.h"
-#include "textlogger.h"
 
 #include <cmath>
 #include <cstdio>
@@ -28,18 +25,24 @@
  */
 auto flame::Render::lightFlame(ym::uint64 const NIters,
                                ym::uint32 const Width_pxls,
-                               ym::uint32 const Height_pxls) -> Pixel *
+                               ym::uint32 const Height_pxls,
+                               Point      const Scale,
+                               Point      const Trans) -> Pixel *
 {
-   auto const SE = ym::ymLogPushEnable(ym::VG::Render);
-
    if (Width_pxls < 2u || Height_pxls < 2u)
    {
-      ym::ymLog(ym::VG::Render, "Width and Height need to be at least 2 pixels!");
+      std::printf("Width and Height need to be at least 2 pixels!\n");
       return nullptr;
    }
 
    auto   const HistoSize_pxls = Width_pxls * Height_pxls;
    auto * const histo_Ptr      = ym::MemIO::alloc<Pixel>(HistoSize_pxls);
+
+   if (!histo_Ptr)
+   {
+      ym::ymLog(ym::VG::Render, "Failed to allocate histo!");
+      return nullptr;
+   }
 
    for (ym::uint32 i = 0u; i < HistoSize_pxls; ++i)
    {
@@ -57,8 +60,7 @@ auto flame::Render::lightFlame(ym::uint64 const NIters,
       pnt.y = (2.0 * prng.gen<Point::dim_t>()) - 1.0;
    }
 
-   ym::ymLog(ym::VG::Render, "Init = (%lf, %lf)",
-      pnt.x, pnt.y);
+   std::printf("Init = (%lf, %lf)\n", pnt.x, pnt.y);
 
    auto minPnt = pnt;
    auto maxPnt = pnt;
@@ -78,20 +80,29 @@ auto flame::Render::lightFlame(ym::uint64 const NIters,
       }
    }
 
-   Fitter const Fit(Width_pxls, Height_pxls, maxPnt, minPnt);
+   Fitter fit(Width_pxls, Height_pxls, maxPnt, minPnt);
 
-   ym::ymLog(ym::VG::Render, "W = %u, H = %u", Width_pxls, Height_pxls);
-   ym::ymLog(ym::VG::Render, "Max = (%lf, %lf), Min = (%lf, %lf)",
-      maxPnt.x, maxPnt.y, minPnt.x, minPnt.y);
-   ym::ymLog(ym::VG::Render, "S = (%lf, %lf), T = (%lf, %lf)\n",
-      Fit.getScale().x, Fit.getScale().y, Fit.getTrans().x, Fit.getTrans().y);
+   std::printf("Max = (%lf, %lf), Min = (%lf, %lf)\n", maxPnt.x, maxPnt.y, minPnt.x, minPnt.y);
+   std::printf("S = (%lf, %lf), T = (%lf, %lf)\n", fit._scale.x, fit._scale.y, fit._trans.x, fit._trans.y);
+
+   if (Scale.x != 0.0) { fit._scale.x = Scale.x; }
+   if (Scale.y != 0.0) { fit._scale.y = Scale.y; }
+   if (Trans.x != 0.0) { fit._trans.x = Trans.x; }
+   if (Trans.y != 0.0) { fit._trans.y = Trans.y; }
+
+   auto const Tick = NIters / 1024u;
 
    for (ym::uint64 i = 0u; i < NIters; ++i)
    {
+      if ((i & Tick) == 0u)
+      {
+         std::printf("\r%0.1f%%", ((i / Tick) / 1024.0) * 100.0);
+      }
+
       auto const Transform_idx = Strangor::apply(prng.gen<ym::float64>(), pnt, clr);
       pnt = VarBlend::apply(Transform_idx, pnt);
 
-      if (auto const FitPnt = Fit.apply(pnt);
+      if (auto const FitPnt = fit.apply(pnt);
          FitPnt.x >= 0.0 && FitPnt.y >= 0.0)
       {
          auto const X = static_cast<ym::uint32>(FitPnt.x);
@@ -105,6 +116,8 @@ auto flame::Render::lightFlame(ym::uint64 const NIters,
          }
       }
    }
+
+   std::printf("\r100.0%%\n");
 
    postProcess(histo_Ptr, HistoSize_pxls);
 

@@ -64,15 +64,25 @@ def write_cs_scripts(cfg):
       f.write("///                         \n")
       f.write(text)
 
+   return True
+
 def write_vb_scripts(cfg, nXforms):
    """
    @brief (ym::uint32 const Transform_idx, Point const P) -> Point
    """
    def write_identity(cfg):
-      return f"return P;"
+      return "return P;"
+   
+   def write_sinusoidal(cfg):
+      return "return Point(FastMath::sin(P.x), FastMath::sin(P.y));"
+
+   def write_spherical(cfg):
+      return "auto const R2 = (P.x*P.x + P.y*P.y); return Point(P.x/R2, P.y/R2);"
    
    handlers = {
-      "identity": write_identity
+      "identity"  : write_identity,
+      "sinusoidal": write_sinusoidal,
+      "spherical" : write_spherical
    }
 
    active_sa      = cfg["strangors"]["active"]
@@ -81,7 +91,7 @@ def write_vb_scripts(cfg, nXforms):
 
    if nXforms != len(active_weights):
       print(f"nXforms {nXforms} must equal len(active_weights) {len(active_weights)}!")
-      sys.exit(1)
+      return False
 
    with open("./src/scripts/varblend.script", "w") as f:
       f.write(f"/// @file varblend.script                             \n")
@@ -96,23 +106,26 @@ def write_vb_scripts(cfg, nXforms):
       for xFormWeights in active_weights:
          if len(active_vbs) != len(xFormWeights):
             print(f"len(active_vbs) {len(active_vbs)} must equal len(xFormWeights) {len(xFormWeights)}!")
+            return False
          f.write("{")
          for weight in xFormWeights:
             f.write(f"{weight},")
          f.write("},\n")
       f.write("};\n")
 
-      f.write(f"      \n")
+      f.write(f"\n")
       for idx, vb in enumerate(active_vbs):
          vb_cfg = cfg["varblends"][vb]
          vb_txt = handlers[vb](vb_cfg)
          f.write(f"auto var{idx} = [](Point const P) {{ {vb_txt} }};\n")
-      f.write(f"      \n")
+      f.write(f"\n")
 
       f.write(f"return\n")
       for idx, _ in enumerate(active_vbs):
          f.write(f"   (var{idx}(P) * Weights[Transform_idx][{idx}]) +\n")
       f.write(f"   0.0;\n")
+
+   return True
 
 def write_sa_scripts(cfg):
    """
@@ -146,27 +159,38 @@ def write_sa_scripts(cfg):
       f.write("///                      \n")
       f.write(text)
 
-   write_vb_scripts(cfg, nXforms)
+   vb_success = write_vb_scripts(cfg, nXforms)
+   return vb_success and True
 
 def parse_json(args):
-   with open("config.json", "r") as f:
+   success = False
+   with open(args.config, "r") as f:
       cfg = json.load(f)
-      write_cs_scripts(cfg["colorschemes"])
-      write_sa_scripts(cfg)
+      success = write_cs_scripts(cfg["colorschemes"])
+      if success:
+         success = write_sa_scripts(cfg) or success
+   return success
 
 def main():
    """
    @brief Main function.
    """
    parser = argparse.ArgumentParser()
-   parser.add_argument("--sa", help="strangor",    default="heighway_dragon", type=str)
-   parser.add_argument("--vb", help="varblend",    default="identity",        type=str)
-   parser.add_argument("--cs", help="colorscheme", default="bispectrum",      type=str)
+   parser.add_argument("--config", help="config file", default="config.json", type=str)
    args = parser.parse_args()
 
-   parse_json(args)
+   success = False
+   try:
+      success = parse_json(args)
+   except Exception as e:
+      print(f"Exception - {e}")
+      success = False
 
-   runCmd("cmake --build build/", per_line_action_func=lambda line: print(line, end=""))
+   if success:
+      runCmd("cmake --build build/", per_line_action_func=lambda line: print(line, end=""), quiet=True)
+   else:
+      print("Generation failed")
+      sys.exit(1)
 
 # kick-off
 if __name__ == "__main__":

@@ -8,6 +8,7 @@
 
 #include "ymdefs.h"
 
+#include "point.h"
 #include "pixel.h"
 
 namespace flame
@@ -24,7 +25,9 @@ public:
 
    static Pixel * lightFlame(ym::uint64 const NIters,
                              ym::uint32 const Width_pxls,
-                             ym::uint32 const Height_pxls);
+                             ym::uint32 const Height_pxls,
+                             Point      const Scale,
+                             Point      const Trans);
 
    static void destroyHisto(Pixel *    const histo_Ptr,
                             ym::uint32 const Width_pxls,

@@ -1,5 +1,5 @@
 /**
- * @file    flame.h
+ * @file    flame.cpp
  * @version 1.0.0
  * @author  Forrest Jablonski
  */
@@ -7,33 +7,56 @@
 #include "ymdefs.h"
 
 #include "pixel.h"
+#include "point.h"
 #include "render.h"
 
 #include "argparser.h"
 #include "ops.h"
+#include "textlogger.h"
 
 #include <png++/png.hpp>
+
+#include <string>
 
 /** main
  *
  * @brief Kick-off.
+ * 
+ * @note (480, 270)  (960, 540)  (1920, 1080)
  */
 int main(int             const Argc,
          ym::str const * const Argv)
 {
-   auto * const ap_Ptr = ym::ArgParser::getInstancePtr();
-   ap_Ptr->parse({
-      ap_Ptr->arg("niters").desc("# of iterations" ).abbr('n').val("1000000"),
-      ap_Ptr->arg("width" ).desc("Width in pixels" ).abbr('w').val("480"    ),
-      ap_Ptr->arg("height").desc("Height in pixels").abbr('t').val("270"    ),
+   auto & ap = *ym::ArgParser::getInstancePtr();
+   ap.parse({
+      ap.arg("niters").desc("# of iterations"  ).abbr('n').val("1000000"  ),
+      ap.arg("width" ).desc("Width in pixels"  ).abbr('w').val("480"      ),
+      ap.arg("height").desc("Height in pixels" ).abbr('t').val("270"      ),
+      ap.arg("output").desc("Output image name").abbr('o').val("flame-1.0"),
+      ap.arg("sx"    ).desc("X scale"          )          .val("0"        ),
+      ap.arg("sy"    ).desc("Y scale"          )          .val("0"        ),
+      ap.arg("tx"    ).desc("X translation"    )          .val("0"        ),
+      ap.arg("ty"    ).desc("Y translation"    )          .val("0"        ),
    },
    Argc, Argv);
 
-   auto const NIters      = ym::Ops::castTo<ym::uint64>(ap_Ptr->get("niters")->getVal());
-   auto const Width_pxls  = ym::Ops::castTo<ym::uint32>(ap_Ptr->get("width" )->getVal());
-   auto const Height_pxls = ym::Ops::castTo<ym::uint32>(ap_Ptr->get("height")->getVal());
+   auto const NIters      = ym::Ops::castTo<ym::uint64>(ap["niters"]->getVal());
+   auto const Width_pxls  = ym::Ops::castTo<ym::uint32>(ap["width" ]->getVal());
+   auto const Height_pxls = ym::Ops::castTo<ym::uint32>(ap["height"]->getVal());
 
-   auto * const histo_Ptr = flame::Render::lightFlame(NIters, Width_pxls, Height_pxls);
+   auto const Sx = ym::Ops::castTo<ym::float64>(ap["sx"]->getVal());
+   auto const Sy = ym::Ops::castTo<ym::float64>(ap["sy"]->getVal());
+   auto const Tx = ym::Ops::castTo<ym::float64>(ap["tx"]->getVal());
+   auto const Ty = ym::Ops::castTo<ym::float64>(ap["ty"]->getVal());
+
+   auto * const histo_Ptr = flame::Render::lightFlame(
+      NIters, Width_pxls, Height_pxls, flame::Point(Sx, Sy), flame::Point(Tx, Ty));
+
+   if (!histo_Ptr)
+   {
+      ym::ymLog(ym::VG::Flame, "Failed to render flame!");
+      return 1;
+   }
 
    png::image<png::rgba_pixel> image(Width_pxls, Height_pxls);
 
@@ -54,7 +77,8 @@ int main(int             const Argc,
 
    flame::Render::destroyHisto(histo_Ptr, Width_pxls, Height_pxls);
 
-   image.write("./pics/flame-1.0.png");
+   using namespace std::string_literals;
+   image.write("./pics/"s + ap["output"]->getVal() + ".png"s);
 
    return 0;
 }

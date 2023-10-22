@@ -35,7 +35,7 @@ public:
    requires(std::is_floating_point_v<float_t>)
    static constexpr auto fmod(float_t const X,
                               float_t const Y) {
-      return X - (int64(X / Y) * Y);
+      return X - (ym::int64(X / Y) * Y);
    }
 
    template <typename float_t>

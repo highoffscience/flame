@@ -2,18 +2,18 @@
 ///                                                   
 /// @note AUTO-GENERATED                              
 ///                                                   
-constexpr ym::uint32 NTransforms = 4u;        
-constexpr ym::uint32 NVars       = 1u;
+constexpr ym::uint32 NTransforms = 2u;        
+constexpr ym::uint32 NVars       = 2u;
                                                       
 constexpr Point::dim_t Weights[NTransforms][NVars] = {
-{1,},
-{1,},
-{1,},
-{1,},
+{1,0,},
+{0,1,},
 };
-      
-auto var0 = [](Point const P) { return P; };
-      
+
+auto var0 = [](Point const P) { auto const R2 = (P.x*P.x + P.y*P.y); return Point(P.x/R2, P.y/R2); };
+auto var1 = [](Point const P) { return Point(FastMath::sin(P.x), FastMath::sin(P.y)); };
+
 return
    (var0(P) * Weights[Transform_idx][0]) +
+   (var1(P) * Weights[Transform_idx][1]) +
    0.0;

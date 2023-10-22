@@ -5,10 +5,11 @@
    },
    "varblends": {
       "identity": {},
+      "sinusoidal": {},
       "spherical": {}
    },
-   "strangors": {"active": "maple_leaf",
-      "heighway_dragon": {"varblends": ["identity"], "weights": [[1], [1]]},
+   "strangors": {"active": "heighway_dragon",
+      "heighway_dragon": {"varblends": ["spherical", "sinusoidal"], "weights": [[1, 0], [0, 1]]},
       "maple_leaf": {"varblends": ["identity"], "weights": [[1], [1], [1], [1]]}
    }
 }
